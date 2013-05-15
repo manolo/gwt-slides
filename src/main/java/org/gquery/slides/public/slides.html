@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>GwtQuery Presentation: Deferred</title>
+
+<style type="text/css">
+body, .slide {
+    display: -webkit-box;
+    display: -moz-box;
+    -moz-box-align: center;
+    -moz-box-orient: vertical;
+    -moz-box-pack: center;
+    -webkit-box-align: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+}
+
+body {
+
+    
+	background-image: 
+	 -webkit-gradient(radial, 50% -4%, 0, 50% 30%, 700, from(rgba(117, 81, 48, 1.0)), to(rgba(48, 28, 22, 1.0)));
+	background-image: 
+	-moz-radial-gradient(50% 10%, circle, rgba(117, 81, 48, 1.0) 0, rgba(48, 28, 22, 1.0) 700px);
+	font-family: helvetica;
+	font-style: normal;
+	text-shadow: 0px 0px 2px #185a89;
+	text-decoration: none;
+	text-transform: none;
+	letter-spacing: 0em;
+	word-spacing: 0em;
+	line-height: 0.9;
+	color: #dc9e14;
+	font-size: 180%;
+	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%
+}
+body {
+/*     -moz-box-align: center; */
+/*     -moz-box-orient: vertical; */
+/*     -moz-box-pack: center; */
+/*     display: -moz-box; */
+/*     font-size: 4em; */
+/*     font-style: normal; */
+/*     height: 100%; */
+/*     width: 100%; */
+}
+h5 {
+    font-size: 1.4em;
+}
+h2 {
+    font-size: 2.2em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #2B6CCE;
+    font-weight: bold;
+    margin-bottom: 0.1em;
+    margin-top: 0;
+    text-align: center;
+    text-shadow: 0 0 0.02em #EEEEEE, 0.01em 0.01em 0.03em rgba(0, 0, 0, 0.4);
+}
+.CodeMirror {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.6) inset;
+}
+.CodeMirror {
+    -moz-box-pack: center;
+    background: none repeat scroll 0 0 rgba(122, 135, 234, 0);
+    display: -moz-box;
+    transition: all 0.8s ease-in-out 0s;
+        display: -webkit-box;
+    background: rgba(85, 49, 4, 0.82);    
+}
+.CodeMirror {
+    font-family: monospace;
+    line-height: 1em;
+    color: #A6E22E;
+}
+
+.cm-s-monokai {
+    color: #F8F8F2;
+    font-size: 0.8em;
+    letter-spacing: -0.06em;
+    overflow: hidden;
+}
+.CodeMirror-scroll {
+    height: auto;
+}
+.CodeMirror-scroll {
+    overflow: auto;
+    position: relative;
+}
+.CodeMirror-lines {
+    padding: 0.4em;
+}
+#marker {
+    bottom: 10px;
+    color: #145FDC;
+    font-size: 0.75em;
+    padding: 0.2em;
+    position: absolute;
+    right: 10px;
+    text-shadow: 0 0 0.3em #145FDC;
+    z-index: 9001;
+}
+section {
+    padding: 0 0.4em;
+    text-align: center;
+}
+
+ul {
+    margin: 0.2em 0;
+}
+ul, ol {
+    margin: 1em 0;
+    padding: 0 0 0 40px;
+}
+li {
+    text-align: left;
+}
+.slide {
+/*   border: 1px solid #7FAAFF;  */
+/*   box-shadow: 0 1px 4px grey; */
+/*   border-radius: 5px 5px 5px 5px; */
+/*   overflow: hidden;"; */
+}
+#console {
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0.4em 0.5em rgba(0, 0, 0, 0.2);
+    color: #000000;
+    font-family: 'Droid Sans Mono',monospace,monospace;
+    font-size: 1em;
+    left: 0;
+    position: absolute;
+    text-shadow: none;
+    top: 0;
+    width: 100%;
+    z-index: 9000;
+}
+#console > div:before {
+    content: "► ";
+}
+#console > div {
+    padding: 0.2em 0.5em;
+}
+
+.CodeMirror, .slide {
+}
+.CodeMirror-scroll  {
+}
+.CodeMirror {
+  padding-left: 1.4m;
+}
+
+ul {
+  max-width: 750px;
+}
+.ball {
+  display: none;
+  position: absolute;
+  border: solid 2px black;
+  border-radius: 40px;
+  width: 50px;
+  height: 50px
+}
+.red{
+  bottom:8em; 
+  right:1em;
+  background: red;
+}
+.blue{
+  bottom:4em; 
+  right:2em;
+  background: blue;
+}
+.yellow{
+  bottom:6em; 
+  right:2.7em;
+  background: yellow;
+}
+  </style>
+  <script src="slides.nocache.js"></script>
+</head>
+  <body>
+    <div id="console"></div>
+    <div class="slide" id="something"></div>
+    <div class="slide" id="something1"></div>
+    <div class="slide" id="something2"></div>
+    <div class="slide" id="something3"></div>
+    <div class="slide" id="something4"></div>
+    <div class="slide" id="something5"></div>
+    <div class="slide" id="slide1"></div>
+    <div class="slide" id="n1"></div>
+    <div class="slide" id="n2"></div>
+    <div class="slide" id="n3"></div>
+    <div class="slide" id="n4"></div>
+    <div class="slide" id="n5"></div>
+    <div class="slide" id="n6"></div>
+    <div class="slide" id="n7"></div>
+    <div class="slide" id="n8"></div>
+    <div class="slide" id="n9"></div>
+    <div class="slide" id="n10"></div>
+    <div class="slide" id="n11"></div>
+    <div class="slide" id="n12"></div>
+    <div class="slide" id="n13"></div>
+    <div id='marker'>1</div>
+    
+    <div class='ball blue'></div>
+    <div class='ball yellow'></div>
+    <div class='ball red'></div>
+  </body>
+</html>
