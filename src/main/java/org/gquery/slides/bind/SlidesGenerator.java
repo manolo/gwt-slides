@@ -9,44 +9,33 @@ import japa.parser.ast.visitor.VoidVisitorAdapter;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 public class SlidesGenerator extends Generator {
   
-  TypeOracle oracle;
-  static JClassType functionType;
-  static JClassType jsonBuilderType;
-  static JClassType jsType;
-  static JClassType listType;
-  static JClassType stringType;
-
+  HashMap<String, String> methodBodies = new HashMap<String, String>();
+  HashMap<String, String> methodDoc = new HashMap<String, String>();
+  HashMap<String, String> exec = new HashMap<String, String>();
 
   @Override
   public String generate(TreeLogger treeLogger, 
       GeneratorContext generatorContext, String requestedClass) throws UnableToCompleteException {
-    oracle = generatorContext.getTypeOracle();
-    JClassType clazz =  oracle.findType(requestedClass);
-    jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
-    stringType = oracle.findType(String.class.getName());
-    jsType = oracle.findType(JavaScriptObject.class.getName());
-    listType = oracle.findType(List.class.getName());
-    functionType = oracle.findType(Function.class.getName());
 
-    String t[] = generateClassName(clazz);
-    String file = t[0].replace(".", "/") + "/" + clazz.getName() + ".java";
+    JClassType clazz =  generatorContext.getTypeOracle().findType(requestedClass);
+
+    JClassType c = clazz.isClassOrInterface();
+    String generatedPkgName = c.getPackage().getName();
+    String generatedClzName = c.getName().replace('.', '_') + "_Slide";
+    String generatedClzFullName = generatedPkgName + "." + generatedClzName;
+    
+    String file = generatedPkgName.replace(".", "/") + "/" + clazz.getName() + ".java";
 
     try {
       parseJava(file);
@@ -54,10 +43,10 @@ public class SlidesGenerator extends Generator {
       e.printStackTrace();
     }
     
-    SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0], t[1], requestedClass);
+    SourceWriter sw = getSourceWriter(treeLogger, generatorContext, generatedPkgName, generatedClzName, requestedClass);
     
     if (sw != null) {
-      sw.println("public " + t[1] + "() {");
+      sw.println("public " + generatedClzName + "() {");
       for (String id : methodBodies.keySet()) {
         String s = methodBodies.get(id).replaceAll("\n", "\\\\\\n").replaceAll("\"", "\\\\\"");
         sw.println("  snippets.put(\"" + id + "\", \"" + s + "\");");
@@ -67,8 +56,8 @@ public class SlidesGenerator extends Generator {
           s = s.replaceAll("\n", "\\\\\\n").replaceAll("\"", "\\\\\"");
           sw.println("  docs.put(\"" + id + "\", \"" + s + "\");");
         }
-        
       }
+
       sw.println("}");
       sw.println("public void exec(String id){\n try {");
       for (String id: exec.keySet()) {
@@ -77,17 +66,18 @@ public class SlidesGenerator extends Generator {
       sw.println(" } catch (Exception e) {e.printStackTrace();}\n}");
       sw.commit(treeLogger);
     }
-    return t[2];
+    
+    return generatedClzFullName;
   }
-  
-  HashMap<String, String> methodBodies = new HashMap<String, String>();
-  HashMap<String, String> methodDoc = new HashMap<String, String>();
-  HashMap<String, String> exec = new HashMap<String, String>();
   
   public void parseJava(String file) throws ParseException {
     InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
+    
+    // use japa.parser.ast to parse the source. We could use the classes in the
+    // gwt compiler, but it seems this info is not available when running generators.
     CompilationUnit cu = null;
     cu = JavaParser.parse(in);
+    
     VoidVisitorAdapter<?> a = new VoidVisitorAdapter<Object>() {
       public void visit(MethodDeclaration n, Object arg) {
           String id = n.getName().replaceFirst("^test","").toLowerCase();
@@ -125,16 +115,6 @@ public class SlidesGenerator extends Generator {
     a.visit(cu, null);
   }
 
-  
-  public String[] generateClassName(JType t) {
-    String[] ret = new String[3];
-    JClassType c = t.isClassOrInterface();
-    ret[0] = c.getPackage().getName();
-    ret[1] = c.getName().replace('.', '_') + "_Slide";
-    ret[2] = ret[0] + "." + ret[1];
-    return ret;
-  }
-  
   protected SourceWriter getSourceWriter(TreeLogger logger,
       GeneratorContext context, String packageName, String className,
       String clazz) {
@@ -145,13 +125,7 @@ public class SlidesGenerator extends Generator {
     ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(
         packageName, className);
     composerFactory.setSuperclass(clazz);
-    composerFactory.addImport("com.google.gwt.query.client.js.*");
-    composerFactory.addImport("com.google.gwt.query.client.*");
-    composerFactory.addImport("com.google.gwt.core.client.*");
-    composerFactory.addImport("com.google.gwt.dom.client.*");
-    composerFactory.addImport("java.util.*");
 
-    //  composerFactory.addImplementedInterface(interfaceName);
     return composerFactory.createSourceWriter(context, printWriter);
   }
 

@@ -1,14 +1,17 @@
 package org.gquery.slides.client;
 
+import static com.google.gwt.query.client.GQuery.window;
 import static org.gquery.slides.client.GQ.setTimeout;
 
 import java.util.Random;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.Timer;
 
@@ -63,5 +66,17 @@ public abstract class GQ extends GQuery {
         }}, t);
       }
     };
+  }
+  
+  private static JavaScriptObject location  = JsUtils.prop(window, "location");
+  
+  public static String hash() {
+    String h = JsUtils.prop(location, "hash");
+    return h != null ? h.substring(1) : "";
+  }
+  
+  public static String hash(Object hash) {
+    JsUtils.prop(location, "hash", hash);
+    return hash();
   }
 }

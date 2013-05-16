@@ -2,13 +2,12 @@ package org.gquery.slides.client;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.window;
+import static org.gquery.slides.client.GQ.hash;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -18,12 +17,10 @@ public class Slides implements EntryPoint {
   
   String snippet = "<div class='CodeMirror'><div class='CodeMirror-scroll cm-s-monokai'><div class='CodeMirror-lines'><pre>%%</pre></div></div></div>";
   int current = 1;
-  
   String color = "$1<span style='color: %%'>$2</span>$3";
   SlidesDeferred sld;
   
   public void onModuleLoad() {
-    System.out.println("hash " + hash(null));
     sld = GWT.create(SlidesDeferred.class);
     
     GQuery slides = $(".slide")
@@ -52,14 +49,9 @@ public class Slides implements EntryPoint {
       return false;
     }});
     
-    try {
-      current = Integer.parseInt(hash(null).substring(1));
-      if (slides.size() < current) {
-        current = 1;
-      }
-    } catch (Exception e) {
-    }
-
+    String hash = hash();
+    current = hash.matches("\\d+") ? Integer.parseInt(hash) : 1;
+    current = slides.size() < current ? current : 1;
     show(null, slides.eq(current));
    }
   
@@ -72,7 +64,6 @@ public class Slides implements EntryPoint {
        }
        next.show();
        updateMarker(next.id());
-       hash("" + current);
        return true;
      }
      return false;
@@ -80,8 +71,9 @@ public class Slides implements EntryPoint {
    
    private void updateMarker(final String id) {
      $(window).delay(100, new Function(){public void f(){
-       $("#marker").text("" + current);
-       hash("" + current);
+       String page = "" + current;
+       $("#marker").text(page);
+       hash(page);
      }}).delay(1000, new Function(){public void f(){
        try {
          sld.exec(id);
@@ -89,15 +81,6 @@ public class Slides implements EntryPoint {
         e.printStackTrace();
       }
      }});
-   }
-
-   JavaScriptObject location  = JsUtils.prop(window, "location");
-   
-   private String hash(String hash) {
-     if (hash != null) {
-       JsUtils.prop(location, "hash", hash);
-     }
-     return JsUtils.prop(location, "hash");
    }
 
 }
