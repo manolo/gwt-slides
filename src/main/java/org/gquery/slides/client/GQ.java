@@ -24,8 +24,7 @@ public abstract class GQ extends GQuery {
       $("#console").hide().text("");
     }
     public static void log(Object o) {
-      System.out.println(o);
-      $("#console").show().append("<div>" + o + "</div>");
+      $("#console").show().append("<div>" + String.valueOf(o).replace("\n", "<br/>").replace(" ", "&nbsp;") + "</div>");
     }
   }
 
@@ -43,8 +42,8 @@ public abstract class GQ extends GQuery {
   
   public static Promise getRandom() {
     return new PromiseFunction() {
-      public void f(Deferred dfd) {
-        dfd.resolve(new Random().nextInt(30));
+      public void f(final Deferred dfd) {
+        dfd.resolve(new Random().nextInt(100));
       }
     };
   }

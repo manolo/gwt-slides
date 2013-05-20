@@ -14,11 +14,11 @@ body, .slide {
     -webkit-box-align: center;
     -webkit-box-orient: vertical;
     -webkit-box-pack: center;
+    width: 100%;
+    height: 100%
 }
 
 body {
-
-    
 	background-image: 
 	 -webkit-gradient(radial, 50% -4%, 0, 50% 30%, 700, from(rgba(117, 81, 48, 1.0)), to(rgba(48, 28, 22, 1.0)));
 	background-image: 
@@ -37,18 +37,6 @@ body {
 	overflow-x: hidden;
 	overflow-y: hidden;
     position: absolute;
-    width: 100%;
-    height: 100%
-}
-body {
-/*     -moz-box-align: center; */
-/*     -moz-box-orient: vertical; */
-/*     -moz-box-pack: center; */
-/*     display: -moz-box; */
-/*     font-size: 4em; */
-/*     font-style: normal; */
-/*     height: 100%; */
-/*     width: 100%; */
 }
 h5 {
     font-size: 1.4em;
@@ -57,18 +45,18 @@ h2 {
     font-size: 2.2em;
 }
 h1, h2, h3, h4, h5, h6 {
-    color: #2B6CCE;
+    color: rgb(147, 167, 197);
     font-weight: bold;
     margin-bottom: 0.1em;
     margin-top: 0;
     text-align: center;
     text-shadow: 0 0 0.02em #EEEEEE, 0.01em 0.01em 0.03em rgba(0, 0, 0, 0.4);
 }
-.CodeMirror {
+.code {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.2);
     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.6) inset;
 }
-.CodeMirror {
+.code {
     -moz-box-pack: center;
     background: none repeat scroll 0 0 rgba(122, 135, 234, 0);
     display: -moz-box;
@@ -76,28 +64,12 @@ h1, h2, h3, h4, h5, h6 {
         display: -webkit-box;
     background: rgba(85, 49, 4, 0.82);    
 }
-.CodeMirror {
+.code {
     font-family: monospace;
     line-height: 1em;
     color: #A6E22E;
 }
 
-.cm-s-monokai {
-    color: #F8F8F2;
-    font-size: 0.8em;
-    letter-spacing: -0.06em;
-    overflow: hidden;
-}
-.CodeMirror-scroll {
-    height: auto;
-}
-.CodeMirror-scroll {
-    overflow: auto;
-    position: relative;
-}
-.CodeMirror-lines {
-    padding: 0.4em;
-}
 #marker {
     bottom: 10px;
     color: #145FDC;
@@ -123,23 +95,17 @@ ul, ol {
 li {
     text-align: left;
 }
-.slide {
-/*   border: 1px solid #7FAAFF;  */
-/*   box-shadow: 0 1px 4px grey; */
-/*   border-radius: 5px 5px 5px 5px; */
-/*   overflow: hidden;"; */
-}
 #console {
     background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
     box-shadow: 0 0.4em 0.5em rgba(0, 0, 0, 0.2);
     color: #000000;
     font-family: 'Droid Sans Mono',monospace,monospace;
-    font-size: 1em;
+    font-size: 0.50em;
     left: 0;
     position: absolute;
     text-shadow: none;
     top: 0;
-    width: 100%;
+    width: 96%;
     z-index: 9000;
 }
 #console > div:before {
@@ -148,12 +114,20 @@ li {
 #console > div {
     padding: 0.2em 0.5em;
 }
+#play {
+  position: absolute;
+  font-size: 1em;
+  top: 5px;
+  right: 10px;
+  color: green;
+  cursor: pointer;
+}
 
-.CodeMirror, .slide {
+.code, .slide {
 }
-.CodeMirror-scroll  {
+.code-scroll  {
 }
-.CodeMirror {
+.code {
   padding-left: 1.4m;
 }
 
@@ -183,31 +157,69 @@ ul {
   right:2.7em;
   background: yellow;
 }
+
+.code-div {
+    color: rgb(245, 245, 180);
+    font-size: 0.8em;
+    letter-spacing: -0.06em;
+    overflow: hidden;
+}
+.code-scroll {
+    height: auto;
+}
+.code-scroll {
+    overflow: auto;
+    position: relative;
+}
+.code-lines {
+    padding: 0.4em;
+}
+
+.jKey {
+ color: rgb(207, 146, 209);
+}
+.jLiteral {
+ color: rgb(150, 156, 226);
+}
+.jMethod{
+ color: white;
+ color: rgb(245, 245, 180);
+}
+.jComment, .jComment .jKey, .jComment .jLiteral, .jComment .jMethod {
+ color: rgba(140, 173, 140, 0.83);
+}
+
   </style>
   <script src="slides.nocache.js"></script>
 </head>
   <body>
     <div id="console"></div>
+    <div class="slide" id="slide1"></div>
+
+    <div class="slide" id="n1"></div>
+    <div class="slide" id="n2"></div>
+    <div class="slide" id="n3_1"></div>
+    <div class="slide" id="n3_2"></div>
+    <div class="slide" id="n4"></div>
+    <div class="slide" id="n5"></div>
+    <div class="slide" id="n5_2"></div>
+<!--     <div class="slide" id="n6"></div> -->
+    <div class="slide" id="n7"></div>
+    <div class="slide" id="n7_2"></div>
+    <div class="slide" id="n8"></div>
+    <div class="slide" id="n9"></div>
+    <div class="slide" id="n10"></div>
+    <div class="slide" id="n11"></div>
+    <div class="slide" id="n12"></div>
+
     <div class="slide" id="something"></div>
     <div class="slide" id="something1"></div>
     <div class="slide" id="something2"></div>
     <div class="slide" id="something3"></div>
     <div class="slide" id="something4"></div>
     <div class="slide" id="something5"></div>
-    <div class="slide" id="slide1"></div>
-    <div class="slide" id="n1"></div>
-    <div class="slide" id="n2"></div>
-    <div class="slide" id="n3"></div>
-    <div class="slide" id="n4"></div>
-    <div class="slide" id="n5"></div>
-    <div class="slide" id="n6"></div>
-    <div class="slide" id="n7"></div>
-    <div class="slide" id="n8"></div>
-    <div class="slide" id="n9"></div>
-    <div class="slide" id="n10"></div>
-    <div class="slide" id="n11"></div>
-    <div class="slide" id="n12"></div>
-    <div class="slide" id="n13"></div>
+    
+    <div id='play'>►</div>
     <div id='marker'>1</div>
     
     <div class='ball blue'></div>

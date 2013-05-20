@@ -1,7 +1,5 @@
 package org.gquery.slides.client;
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.window;
 import static org.gquery.slides.client.GQ.hash;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -15,72 +13,69 @@ import com.google.gwt.user.client.Event;
  */
 public class Slides implements EntryPoint {
   
-  String snippet = "<div class='CodeMirror'><div class='CodeMirror-scroll cm-s-monokai'><div class='CodeMirror-lines'><pre>%%</pre></div></div></div>";
-  int current = 1;
-  String color = "$1<span style='color: %%'>$2</span>$3";
-  SlidesDeferred sld;
-  
+  private final String SNIPPET_TPL = "<div class='code'><div class='code-scroll code-div'><div class='code-lines'><pre>%%</pre></div></div></div>";
+  private int currentPage = 1;
+  private String currentExecId = null;
+  private SlidesDeferred examplesClass;
   public void onModuleLoad() {
-    sld = GWT.create(SlidesDeferred.class);
-    
+    examplesClass = GWT.create(SlidesDeferred.class);
+
     GQuery slides = $(".slide")
-    .css($$("width: 100%, height: 100%"))
-    .each(new Function(){public void f(){
-      final String id = $(this).id().toLowerCase();
-      String d = sld.docs.get(id);
-      String html = d == null ? "" : d;
-      String h = sld.snippets.get(id);
-      if (h != null && !h.replaceAll("\\s+", "").isEmpty()) {
-        h = h
-//             .replaceAll("([^\\w])(if|null|new|public|void|else|static|return)([^\\w])", "$1<span style='color: red'>$2</span>$3")
-             .replaceAll("([^\\w])(\".*\\w\")([^\\w])", "$1<span style='color: cian'>$2</span>$3")
-             .replaceAll("(//.+?)\n", "<span style='color: green'>$1\n</span>")
-            ;
-        html += snippet.replace("%%", h);
-      }
-      $(this).html(html);
-      
-    }})
-    .hide()
-    .click(new Function(){public void f(){
-      current += show($(this), $(this).next().filter(".slide")) ? 1 : 0;
-    }}).bind(Event.ONCONTEXTMENU, new Function(){public boolean f(Event e){
-      current -= show($(this), $(this).prev().filter(".slide")) ? 1 : 0;
-      return false;
+      .each(new Function(){public void f(){
+        final String id = $(this).id().toLowerCase();
+        String javadoc = examplesClass.docs.get(id);
+        String html = javadoc == null ? "" : javadoc;
+        String code = examplesClass.snippets.get(id);
+        if (code != null && !code.matches("\\s*")) {
+          html += SNIPPET_TPL.replace("%%", Prettify.prettify(code));
+        }
+        $(this).html(html);
+      }})
+      .hide()
+      .click(new Function(){public void f(){
+        currentPage += show($(this), $(this).next().filter(".slide")) ? 1 : 0;
+        updateMarker();
+      }})
+      .bind(Event.ONCONTEXTMENU, new Function(){public boolean f(Event e){
+        currentPage -= show($(this), $(this).prev().filter(".slide")) ? 1 : 0;
+        updateMarker();
+        return false;
+      }});
+    
+    $("#play").click(new Function(){public void f(){
+      clearConsole();
+      examplesClass.exec(currentExecId);
     }});
     
     String hash = hash();
-    current = hash.matches("\\d+") ? Integer.parseInt(hash) : 1;
-    current = slides.size() < current ? current : 1;
-    show(null, slides.eq(current));
+    currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) : 1;
+    currentPage = slides.size() >= currentPage ? currentPage : 1;
+    show(null, slides.eq(currentPage - 1));
+    updateMarker();
+   }
+  
+   private void updateMarker() {
+     // Update page number
+     String page = "" + currentPage;
+     $("#marker").text(page);
+     hash(page);
+   }
+   
+   private void clearConsole() {
+     $("#console").html("").hide();
    }
   
    private boolean show(GQuery actual, GQuery next) {
      if (!next.isEmpty()) {
        $(".ball").hide();
-       $("#console").html("").hide();
        if (actual != null) {
          actual.hide();
        }
+       clearConsole();
        next.show();
-       updateMarker(next.id());
+       currentExecId = next.id();
        return true;
      }
      return false;
    }
-   
-   private void updateMarker(final String id) {
-     $(window).delay(100, new Function(){public void f(){
-       String page = "" + current;
-       $("#marker").text(page);
-       hash(page);
-     }}).delay(1000, new Function(){public void f(){
-       try {
-         sld.exec(id);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-     }});
-   }
-
 }
