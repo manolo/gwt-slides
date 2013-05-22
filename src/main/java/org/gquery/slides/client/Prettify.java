@@ -18,7 +18,9 @@ public class Prettify {
       + "throws|transient";
   
   public static final String GQUERY_KEYWORDS = JAVA_KEYWORDS + "|"
-      + "void|Function|Promise";
+      + "void|Function|Promise|PromiseFunction|FunctionDeferred";
+
+  public static final String CONTROL_CHARS = "([\\{\\}\\(\\)\\[\\]\\;\\,\\+\\-\\*\\|\\&]+)";
 
   public static String prettify(String s) {
     s = s
@@ -27,7 +29,9 @@ public class Prettify {
           .replaceAll("(^|_)(" + GQUERY_KEYWORDS + ")([^\\w])", "<span class='jKey'>$2</span>$3")
           .replaceAll("([^\\w])(\".*?[^\\\\]\")([^\\w])", "$1<span class='jLiteral'>$2</span>$3")
           .replaceAll("()([\\w\\$]+)(\\(.*?)", "$1<span class='jMethod'>$2</span>$3")
-          .replaceAll("(//.+?)\n", "<span class='jComment'>$1\n</span>");
+          .replaceAll("(//.+?)\n", "<span class='jComment'>$1\n</span>")
+          .replaceAll(CONTROL_CHARS, "<span class='jControl'>$1</span>");
+    
     return s;
   }
 }

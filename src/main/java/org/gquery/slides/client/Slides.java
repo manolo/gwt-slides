@@ -1,9 +1,11 @@
 package org.gquery.slides.client;
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.window;
 import static org.gquery.slides.client.GQ.hash;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.Event;
@@ -20,7 +22,8 @@ public class Slides implements EntryPoint {
   public void onModuleLoad() {
     examplesClass = GWT.create(SlidesDeferred.class);
 
-    GQuery slides = $(".slide")
+    $(".slide")
+      .hide()
       .each(new Function(){public void f(){
         final String id = $(this).id().toLowerCase();
         String javadoc = examplesClass.docs.get(id);
@@ -30,29 +33,26 @@ public class Slides implements EntryPoint {
           html += SNIPPET_TPL.replace("%%", Prettify.prettify(code));
         }
         $(this).html(html);
-      }})
-      .hide()
-      .click(new Function(){public void f(){
-        currentPage += show($(this), $(this).next().filter(".slide")) ? 1 : 0;
-        updateMarker();
-      }})
-      .bind(Event.ONCONTEXTMENU, new Function(){public boolean f(Event e){
-        currentPage -= show($(this), $(this).prev().filter(".slide")) ? 1 : 0;
-        updateMarker();
-        return false;
       }});
     
-    $("#play").click(new Function(){public void f(){
+    $(window)
+      .bind(Event.ONKEYDOWN | Event.ONCLICK | Event.ONCONTEXTMENU, new Function(){public boolean f(Event e){
+        if (e.getKeyCode() == KeyCodes.KEY_RIGHT || e.getTypeInt() == Event.ONCLICK) show(true);
+        if (e.getKeyCode() == KeyCodes.KEY_LEFT || e.getTypeInt() == Event.ONCONTEXTMENU) show(false);
+        return false;
+    }});
+    
+    $("#play").click(new Function(){public boolean f(Event e){
       clearConsole();
       examplesClass.exec(currentExecId);
+      return false;
     }});
     
     String hash = hash();
-    currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) : 1;
-    currentPage = slides.size() >= currentPage ? currentPage : 1;
-    show(null, slides.eq(currentPage - 1));
-    updateMarker();
+    currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) - 1  : 0;
+    show(true);
    }
+  
   
    private void updateMarker() {
      // Update page number
@@ -65,17 +65,24 @@ public class Slides implements EntryPoint {
      $("#console").html("").hide();
    }
   
-   private boolean show(GQuery actual, GQuery next) {
+   private void show(boolean right) {
+     GQuery slides = $(".slide");
+     int incr = right ? 1 : -1;
+     int page = Math.max(currentPage + incr, 0);
+     
+     GQuery actual = slides.eq(currentPage);
+     GQuery next = slides.eq(page);
+     while (!next.isEmpty() && next.text().trim().isEmpty()) {
+       next = slides.eq(page += incr);
+     }
      if (!next.isEmpty()) {
        $(".ball").hide();
-       if (actual != null) {
-         actual.hide();
-       }
+       actual.hide();
        clearConsole();
        next.show();
        currentExecId = next.id();
-       return true;
+       currentPage = page;
+       updateMarker();
      }
-     return false;
    }
 }
