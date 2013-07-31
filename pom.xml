@@ -87,12 +87,12 @@
             <version>1.0.0.GA</version>
             <classifier>sources</classifier>
         </dependency>
-        
+
         <dependency>
-    <groupId>com.google.code.javaparser</groupId>
-    <artifactId>javaparser</artifactId>
-    <version>1.0.9</version>
-</dependency>
+            <groupId>com.google.code.javaparser</groupId>
+            <artifactId>javaparser</artifactId>
+            <version>1.0.9</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -111,7 +111,7 @@
                 <version>${gwtmaven}</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
-                    <style>${gwt.outputstyle}</style>
+                    <style>PRETTY</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
                     <runTarget>Slides/Slides.html</runTarget>
