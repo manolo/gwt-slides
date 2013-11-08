@@ -22,7 +22,6 @@ public class Slides implements EntryPoint {
   private SlidesDeferred examplesClass;
   public void onModuleLoad() {
     examplesClass = GWT.create(SlidesDeferred.class);
-//    final PrettyFactory fact = ClientSideFormatter.FACTORY;
 
     $(".slide")
       .hide()
@@ -71,7 +70,6 @@ public class Slides implements EntryPoint {
    }
   
    private boolean show(boolean fw) {
-     pr("" + (1+Integer.parseInt(getValue())));
      GQuery slides = $(".slide").filter(new Predicate(){
        @Override public boolean f(Element e, int index) {
          return (!$(e).text().trim().isEmpty());
@@ -108,30 +106,8 @@ public class Slides implements EntryPoint {
          run();
        };
      });
-//
-//     
-//     
-//     
-//     if (!left.isEmpty()) {
-//       $(".ball").hide();
-////       actual.hide();
-//       actual.show();
-//       actual.addClass("left");
-//       clearConsole();
-//       left.show();
-//       left.addClass("right");
-//       currentExecId = left.id();
-//       currentPage = page;
-//       updateMarker();
-//     }
      
      return false;
    }
    
-   void pr(String s) {
-     System.out.println(s);
-   }
-   String getValue() {
-     return "" + 4;
-   }
 }
