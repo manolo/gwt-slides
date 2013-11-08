@@ -1,5 +1,6 @@
 package org.gquery.slides.client;
 
+import static com.google.gwt.query.client.GQuery.*;
 import static org.gquery.slides.client.GQ.*;
 
 import java.util.Random;
@@ -10,7 +11,7 @@ import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 
 /**
  * @author manolo
@@ -297,7 +298,7 @@ public class SlidesDeferred extends SlidesBase {
   Function drop(final GQuery ball, final int timeout) {
     return new Function(){public Object f(Object...o){
       System.out.println(ball);
-      return ball.animate($$("bottom: 0"), timeout, EasingExt.EASE_OUT_BOUNCE).promise();
+      return ball.animate($$("bottom: 0"), timeout, EasingCurve.custom.with(.31,-0.37,.47,1.5)).promise();
     }};
   }
   
@@ -317,7 +318,7 @@ public class SlidesDeferred extends SlidesBase {
 
   public void testSomething1() {
     drawBalls();
-    when($(".ball").animate($$("bottom: 0"), 1700, EasingExt.EASE_OUT_BOUNCE))
+    when($(".ball").animate($$("bottom: 0"), 1700, EasingCurve.custom.with(.31,-0.37,.47,1.5)))
       .done(new Function(){public void f(){
         console.log("all done");
       }});    
