@@ -44,6 +44,22 @@
     <issueManagement>
     </issueManagement>
 
+    <profiles>
+     <profile>
+        <id>prod</id>
+        <properties>
+          <gwt.compiler.compileReport>false</gwt.compiler.compileReport>
+          <gwt.draftCompile>false</gwt.draftCompile>
+          <gwt.enableClosureCompiler>true</gwt.enableClosureCompiler>
+          <gwt.compiler.optimizationLevel>9</gwt.compiler.optimizationLevel>
+          <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
+          <gwt.disableCastChecking>true</gwt.disableCastChecking>
+          <gwt.disableRunAsync>true</gwt.disableRunAsync>
+          <gwt.enableAssertions>false</gwt.enableAssertions>
+          <gwt.loglevel>INFO</gwt.loglevel>
+        </properties>
+     </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -94,8 +110,44 @@
             <version>1.0.9</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>gwt-maven-plugin</artifactId>
+              <version>${gwtmaven}</version>
+              <configuration>
+                  <style>${gwt.style}</style>
+                  <logLevel>${gwt.loglevel}</logLevel>
+                  <gwtVersion>${gwtversion}</gwtVersion>
+                  <runTarget>tw/index.html</runTarget>
+                  <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
+                  <compileReport>${gwt.compiler.compileReport}</compileReport>
+                  <compilerMetrics>${gwt.compiler.compileReport}</compilerMetrics>
+                  <draftCompile>${gwt.draftCompile}</draftCompile>
+                  <enableClosureCompiler>${gwt.enableClosureCompiler}</enableClosureCompiler>
+                  <disableRunAsync>${gwt.disableRunAsync}</disableRunAsync>
+                  <localWorkers>3</localWorkers>
+                  <fragmentCount>20</fragmentCount>
+                  <bindAddress>0.0.0.0</bindAddress>
+                  <codeServerWorkDir>${project.build.directory}</codeServerWorkDir>
+                  <disableClassMetadata>${gwt.disableClassMetadata}</disableClassMetadata>
+                  <disableCastChecking>${gwt.disableCastChecking}</disableCastChecking>
+                  <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=384m </extraJvmArgs>
+                  <gen>${project.build.directory}/gen</gen>
+                  <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+              </configuration>
+              <executions>
+                  <execution>
+                      <phase>prepare-package</phase>
+                      <goals>
+                          <goal>compile</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -104,27 +156,6 @@
                 <source>1.6</source>
                 <target>1.6</target>
               </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>${gwtmaven}</version>
-                <configuration>
-                    <logLevel>${gwt.loglevel}</logLevel>
-                    <style>PRETTY</style>
-                    <gwtVersion>${gwtversion}</gwtVersion>
-                    <compileReport>true</compileReport>
-                    <runTarget>Slides/Slides.html</runTarget>
-                    <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                <artifactId>maven-surefire-plugin</artifactId>
