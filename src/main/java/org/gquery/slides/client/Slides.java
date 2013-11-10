@@ -38,7 +38,6 @@ public class Slides implements EntryPoint {
   }
 
   private static final String PRESENT = "present";
-  private static final String ANIMATE_CLASS = "animate";
   private static final String PAST = "past";
   private static final String FUTURE = "future";
 
@@ -163,7 +162,7 @@ public class Slides implements EntryPoint {
     String classForOldSlide = forward ? PAST : FUTURE;
 
     slides.eq(currentPage).removeClass(PRESENT).addClass(classForOldSlide);
-    slides.eq(nextPage).show().removeClass(FUTURE, PAST).addClass(PRESENT);
+    slides.eq(nextPage).removeClass(FUTURE, PAST).addClass(PRESENT);
 
     currentPage = nextPage;
     currentExecId = slides.eq(currentPage).id();
@@ -179,5 +178,4 @@ public class Slides implements EntryPoint {
     $("#marker").text(page);
     hash(page);
   }
-
 }
