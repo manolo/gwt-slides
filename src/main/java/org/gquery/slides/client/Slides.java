@@ -1,20 +1,12 @@
 package org.gquery.slides.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
-import com.google.gwt.query.client.Selector;
-import com.google.gwt.query.client.Selectors;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Event;
 
 import static com.google.gwt.query.client.GQuery.$;
@@ -26,52 +18,47 @@ import static org.gquery.slides.client.GQ.hash;
  */
 public class Slides implements EntryPoint {
 
-  interface SlidesSelector extends Selectors {
-    @Selector(".slides > section")
-    GQuery slides();
-  }
-
-  interface Templates extends SafeHtmlTemplates {
-    @Template("<div class='CodeMirror'><div class='code-scroll code-div'><div class='code-lines'>" +
-        "<pre>{0}</pre></div></div></div>")
-    SafeHtml codeSnippet(SafeHtml code);
-  }
-
   private static final String PRESENT = "present";
   private static final String PAST = "past";
   private static final String FUTURE = "future";
+  private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
+  private static final String CODE_SNIPPET = "<div class='CodeMirror'><div class='code-scroll " +
+      "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
 
   private int currentPage = 1;
   private String currentExecId = null;
   private SlidesDeferred examplesClass;
-  private SlidesSelector selector;
-  private Templates html;
+  private GQuery slides;
 
   public void onModuleLoad() {
-    html = GWT.create(Templates.class);
-    selector = GWT.create(SlidesSelector.class);
     examplesClass = GWT.create(SlidesDeferred.class);
 
     // build slide
-    selector.slides().each(
+    $(".slides > section").each(
         new Function() {
           public void f(Element e) {
-            GQuery slide = $(e);
-            String id = slide.id().toLowerCase();
-            buildSlide(id, slide);
+            buildSlide($(this));
           }
         });
 
     bindEvents();
+
+    // filter the empty slides
+    slides = $(".slides > section").filter(new Predicate() {
+      @Override
+      public boolean f(Element e, int index) {
+        return (!$(e).text().trim().isEmpty());
+      }
+    });
 
     showCurrentSlide();
   }
 
   private void showCurrentSlide() {
     String hash = hash();
-    currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) - 1 : 0;
+    currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) : 0;
 
-    selector.slides().hide().each(new Function() {
+    slides.hide().each(new Function() {
       @Override
       public Object f(Element e, int i) {
         GQuery slide = $(e).removeClass(PAST, PRESENT, FUTURE);
@@ -87,14 +74,16 @@ public class Slides implements EntryPoint {
       }
     });
 
-    // presentation is ready show the slides
-    Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+    hideOrShowPlayButton(slides.eq(currentPage));
+
+    // After 1 sec, all css animations are done,  presentation is ready -> show the slides
+    slides.delay(1000, new Function() {
       @Override
-      public boolean execute() {
-        selector.slides().show();
-        return false;
+      public void f() {
+        $(this).show();
       }
-    }, 1000);
+    });
+
   }
 
   private void bindEvents() {
@@ -118,25 +107,26 @@ public class Slides implements EntryPoint {
     });
   }
 
-  private void buildSlide(String id, GQuery slide) {
-    SafeHtmlBuilder builder = new SafeHtmlBuilder();
+  private void buildSlide(GQuery slide) {
+    String html = slide.html();
+    String id = slide.id().toLowerCase();
 
     String javadoc = examplesClass.docs.get(id);
     String code = examplesClass.snippets.get(id);
 
     if (javadoc != null){
-      builder.appendHtmlConstant(javadoc);
+      html += javadoc;
     }
 
-    if (code != null && !code.matches("\\s*")) {
-      builder.append(html.codeSnippet(SafeHtmlUtils.fromSafeConstant(Prettify.prettify(code))));
+    boolean displayPlayButton = true;
+    if (code != null && code.trim().length() > 0) {
+      html += CODE_SNIPPET.replace("%code%", Prettify.prettify(code));
+    } else {
+      displayPlayButton = false;
     }
 
-    String htmlToInject = builder.toSafeHtml().asString();
-
-    if (htmlToInject != null && htmlToInject.trim().length() > 0) {
-      slide.html(htmlToInject);
-    }
+    slide.data(DISPLAY_PLAY_BUTTON, displayPlayButton);
+    slide.html(html);
   }
 
   private void clearConsole() {
@@ -149,27 +139,31 @@ public class Slides implements EntryPoint {
   }
 
   private boolean show(boolean forward) {
-    // filter the empty slides
-    GQuery slides = selector.slides().filter(new Predicate() {
-      @Override
-      public boolean f(Element e, int index) {
-        return (!$(e).text().trim().isEmpty());
-      }
-    });
-
     int incr = forward ? 1 : -1;
     int nextPage = Math.min(Math.max(currentPage + incr, 0), slides.size());
     String classForOldSlide = forward ? PAST : FUTURE;
 
     slides.eq(currentPage).removeClass(PRESENT).addClass(classForOldSlide);
-    slides.eq(nextPage).removeClass(FUTURE, PAST).addClass(PRESENT);
 
+    GQuery nextSlide = slides.eq(nextPage);
+    nextSlide.removeClass(FUTURE, PAST).addClass(PRESENT);
+
+    hideOrShowPlayButton(nextSlide);
+
+    currentExecId = nextSlide.id();
     currentPage = nextPage;
-    currentExecId = slides.eq(currentPage).id();
 
     updateMarker();
 
     return false;
+  }
+
+  private void hideOrShowPlayButton(GQuery slide) {
+    if (slide.data(DISPLAY_PLAY_BUTTON)) {
+      $("#play").show();
+    } else {
+      $("#play").hide();
+    }
   }
 
   private void updateMarker() {
