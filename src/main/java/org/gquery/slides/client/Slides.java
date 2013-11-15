@@ -159,7 +159,7 @@ public class Slides implements EntryPoint {
   }
 
   private void hideOrShowPlayButton(GQuery slide) {
-    if (slide.data(DISPLAY_PLAY_BUTTON)) {
+    if (slide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
       $("#play").show();
     } else {
       $("#play").hide();

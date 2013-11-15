@@ -18,7 +18,7 @@ public class Prettify {
       + "throws|transient";
   
   public static final String GQUERY_KEYWORDS = JAVA_KEYWORDS + "|"
-      + "void|Function|Promise|PromiseFunction|FunctionDeferred";
+      + "Function|Promise|PromiseFunction|FunctionDeferred";
 
   public static final String CONTROL_CHARS = "([\\{\\}\\(\\)\\[\\]\\;\\,\\+\\-\\*\\|\\&]+)";
 

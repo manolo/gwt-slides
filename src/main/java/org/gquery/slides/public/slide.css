@@ -13,6 +13,14 @@
     src: local('Cabin Regular'), local('Cabin-Regular'), url("/fonts/cabin.woff") format('woff');
 }
 
+@font-face {
+    font-family: 'Crimson Text';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Crimson Text'), local('CrimsonText-Roman'), url("/fonts/crimson_text.woff") format('woff');
+}
+
+
 body {
     display: -webkit-box;
     display: -moz-box;
@@ -209,11 +217,11 @@ h1, h2, h3, h4, h5, h6 {
  }
 
  .code-div {
-    color: #A6E22E; /*rgb(245, 245, 180);*/
+    color: rgb(169,183,198);
     font-size: 0.8em;
     letter-spacing: -0.06em;
     overflow: hidden;
-    background-color: black;
+    background-color: rgb(43, 43, 43);
     padding: 20px;
 }
 .code-scroll {
@@ -228,18 +236,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .jKey {
-    color: rgb(207, 146, 209);
+    color: rgb(204, 120, 50);
 }
 .jLiteral {
-    color: rgb(150, 156, 226);
+    color: rgb(169, 183, 198);
 }
 .jMethod {
-    color: white;
-    color: rgb(245, 245, 180);
+    color: rgb(255, 198, 109);
 }
 .jControl {
-    color:white;
+    color:rgb(169, 183, 198);
 }
 .jComment, .jComment .jKey, .jComment .jLiteral, .jComment .jMethod {
-    color: rgba(140, 173, 140, 0.83);
+    color: rgb(128, 128, 128);
 }
