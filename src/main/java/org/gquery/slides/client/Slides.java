@@ -47,7 +47,7 @@ public class Slides implements EntryPoint {
     slides = $(".slides > section").filter(new Predicate() {
       @Override
       public boolean f(Element e, int index) {
-        return (!$(e).text().trim().isEmpty());
+        return (!$(e).html().trim().isEmpty());
       }
     });
 
