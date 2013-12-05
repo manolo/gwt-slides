@@ -1,8 +1,5 @@
 package org.gquery.slides.client;
 
-import static com.google.gwt.query.client.GQuery.window;
-import static org.gquery.slides.client.GQ.setTimeout;
-
 import java.util.Random;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -10,7 +7,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.Timer;
@@ -19,17 +16,16 @@ public abstract class GQ extends GQuery {
   protected GQ(GQuery gq) {
     super(gq);
   }
-  public static class C {
-    public static void clear() {
+
+  public static class ConsoleSlides extends ConsoleBrowser {
+    @Override public void clear() {
       $("#console").hide().text("");
     }
-    public static void log(Object o) {
+    @Override public void log(Object o) {
       $("#console").show().append("<div>" + String.valueOf(o).replace("\n", "<br/>").replace(" ", "&nbsp;") + "</div>");
     }
   }
 
-  public static C console = new C();
-  
   public static void setTimeout(final Function f, int t) {
     new Timer() {
       public void run() {
