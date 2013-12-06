@@ -136,7 +136,8 @@ public class SlidesGenerator extends Generator {
               s = s.replaceFirst("^\\s*\\{ *\n*", "")
                    .replaceFirst("\\s*\\}\\s*$", "")
                    .replaceAll("\n+", "\n")
-                   .replaceAll("(?m)^    ", "");
+                   .replaceAll("(?m)^    ", "")
+                   .replaceAll("    ", "  ");
             } else {
               s = n.getName() + "()" + s;
             }
