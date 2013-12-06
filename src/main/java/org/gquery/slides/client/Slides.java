@@ -1,5 +1,8 @@
 package org.gquery.slides.client;
 
+import static com.google.gwt.query.client.GQuery.*;
+import static org.gquery.slides.client.GQ.hash;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -8,10 +11,6 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.user.client.Event;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.window;
-import static org.gquery.slides.client.GQ.hash;
 
 /**
  * Entry point for the presentation
@@ -57,6 +56,7 @@ public class Slides implements EntryPoint {
   private void showCurrentSlide() {
     String hash = hash();
     currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) : 0;
+    updatePageControl();
 
     slides.hide().each(new Function() {
       @Override
@@ -74,16 +74,8 @@ public class Slides implements EntryPoint {
       }
     });
 
-    hideOrShowPlayButton(slides.eq(currentPage));
-
     // After 1 sec, all css animations are done,  presentation is ready -> show the slides
-    slides.delay(1000, new Function() {
-      @Override
-      public void f() {
-        $(this).show();
-      }
-    });
-
+    slides.delay(1000, lazy().show().done());
   }
 
   private void bindEvents() {
@@ -129,12 +121,8 @@ public class Slides implements EntryPoint {
     slide.html(html);
   }
 
-  private void clearConsole() {
-    $("#console").html("").hide();
-  }
-
   private void run() {
-    clearConsole();
+    console.clear();
     examplesClass.exec(currentExecId);
   }
 
@@ -143,17 +131,15 @@ public class Slides implements EntryPoint {
     int nextPage = Math.min(Math.max(currentPage + incr, 0), slides.size());
     String classForOldSlide = forward ? PAST : FUTURE;
 
+    console.clear();
+
     slides.eq(currentPage).removeClass(PRESENT).addClass(classForOldSlide);
 
     GQuery nextSlide = slides.eq(nextPage);
     nextSlide.removeClass(FUTURE, PAST).addClass(PRESENT);
 
-    hideOrShowPlayButton(nextSlide);
-
-    currentExecId = nextSlide.id();
     currentPage = nextPage;
-
-    updateMarker();
+    updatePageControl();
 
     return false;
   }
@@ -166,10 +152,15 @@ public class Slides implements EntryPoint {
     }
   }
 
-  private void updateMarker() {
+  private void updatePageControl() {
+    GQuery slide = slides.eq(currentPage);
+    currentExecId = slide.id();
+    hideOrShowPlayButton(slide);
+
     // Update page number
     String page = "" + currentPage;
     $("#marker").text(page);
+
     hash(page);
   }
 }
