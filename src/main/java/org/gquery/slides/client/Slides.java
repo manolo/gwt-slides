@@ -10,6 +10,8 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -17,17 +19,16 @@ import com.google.gwt.user.client.Event;
  */
 public class Slides implements EntryPoint {
 
-  private static final String PRESENT = "present";
-  private static final String PAST = "past";
-  private static final String FUTURE = "future";
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
-  private static final String CODE_SNIPPET = "<div class='CodeMirror'><div class='code-scroll " +
+  private static final String CODE_SNIPPET = "<div class='code'><div class='code-scroll " +
       "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
 
+  private Easing easing = EasingCurve.custom.with(.31,-0.37,.47,1.5);
+
   private int currentPage = 1;
-  private String currentExecId = null;
   private SlidesDeferred examplesClass;
   private GQuery slides;
+  private GQuery currentSlide;
 
   public void onModuleLoad() {
     examplesClass = GWT.create(SlidesDeferred.class);
@@ -52,25 +53,39 @@ public class Slides implements EntryPoint {
   }
 
   private void showCurrentSlide() {
+    // compute current page based on hash
     String hash = hash();
     currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) : 0;
 
-    slides.removeClass(PAST, PRESENT, FUTURE);
-
-    slides.lt(currentPage).addClass(PAST);
-    slides.gt(currentPage).addClass(FUTURE);
-
-    GQuery slide = slides.eq(currentPage).addClass(PRESENT);
-
-    currentExecId = slide.id();
-
+    // update page elements
     console.clear();
+    $("#play").hide();
+    $("#marker").text("" + currentPage);
 
-    hideOrShowPlayButton(slide);
 
-    // Update page number
-    String page = "" + currentPage;
-    $("#marker").text(page);
+    // move slides to left out of the window view port
+    // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
+    int w = $(window).width();
+    slides.lt(currentPage).stop().animate($$("left: -" + w), 2000, easing);
+    // move slides to right out of the window view port
+    slides.gt(currentPage).stop().animate($$("left: +" + w), 2000, easing);
+    // move current slide to the window view port
+    currentSlide = slides.eq(currentPage).stop().animate($$("left: 0"), 2000, easing);
+
+    // display button to execute the snippet
+    if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
+      // wait until the animation has finished, then show the button and move it.
+      currentSlide.delay(0, new Function(){
+        public void f() {
+          GQuery currentCode = currentSlide.find(".code");
+          int left = currentCode.offset().left + currentCode.width() - 50;
+          int top = currentCode.offset().top;
+          // TODO: gQuery.offset(top, left) does not work and sets negative values
+          // although we are passing positive numbers.
+          $("#play").css("top", top + "px").css("left", left + "px").fadeIn();
+        }
+      });
+    }
   }
 
   private void bindEvents() {
@@ -98,7 +113,7 @@ public class Slides implements EntryPoint {
     $("#play").click(new Function() {
       public void f() {
         console.clear();
-        examplesClass.exec(currentExecId);
+        examplesClass.exec(currentSlide.id());
       }
     });
   }
@@ -131,14 +146,6 @@ public class Slides implements EntryPoint {
 
     if (nextPage != currentPage) {
       hash(nextPage);
-    }
-  }
-
-  private void hideOrShowPlayButton(GQuery slide) {
-    if (slide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
-      $("#play").show();
-    } else {
-      $("#play").hide();
     }
   }
 }
