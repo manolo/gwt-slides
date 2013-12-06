@@ -3,8 +3,6 @@ package org.gquery.slides.client;
 import static com.google.gwt.query.client.GQuery.*;
 import static org.gquery.slides.client.Utils.hash;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
@@ -15,9 +13,9 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCur
 import com.google.gwt.user.client.Event;
 
 /**
- * Entry point for the presentation
+ * Main class to execute a presentation
  */
-public class Slides implements EntryPoint {
+public class Slides {
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
   private static final String CODE_SNIPPET = "<div class='code'><div class='code-scroll " +
@@ -26,12 +24,13 @@ public class Slides implements EntryPoint {
   private Easing easing = EasingCurve.custom.with(.31,-0.37,.47,1.5);
 
   private int currentPage = 1;
-  private GwtCreatePresentation examplesClass;
+  private SlidesSource slidesSrc;
   private GQuery slides;
   private GQuery currentSlide = $();
 
-  public void onModuleLoad() {
-    examplesClass = GWT.create(GwtCreatePresentation.class);
+
+  public Slides(SlidesSource presentation) {
+    slidesSrc = presentation;
 
     slides = $(".slides > section")
     // build slide
@@ -116,7 +115,7 @@ public class Slides implements EntryPoint {
 
     $("#play").click(new Function() {
       public void f() {
-        examplesClass.exec(currentSlide.id());
+        slidesSrc.exec(currentSlide.id());
       }
     });
   }
@@ -125,8 +124,8 @@ public class Slides implements EntryPoint {
     String html = slide.html();
     String id = slide.id().toLowerCase();
 
-    String javadoc = examplesClass.docs.get(id);
-    String code = examplesClass.snippets.get(id);
+    String javadoc = slidesSrc.docs.get(id);
+    String code = slidesSrc.snippets.get(id);
 
     if (javadoc != null){
       html += javadoc;

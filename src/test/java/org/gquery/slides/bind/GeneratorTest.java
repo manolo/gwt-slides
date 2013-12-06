@@ -6,7 +6,8 @@ import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
-import org.gquery.slides.client.GwtCreatePresentation;
+
+import org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation;
 
 import java.io.InputStream;
 

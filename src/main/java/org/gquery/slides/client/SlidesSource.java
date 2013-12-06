@@ -15,8 +15,8 @@ public abstract class SlidesSource implements SlidesSourceMarker {
     bind();
   }
 
-  protected HashMap<String, String> snippets = new HashMap<String, String>();
-  protected HashMap<String, String> docs = new HashMap<String, String>();
+  public HashMap<String, String> snippets = new HashMap<String, String>();
+  public HashMap<String, String> docs = new HashMap<String, String>();
   public void exec(String id){};
   public void bind(){};
 }
