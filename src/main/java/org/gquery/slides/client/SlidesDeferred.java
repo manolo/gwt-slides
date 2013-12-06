@@ -1,5 +1,11 @@
 package org.gquery.slides.client;
 
+import static com.google.gwt.query.client.GQuery.*;
+import static org.gquery.slides.client.Utils.getRandom;
+import static org.gquery.slides.client.Utils.setTimeout;
+
+import java.util.Random;
+
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
@@ -12,25 +18,18 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import java.util.Random;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.when;
-import static org.gquery.slides.client.GQ.$;
-import static org.gquery.slides.client.GQ.console;
-import static org.gquery.slides.client.GQ.getRandom;
-import static org.gquery.slides.client.GQ.setTimeout;
-
 /**
  * @author manolo
  *
  */
-@SuppressWarnings("static-access")
 public class SlidesDeferred extends SlidesBase {
 
   public void setupBindEvent() {
     $("#viewport").show().height(250);
+    if (resizeWidget != null) {
+      resizeWidget.removeFromParent();
+    }
+    console.log("Ready !");
   }
 
   /**
@@ -68,8 +67,6 @@ public class SlidesDeferred extends SlidesBase {
       }
     });
 
-    // nl
-    console.log("Ready !");
   }
 
   private Widget resizeWidget;
@@ -105,8 +102,10 @@ public class SlidesDeferred extends SlidesBase {
 
   public void tearDownUnBindEvent() {
     console.clear();
-    resizeWidget.removeFromParent();
-    resizeWidget = null;
+    if (resizeWidget != null) {
+      resizeWidget.removeFromParent();
+      resizeWidget = null;
+    }
     $("#viewport").hide();
   }
 
@@ -187,7 +186,7 @@ public class SlidesDeferred extends SlidesBase {
     $("#console").unbind(".ns1");
     $("#viewport").empty().hide();
   }
-  
+
   /**
    * @ What is the Deferred object?
    * 
@@ -200,36 +199,36 @@ public class SlidesDeferred extends SlidesBase {
    */
   public void slide1() {
   }
-  
+
   /**
-   * @@ What does it look like?
+   * @ What does it look like?
    */
   public void testN1() throws Exception {
     // create a Deferred
-    Deferred dfd = $.Deferred();
+    Deferred dfd = Deferred();
     // do something when it's done
     dfd.promise()
-      .done(new Function(){public void f(){
-        console.log( "dun dun dum" );
-      }});
+    .done(new Function(){public void f(){
+      console.log( "dun dun dum" );
+    }});
     // resolve (tip the done bucket)
     dfd.resolve();
   }
-  
+
   /**
-   * @@ Handling success and failures
+   * @ Handling success and failures
    */
   public void testN2() throws Exception {
     // create a Deferred
-    Deferred dfd = $.Deferred();
+    Deferred dfd = Deferred();
     // do something when it's done
     dfd.promise()
-      .done(new Function(){public void f(){
-        console.log("success!");
-      }})
-      .fail(new Function(){public void f(){
-        console.log("broked!");
-      }});
+    .done(new Function(){public void f(){
+      console.log("success!");
+    }})
+    .fail(new Function(){public void f(){
+      console.log("broked!");
+    }});
     // resolve (tip the done bucket)
     dfd.reject();
   }
@@ -244,25 +243,25 @@ public class SlidesDeferred extends SlidesBase {
   }
 
   /**
-   * @@ Receiving succeed or failed data
+   * @ Receiving succeed or failed data
    */
   public void testN3() throws Exception {
     // Call an asynchronous method which will succeed
     doSomethingAsync(true)
-      .done(new Function(){public void f(){
-        // get the succeed data
-        console.log("we " + arguments(0));
-      }});
+    .done(new Function(){public void f(){
+      // get the succeed data
+      console.log("we " + arguments(0));
+    }});
     // Call an asynchronous method which will fail
     doSomethingAsync(false)
-      .fail(new Function(){public void f(){
-        // get the failed message
-        console.log("we " + arguments(0));
-      }});
+    .fail(new Function(){public void f(){
+      // get the failed message
+      console.log("we " + arguments(0));
+    }});
   }
 
   /**
-   * @@ Chaining
+   * @ Chaining
    */
   public void testN4_1() throws Exception {
     Function didIt = new Function(){public void f(){
@@ -274,13 +273,13 @@ public class SlidesDeferred extends SlidesBase {
 
     // Call a failed asynchronous
     doSomethingAsync(false)
-      .done(didIt)
-      .fail(failed)
-      .always(didIt);
+    .done(didIt)
+    .fail(failed)
+    .always(didIt);
   }
-  
+
   /**
-   * @@ Pipelining
+   * @ Pipelining
    */
   public void testN4_2() throws Exception {
     Function didIt = new Function(){public void f(){
@@ -292,49 +291,48 @@ public class SlidesDeferred extends SlidesBase {
 
     // Call a failed asynchronous
     doSomethingAsync(true)
-      .then(didIt, failed)
-      .done(didIt)
-      .fail(failed);
+    .then(didIt, failed)
+    .done(didIt)
+    .fail(failed);
 
     // Call a failed asynchronous
     doSomethingAsync(false)
-      .then(didIt, failed)
-      .done(didIt)
-      .fail(failed);
+    .then(didIt, failed)
+    .done(didIt)
+    .fail(failed);
   }
-  
+
   /**
-   * @@ Promises maintain status and data.
+   * @ Promises maintain status and data.
    */
   public void testN5() throws Exception {
     // create a Deferred
-    final Deferred dfd = $.Deferred();
+    final Deferred dfd = Deferred();
     // resolve it
     dfd.resolve( "OH NO YOU DIDNT");
 
     // Check that the promise status is resolved
     console.log("Promise status is: " + dfd.promise().state());
-    
+
     // Add a handle to the promise in the future.
     setTimeout( new Function(){public void f(){
       dfd.promise().done( new Function(){public void f() {
         console.log(arguments(0));
       }});
-    }}, 1000 );     
+    }}, 1000 );
   }
-  
+
   public void testN5_2() throws Exception {
     final Promise customDfd = getRandom();
-    
-    $.when(customDfd)
-      .done(new Function(){public void f(){
+    when(customDfd)
+    .done(new Function(){public void f(){
+      console.log(dumpArguments());
+      when(customDfd).done(new Function(){public void f(){
         console.log(dumpArguments());
-        $.when(customDfd).done(new Function(){public void f(){
-          console.log(dumpArguments());
-        }});
       }});
-  }  
-  
+    }});
+  }
+
   public void testN6() throws Exception {
     // call an async random generator
     getRandom().done(new Function(){public void f(){
@@ -342,14 +340,14 @@ public class SlidesDeferred extends SlidesBase {
       console.log(arguments(0));
     }});
   }
-  
+
   /**
-   * @@ Joining multiple calls
+   * @ Joining multiple calls
    */
   public void testN7() throws Exception {
     // We can join simultaneous promises, functions or data into a single promise which
     // will be resolved only in the case all of them succeed.
-    $.when( getRandom(), "JQ", getRandom(), true, new Random())
+    when( getRandom(), "JQ", getRandom(), true, new Random())
     .done( new Function(){public void f(){
       // We get a bi-dimensional array with the output of each call
       console.log(arguments(0, 0));
@@ -361,60 +359,60 @@ public class SlidesDeferred extends SlidesBase {
   }
 
   /**
-   * @@ The helper method `dumpArguments`
+   * @ The helper method `dumpArguments`
    */
   public void testN7_2() throws Exception {
     // Join different calls
-    $.when( getRandom(), "JQ", new Boolean[]{true, false})
+    when( getRandom(), "JQ", new Boolean[]{true, false})
     .done( new Function(){public void f(){
       // helper method to inspect the content of the arguments array
       console.log(dumpArguments());
     }});
   }
-  
+
   /**
-   * @@ Wait until everything is resolved.
+   * @ Wait until everything is resolved.
    */
   public void testN8() throws Exception {
     // customized deferred will be resolved after a delay
     Function customDfd = new Function(){public Object f(Object...args){
-      final Deferred dfd = $.Deferred();
+      final Deferred dfd = Deferred();
       setTimeout(new Function(){public void f(){
         dfd.resolve("all done!");
       }}, 4000);
       return dfd.promise();
     }};
     // run simultaneous asynchronous callbacks
-    $.when( getRandom(), customDfd)
-      .done(new Function(){public void f(){
-        // Done will be fired when all promises are resolved
-        console.log(arguments(0, 0));
-        console.log(arguments(1, 0));
-      }});
+    when( getRandom(), customDfd)
+    .done(new Function(){public void f(){
+      // Done will be fired when all promises are resolved
+      console.log(arguments(0, 0));
+      console.log(arguments(1, 0));
+    }});
   }
-  
+
   public void testN9() throws Exception {
     Function customDfd = new Function(){public Object f(Object...args){
-      final Deferred dfd = $.Deferred();
+      final Deferred dfd = Deferred();
       setTimeout(new Function(){public void f(){
         dfd.resolve("all done!");
       }}, 4000);
       return dfd.promise();
     }};
 
-    $.when( getRandom(), customDfd)
-      .done(new Function(){public void f(){
-        console.log(dumpArguments());
-      }});
+    when( getRandom(), customDfd)
+    .done(new Function(){public void f(){
+      console.log(dumpArguments());
+    }});
   }
-  
+
   /**
-   * @@ gQuery Helper Functions
+   * @ gQuery Helper Functions
    */
   public void testN10() throws Exception {
     // The normal way create a function returning a promise
     Function customDfd = new Function(){public Object f(Object...args){
-      Deferred dfd = $.Deferred();
+      Deferred dfd = Deferred();
       dfd.resolve("all done 1 !");
       return dfd.promise();
     }};
@@ -427,14 +425,14 @@ public class SlidesDeferred extends SlidesBase {
       dfd.resolve("all done 3 !");
     }};
     // We can join at the same time Functions and Promises
-    $.when(customDfd, customPrms, customFncDfd)
-      .done(new Function(){public void f(){
-        console.log(dumpArguments());
-      }});
+    when(customDfd, customPrms, customFncDfd)
+    .done(new Function(){public void f(){
+      console.log(dumpArguments());
+    }});
   }
 
   /**
-   * @@ How to use deferred for caching calls
+   * @ How to use deferred for caching calls
    */
   public void testN12() throws Exception {
     // Define a customized deferred function
@@ -452,15 +450,15 @@ public class SlidesDeferred extends SlidesBase {
         }
       }
     };
-    
+
     // Calling the function always returns the same value
-    $.when(customDfd)
-      .done(new Function(){public void f(){
+    when(customDfd)
+    .done(new Function(){public void f(){
+      console.log(dumpArguments());
+      when(customDfd).done(new Function(){public void f(){
         console.log(dumpArguments());
-        $.when(customDfd).done(new Function(){public void f(){
-          console.log(dumpArguments());
-        }});
       }});
+    }});
   }
 
   Function drop(final GQuery ball, final int timeout) {
@@ -469,7 +467,7 @@ public class SlidesDeferred extends SlidesBase {
       return ball.animate($$("bottom: 0"), timeout, EasingCurve.custom.with(.31,-0.37,.47,1.5)).promise();
     }};
   }
-  
+
   GQuery red = $(".red"), blue = $(".blue"), yellow = $(".yellow");
   void drawBalls() {
     red.css($$("bottom:8em;right:1em;display:block"));
@@ -479,69 +477,69 @@ public class SlidesDeferred extends SlidesBase {
   public void testSomething() {
     drawBalls();
     when(drop(blue,500)).then(drop(yellow,2000)).then(drop(red,4000))
-      .done(new Function(){public void f(){
-        System.out.println(arguments(3));
-      }});    
+    .done(new Function(){public void f(){
+      System.out.println(arguments(3));
+    }});
   }
 
   public void testSomething1() {
     drawBalls();
     when($(".ball").animate($$("bottom: 0"), 1700, EasingCurve.custom.with(.31,-0.37,.47,1.5)))
-      .done(new Function(){public void f(){
-        console.log("all done");
-      }});    
+    .done(new Function(){public void f(){
+      console.log("all done");
+    }});
   }
 
   public void testSomething2() {
     drawBalls();
-    final Function $a = drop(blue,500), 
-                 $b = drop(yellow,2000), 
-                 $c = drop(red,4000); 
+    final Function $a = drop(blue,500),
+    $b = drop(yellow,2000),
+    $c = drop(red,4000);
 
     when($a, $b, $c)
-      .done(new Function(){public void f(){
-        console.log("all done");
-      }});    
+    .done(new Function(){public void f(){
+      console.log("all done");
+    }});
   }
   public void testSomething3() {
     drawBalls();
-    final Function 
-      $a = drop(blue,4000), 
-      $b = drop(yellow,2000), 
-      $c = drop(red,4000); 
-    
+    final Function
+    $a = drop(blue,4000),
+    $b = drop(yellow,2000),
+    $c = drop(red,4000);
+
     setTimeout(new Function(){public void f(){
       red.stop();
     }}, 1000);
     when($a, $b, $c)
-      .done(new Function(){public void f(){
-        console.log("all done");
-      }});    
+    .done(new Function(){public void f(){
+      console.log("all done");
+    }});
   }
   public void testSomething4() {
     drawBalls();
-    final Function $a = drop(blue,500), 
-                 $b = drop(yellow,2000), 
-                 $c = drop(red,4000); 
-    
+    final Function $a = drop(blue,500),
+    $b = drop(yellow,2000),
+    $c = drop(red,4000);
+
     when($a, $b, $c, getRandom())
-      .done(new Function(){public void f(){
-        System.out.println(arguments(3));
-      }});    
+    .done(new Function(){public void f(){
+      System.out.println(arguments(3));
+    }});
   }
 
   public void testSomething5() {
     drawBalls();
     Promise promise = getRandom()
-      .then(new Function(){public Object f(Object...args){
-        console.log(dumpArguments());
-        return getRandom();
-      }});
-    
+    .then(new Function(){public Object f(Object...args){
+      console.log(dumpArguments());
+      return getRandom();
+    }});
+
     when(promise).then(new Function(){public void f(){
       console.log(dumpArguments());
     }});
   }
-  
-  
+
+
 }

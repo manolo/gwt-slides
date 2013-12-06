@@ -1,14 +1,5 @@
 package org.gquery.slides.bind;
 
-import com.google.gwt.core.ext.Generator;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQuery;
-import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
-import com.google.gwt.user.rebind.SourceWriter;
 import japa.parser.JavaParser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
@@ -19,10 +10,21 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
+import org.gquery.slides.client.SlidesSource;
+
+import com.google.gwt.core.ext.Generator;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
+import com.google.gwt.user.rebind.SourceWriter;
+
 public class SlidesGenerator extends Generator {
   private static final String ID_SELECT = GQuery.class.getName() + ".$(\"#%id%\")";
-  private static final String FUNCTION = "new " + Function.class.getName() + "(){public void f(){" +
-      "%call%();}}";
+  private static final String FUNCTION = "new " + Function.class.getName() + "(){public void f(){%call%();}}";
 
   HashMap<String, String> methodBodies = new HashMap<String, String>();
   HashMap<String, String> methodDoc = new HashMap<String, String>();
@@ -44,7 +46,7 @@ public class SlidesGenerator extends Generator {
     String file = generatedPkgName.replace(".", "/") + "/" + clazz.getName() + ".java";
 
     try {
-      parseJava0(file);
+      parseJavaFile(file);
     } catch (ParseException e) {
       e.printStackTrace();
     }
@@ -81,7 +83,7 @@ public class SlidesGenerator extends Generator {
       sw.indent();
 
       for (String id : tearDownMethods.keySet()) {
-        sw.println(ID_SELECT.replace("%id%", id) + ".bind(\"slideHidden\"," +
+        sw.println(ID_SELECT.replace("%id%", id) + ".bind(\"" + SlidesSource.TEARDOWN_EVENT_NAME + "\"," +
             "" + FUNCTION.replace("%call%", tearDownMethods.get(id)) + ");");
       }
 
@@ -94,50 +96,7 @@ public class SlidesGenerator extends Generator {
     return generatedClzFullName;
   }
 
-//  public void parseJava(String file) throws ParseException, IOException {
-//    InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
-//    String content = IOUtils.toString(in);
-//
-//    content.format("","");
-//
-//
-//    ASTParser parser = ASTParser.newParser(AST.JLS3);
-//
-//    @SuppressWarnings( "unchecked" )
-//    Map<String,String> options = JavaCore.getOptions();
-//    if(VERSION_1_5.equals(targetJdk))
-//        JavaCore.setComplianceOptions(JavaCore.VERSION_1_5, options);
-//    else if(VERSION_1_6.equals(targetJdk))
-//        JavaCore.setComplianceOptions(JavaCore.VERSION_1_6, options);
-//    else {
-//        if(!VERSION_1_4.equals(targetJdk)) {
-//            log.warn("Unknown targetJdk ["+targetJdk+"]. Using "+VERSION_1_4+" for parsing. Supported values are: "
-//                    + VERSION_1_4 + ", "
-//                    + VERSION_1_5 + ", "
-//                    + VERSION_1_6
-//            );
-//        }
-//        JavaCore.setComplianceOptions(JavaCore.VERSION_1_4, options);
-//    }
-//    parser.setCompilerOptions(options);
-//
-//    parser.setResolveBindings(false);
-//    parser.setStatementsRecovery(false);
-//    parser.setBindingsRecovery(false);
-//    parser.setSource(source.toCharArray());
-//    parser.setIgnoreMethodBodies(false);
-//
-//    CompilationUnit ast = (CompilationUnit) parser.createAST(null);
-//
-//    // AstVisitor extends org.eclipse.jdt.core.dom.ASTVisitor
-//    AstVisitor visitor = new AstVisitor();
-//    visitor.DEBUG = DEBUG;
-//    ast.accept( visitor );
-//
-//
-//  }
-
-  public void parseJava0(String file) throws ParseException {
+  public void parseJavaFile(String file) throws ParseException {
     InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
 
     // use japa.parser.ast to parse the source. We could use the classes in the
@@ -166,10 +125,12 @@ public class SlidesGenerator extends Generator {
       String s = n.getBody().toString();
       if (noParameters) {
         s = s.replaceFirst("^\\s*\\{ *\n*", "")
-            .replaceFirst("\\s*\\}\\s*$", "")
-            .replace("\n\n", "\n") // remove double new line after anonymous class definition
-            .replace("// nl", "") // The comment forces a new line
-            .replaceAll("(?m)^    ", "");
+        .replaceFirst("\\s*\\}\\s*$", "")
+        .replace("\n\n", "\n") // remove double new line after anonymous class definition
+        .replace("// nl", "") // The comment forces a new line
+        .replaceAll("(?m)^    ", "")
+        .replaceAll("    ", "  ");
+
       } else {
         s = n.getName() + "()" + s;
       }
@@ -181,14 +142,14 @@ public class SlidesGenerator extends Generator {
     if (n.getComment() != null) {
       methodDoc.put(id,
           n.getComment().toString()
-              .replaceAll("(?m)^\\s*(/\\*\\*|\\*/|\\*)", "")
-              .replaceAll("(?m)^\\s*-\\s(.*)$", "<li>$1</li>")
-              .replaceAll("(?m)^\\s*@\\s(.+)\\s*$", "<h1>$1</h1>")
-              .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
-              .replaceFirst("<li>", "<section><ul><li>")
-              .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
-              .replaceAll("(?m)    ", "")
-              .trim()
+          .replaceAll("(?m)^\\s*(/\\*\\*|\\*/|\\*)", "")
+          .replaceAll("(?m)^\\s*-\\s(.*)$", "<li>$1</li>")
+          .replaceAll("(?m)^\\s*@\\s(.+)\\s*$", "<h1>$1</h1>")
+          .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
+          .replaceFirst("<li>", "<section><ul><li>")
+          .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
+          .replaceAll("(?m)    ", "")
+          .trim()
       );
     }
   }
@@ -220,5 +181,4 @@ public class SlidesGenerator extends Generator {
 
     return composerFactory.createSourceWriter(context, printWriter);
   }
-
 }
