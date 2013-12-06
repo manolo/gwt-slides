@@ -15,8 +15,11 @@ import com.google.gwt.user.client.Timer;
 
 public abstract class Utils {
 
-  public static class ConsoleSlides extends ConsoleBrowser {
-    
+  /**
+   * Overrides default gQuery console implementation to
+   * write out to the slide.
+   */
+  public static class Console extends ConsoleBrowser {
     @Override public void clear() {
       $("#console").hide().text("");
     }
