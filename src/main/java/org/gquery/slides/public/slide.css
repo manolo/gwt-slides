@@ -42,17 +42,16 @@ body {
     font-size: 180%;
     font-family: Cabin;
     overflow: hidden;
-    position: absolute;
 }
 
 h4, h5 {
     font-size: 1.0em;
 }
 h2, h3 {
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 h1 {
-    font-size: 1.4em;
+    font-size: 2em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -78,8 +77,6 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     height: 100%;
 
-    -webkit-transition: -webkit-transform-origin 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985),-webkit-transform 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985),visibility 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985),opacity 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
-    -moz-transition: -moz-transform-origin 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985),-moz-transform 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985),visibility 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985),opacity 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
 
 }
 
@@ -98,24 +95,6 @@ h1, h2, h3, h4, h5, h6 {
      -ms-transform: translate(150%, 0);
      -o-transform: translate(150%, 0);
      transform: translate(150%, 0);
- }
-
- .code {
-     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.2);
-     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.6) inset;
- }
- .code {
-     -moz-box-pack: center;
-     background: none repeat scroll 0 0 rgba(122, 135, 234, 0);
-     display: -moz-box;
-     transition: all 0.8s ease-in-out 0s;
-     display: -webkit-box;
-     background: rgba(85, 49, 4, 0.82);
- }
- .code {
-     font-family: monospace;
-     line-height: 1em;
-     color: #A6E22E;
  }
 
  #marker {
@@ -170,13 +149,26 @@ h1, h2, h3, h4, h5, h6 {
      cursor: pointer;
      text-shadow: 0 0 0.3em #145FDC;
  }
-
+ 
+ .code {
+    background: #353536;
+    box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.6) inset;
+    padding-left: 1.4m;
+ }
+ .code {
+     -moz-box-pack: center;
+     display: -moz-box;
+     transition: all 0.8s ease-in-out 0s;
+     display: -webkit-box;
+ }
+ .code {
+     font-family: monospace;
+     line-height: 1em;
+     color: #A6E22E;
+ }
  .code, .slide {
  }
  .code-scroll  {
- }
- .code {
-     padding-left: 1.4m;
  }
 
  ul {
@@ -211,7 +203,6 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.8em;
     letter-spacing: -0.06em;
     overflow: hidden;
-    background-color: rgb(43, 43, 43);
     padding: 20px;
 }
 .code-scroll {
