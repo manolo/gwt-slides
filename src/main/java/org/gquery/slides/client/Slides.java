@@ -63,6 +63,9 @@ public class Slides implements EntryPoint {
     GQuery slide = slides.eq(currentPage).addClass(PRESENT);
 
     currentExecId = slide.id();
+
+    console.clear();
+
     hideOrShowPlayButton(slide);
 
     // Update page number

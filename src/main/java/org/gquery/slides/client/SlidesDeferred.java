@@ -34,7 +34,7 @@ public class SlidesDeferred extends SlidesBase {
   }
   
   /**
-   * @@ What does it look like?
+   * @ What does it look like?
    */
   public void testN1() throws Exception {
     // create a Deferred
@@ -49,7 +49,7 @@ public class SlidesDeferred extends SlidesBase {
   }
   
   /**
-   * @@ Handling success and failures
+   * @ Handling success and failures
    */
   public void testN2() throws Exception {
     // create a Deferred
@@ -76,7 +76,7 @@ public class SlidesDeferred extends SlidesBase {
   }
 
   /**
-   * @@ Receiving succeed or failed data
+   * @ Receiving succeed or failed data
    */
   public void testN3() throws Exception {
     // Call an asynchronous method which will succeed
@@ -94,7 +94,7 @@ public class SlidesDeferred extends SlidesBase {
   }
 
   /**
-   * @@ Chaining
+   * @ Chaining
    */
   public void testN4_1() throws Exception {
     Function didIt = new Function(){public void f(){
@@ -112,7 +112,7 @@ public class SlidesDeferred extends SlidesBase {
   }
   
   /**
-   * @@ Pipelining
+   * @ Pipelining
    */
   public void testN4_2() throws Exception {
     Function didIt = new Function(){public void f(){
@@ -136,7 +136,7 @@ public class SlidesDeferred extends SlidesBase {
   }
   
   /**
-   * @@ Promises maintain status and data.
+   * @ Promises maintain status and data.
    */
   public void testN5() throws Exception {
     // create a Deferred
@@ -176,7 +176,7 @@ public class SlidesDeferred extends SlidesBase {
   }
   
   /**
-   * @@ Joining multiple calls
+   * @ Joining multiple calls
    */
   public void testN7() throws Exception {
     // We can join simultaneous promises, functions or data into a single promise which
@@ -193,7 +193,7 @@ public class SlidesDeferred extends SlidesBase {
   }
 
   /**
-   * @@ The helper method `dumpArguments`
+   * @ The helper method `dumpArguments`
    */
   public void testN7_2() throws Exception {
     // Join different calls
@@ -205,7 +205,7 @@ public class SlidesDeferred extends SlidesBase {
   }
   
   /**
-   * @@ Wait until everything is resolved.
+   * @ Wait until everything is resolved.
    */
   public void testN8() throws Exception {
     // customized deferred will be resolved after a delay
@@ -241,7 +241,7 @@ public class SlidesDeferred extends SlidesBase {
   }
   
   /**
-   * @@ gQuery Helper Functions
+   * @ gQuery Helper Functions
    */
   public void testN10() throws Exception {
     // The normal way create a function returning a promise
@@ -266,7 +266,7 @@ public class SlidesDeferred extends SlidesBase {
   }
 
   /**
-   * @@ How to use deferred for caching calls
+   * @ How to use deferred for caching calls
    */
   public void testN12() throws Exception {
     // Define a customized deferred function
