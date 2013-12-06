@@ -21,7 +21,7 @@ public class Slides implements EntryPoint {
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
   private static final String CODE_SNIPPET = "<div class='code'><div class='code-scroll " +
-      "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
+  "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
 
   private Easing easing = EasingCurve.custom.with(.31,-0.37,.47,1.5);
 
@@ -34,18 +34,18 @@ public class Slides implements EntryPoint {
     examplesClass = GWT.create(SlidesDeferred.class);
 
     slides = $(".slides > section")
-     // build slide
-     .each(new Function() {
-        public void f(Element e) {
-          buildSlide($(this));
-        }
-     })
-     // remove empty slides
-     .filter(new Predicate() {
-        public boolean f(Element e, int index) {
-          return (!$(e).html().trim().isEmpty());
-        }
-     });
+    // build slide
+    .each(new Function() {
+      public void f(Element e) {
+        buildSlide($(this));
+      }
+    })
+    // remove empty slides
+    .filter(new Predicate() {
+      public boolean f(Element e, int index) {
+        return (!$(e).html().trim().isEmpty());
+      }
+    });
 
     bindEvents();
 
@@ -72,43 +72,46 @@ public class Slides implements EntryPoint {
     // move current slide to the window view port
     currentSlide = slides.eq(currentPage).stop().animate($$("left: 0"), 2000, easing);
 
-    // display button to execute the snippet
+    // display the button to execute the snippet
     if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
       // wait until the animation has finished, then show the button and move it.
-      currentSlide.delay(0, new Function(){
-        public void f() {
-          GQuery currentCode = currentSlide.find(".code");
-          int left = currentCode.offset().left + currentCode.width() - 50;
-          int top = currentCode.offset().top;
-          // TODO: gQuery.offset(top, left) does not work and sets negative values
-          // although we are passing positive numbers.
-          $("#play").css("top", top + "px").css("left", left + "px").fadeIn();
-        }
-      });
+      currentSlide.delay(0, movePlayButtonFunction);
     }
   }
 
+  private Function movePlayButtonFunction = new Function() {
+    public void f() {
+      GQuery currentCode = currentSlide.find(".code");
+      int left = currentCode.offset().left + currentCode.width() - 50;
+      int top = currentCode.offset().top;
+      // TODO: gQuery.offset(top, left) does not work and sets negative values
+      // although we are passing positive numbers.
+      $("#play").css("top", top + "px").css("left", left + "px").fadeIn();
+    }
+  };
+
   private void bindEvents() {
     $(window)
-      // handle key events to move slides back/forward
-      .bind(Event.ONKEYDOWN, new Function() {
-        public boolean f(Event e) {
-          int code = e.getKeyCode();
-          if (code == KeyCodes.KEY_RIGHT || code == ' ') {
-            show(true);
-          }
-          if (code == KeyCodes.KEY_LEFT || code == KeyCodes.KEY_BACKSPACE) {
-            show(false);
-          }
-          return false;
+    // handle key events to move slides back/forward
+    .bind(Event.ONKEYDOWN, new Function() {
+      public boolean f(Event e) {
+        int code = e.getKeyCode();
+        if (code == KeyCodes.KEY_RIGHT || code == ' ') {
+          show(true);
         }
-      })
-      // handle hash change to select the appropriate slide
-      .bind("hashchange", new Function() {
-        public void f() {
-          showCurrentSlide();
+        if (code == KeyCodes.KEY_LEFT || code == KeyCodes.KEY_BACKSPACE) {
+          show(false);
         }
-      });
+        return false;
+      }
+    })
+    // handle hash change to select the appropriate slide
+    .bind("hashchange", new Function() {
+      public void f() {
+        showCurrentSlide();
+      }
+    })
+    .bind("resize", movePlayButtonFunction);
 
     $("#play").click(new Function() {
       public void f() {
