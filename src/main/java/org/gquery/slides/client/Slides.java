@@ -1,5 +1,8 @@
 package org.gquery.slides.client;
 
+import static com.google.gwt.query.client.GQuery.*;
+import static org.gquery.slides.client.Utils.hash;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -7,102 +10,113 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Event;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.window;
-import static org.gquery.slides.client.GQ.hash;
 
 /**
  * Entry point for the presentation
  */
 public class Slides implements EntryPoint {
 
-  private static final String PRESENT = "present";
-  private static final String PAST = "past";
-  private static final String FUTURE = "future";
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
-  private static final String CODE_SNIPPET = "<div class='CodeMirror'><div class='code-scroll " +
-      "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
+  private static final String CODE_SNIPPET = "<div class='code'><div class='code-scroll " +
+  "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
+
+  private Easing easing = EasingCurve.custom.with(.31,-0.37,.47,1.5);
 
   private int currentPage = 1;
-  private String currentExecId = null;
   private SlidesDeferred examplesClass;
   private GQuery slides;
+  private GQuery currentSlide;
 
   public void onModuleLoad() {
     examplesClass = GWT.create(SlidesDeferred.class);
 
+    slides = $(".slides > section")
     // build slide
-    $(".slides > section").each(
-        new Function() {
-          public void f(Element e) {
-            buildSlide($(this));
-          }
-        });
-
-    bindEvents();
-
-    // filter the empty slides
-    slides = $(".slides > section").filter(new Predicate() {
-      @Override
+    .each(new Function() {
+      public void f(Element e) {
+        buildSlide($(this));
+      }
+    })
+    // remove empty slides
+    .filter(new Predicate() {
       public boolean f(Element e, int index) {
         return (!$(e).html().trim().isEmpty());
       }
     });
 
+    bindEvents();
+
     showCurrentSlide();
   }
 
   private void showCurrentSlide() {
+    // compute current page based on hash
     String hash = hash();
     currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) : 0;
 
-    slides.hide().each(new Function() {
-      @Override
-      public Object f(Element e, int i) {
-        GQuery slide = $(e).removeClass(PAST, PRESENT, FUTURE);
+    // update page elements
+    console.clear();
+    $("#play").hide();
+    $("#marker").text("" + currentPage);
 
-        if (i < currentPage) {
-          slide.addClass(PAST);
-        } else if (i > currentPage) {
-          slide.addClass(FUTURE);
-        } else {
-          slide.addClass(PRESENT);
-        }
-        return null;
-      }
-    });
 
-    hideOrShowPlayButton(slides.eq(currentPage));
+    // move slides to left out of the window view port
+    // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
+    int w = $(window).width();
+    slides.lt(currentPage).stop().animate($$("left: -" + w), 2000, easing);
+    // move slides to right out of the window view port
+    slides.gt(currentPage).stop().animate($$("left: +" + w), 2000, easing);
+    // move current slide to the window view port
+    currentSlide = slides.eq(currentPage).stop().animate($$("left: 0"), 2000, easing);
 
-    // After 1 sec, all css animations are done,  presentation is ready -> show the slides
-    slides.delay(1000, new Function() {
-      @Override
-      public void f() {
-        $(this).show();
-      }
-    });
-
+    // display the button to execute the snippet
+    if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
+      // wait until the animation has finished, then show the button and move it.
+      currentSlide.delay(0, movePlayButtonFunction);
+    }
   }
 
+  private Function movePlayButtonFunction = new Function() {
+    public void f() {
+      GQuery currentCode = currentSlide.find(".code");
+      int left = currentCode.offset().left + currentCode.width() - 50;
+      int top = currentCode.offset().top;
+      // TODO: gQuery.offset(top, left) does not work and sets negative values
+      // although we are passing positive numbers.
+      $("#play").css("top", top + "px").css("left", left + "px").fadeIn();
+    }
+  };
+
   private void bindEvents() {
-    $(window).bind(Event.ONKEYDOWN, new Function() {
+    $(window)
+    // handle key events to move slides back/forward
+    .bind(Event.ONKEYDOWN, new Function() {
       public boolean f(Event e) {
-        if (e.getKeyCode() == KeyCodes.KEY_RIGHT) {
-          return show(true);
+        int code = e.getKeyCode();
+        if (code == KeyCodes.KEY_RIGHT || code == ' ') {
+          show(true);
         }
-        if (e.getKeyCode() == KeyCodes.KEY_LEFT) {
-          return show(false);
+        if (code == KeyCodes.KEY_LEFT || code == KeyCodes.KEY_BACKSPACE) {
+          show(false);
         }
-        return true;
+        return false;
       }
-    });
+    })
+    // handle hash change to select the appropriate slide
+    .bind("hashchange", new Function() {
+      public void f() {
+        showCurrentSlide();
+      }
+    })
+    .bind("resize", movePlayButtonFunction);
 
     $("#play").click(new Function() {
-      public boolean f(Event e) {
-        run();
-        return false;
+      public void f() {
+        console.clear();
+        examplesClass.exec(currentSlide.id());
       }
     });
   }
@@ -129,47 +143,12 @@ public class Slides implements EntryPoint {
     slide.html(html);
   }
 
-  private void clearConsole() {
-    $("#console").html("").hide();
-  }
-
-  private void run() {
-    clearConsole();
-    examplesClass.exec(currentExecId);
-  }
-
-  private boolean show(boolean forward) {
+  private void show(boolean forward) {
     int incr = forward ? 1 : -1;
-    int nextPage = Math.min(Math.max(currentPage + incr, 0), slides.size());
-    String classForOldSlide = forward ? PAST : FUTURE;
+    int nextPage = Math.min(Math.max(currentPage + incr, 0), slides.size() - 1);
 
-    slides.eq(currentPage).removeClass(PRESENT).addClass(classForOldSlide);
-
-    GQuery nextSlide = slides.eq(nextPage);
-    nextSlide.removeClass(FUTURE, PAST).addClass(PRESENT);
-
-    hideOrShowPlayButton(nextSlide);
-
-    currentExecId = nextSlide.id();
-    currentPage = nextPage;
-
-    updateMarker();
-
-    return false;
-  }
-
-  private void hideOrShowPlayButton(GQuery slide) {
-    if (slide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
-      $("#play").show();
-    } else {
-      $("#play").hide();
+    if (nextPage != currentPage) {
+      hash(nextPage);
     }
-  }
-
-  private void updateMarker() {
-    // Update page number
-    String page = "" + currentPage;
-    $("#marker").text(page);
-    hash(page);
   }
 }
