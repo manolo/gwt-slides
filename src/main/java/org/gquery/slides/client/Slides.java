@@ -26,12 +26,12 @@ public class Slides implements EntryPoint {
   private Easing easing = EasingCurve.custom.with(.31,-0.37,.47,1.5);
 
   private int currentPage = 1;
-  private SlidesDeferred examplesClass;
+  private GwtCreatePresentation examplesClass;
   private GQuery slides;
   private GQuery currentSlide = $();
 
   public void onModuleLoad() {
-    examplesClass = GWT.create(SlidesDeferred.class);
+    examplesClass = GWT.create(GwtCreatePresentation.class);
 
     slides = $(".slides > section")
     // build slide
@@ -119,8 +119,6 @@ public class Slides implements EntryPoint {
         examplesClass.exec(currentSlide.id());
       }
     });
-
-    examplesClass.bind();
   }
 
   private void buildSlide(GQuery slide) {

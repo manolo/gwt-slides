@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author manolo
  *
  */
-public class SlidesDeferred extends SlidesBase {
+public class GwtCreatePresentation extends SlidesSource {
 
   Widget resizeWidget;
 

@@ -4,7 +4,7 @@
     <entry-point class='org.gquery.slides.client.Slides'/>
 
     <generate-with class="org.gquery.slides.bind.SlidesGenerator">
-        <when-type-assignable class="org.gquery.slides.client.SlidesSource"/>
+        <when-type-assignable class="org.gquery.slides.client.SlidesSourceMarker"/>
     </generate-with>
 
     <replace-with class="org.gquery.slides.client.Utils.Console">

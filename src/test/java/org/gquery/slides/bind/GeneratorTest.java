@@ -6,7 +6,7 @@ import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
-import org.gquery.slides.client.SlidesDeferred;
+import org.gquery.slides.client.GwtCreatePresentation;
 
 import java.io.InputStream;
 
@@ -17,7 +17,7 @@ public class GeneratorTest extends GWTTestCase {
   }
 
   public void test1() throws Exception {
-    pp(SlidesDeferred.class);
+    pp(GwtCreatePresentation.class);
 //     parse("/Users/manolo/git/gwtquery/slides/src/main/java/org/gquery/slides/client/SlidesDeferred.java");
   }
   
