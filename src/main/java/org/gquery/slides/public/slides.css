@@ -3,21 +3,21 @@
 @font-face {
     font-family: 'Lobster Two';
     font-weight: 400;
-    src: local('Lobster Two Italic'), local('LobsterTwo-Italic'), url("fonts/lobster.woff") format('woff');
+    src: local('Lobster Two Italic'), local('LobsterTwo-Italic'), url("./fonts/lobster.woff") format('woff');
 }
 
 @font-face {
     font-family: 'Cabin';
     font-style: normal;
     font-weight: 400;
-    src: local('Cabin Regular'), local('Cabin-Regular'), url("fonts/cabin.woff") format('woff');
+    src: local('Cabin Regular'), local('Cabin-Regular'), url("./fonts/cabin.woff") format('woff');
 }
 
 @font-face {
     font-family: 'Crimson Text';
     font-style: normal;
     font-weight: 400;
-    src: local('Crimson Text'), local('CrimsonText-Roman'), url("fonts/crimson_text.woff") format('woff');
+    src: local('Crimson Text'), local('CrimsonText-Roman'), url("./fonts/crimson_text.woff") format('woff');
 }
 
 
