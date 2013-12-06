@@ -76,10 +76,10 @@ public class Slides implements EntryPoint {
       .bind(Event.ONKEYDOWN, new Function() {
         public boolean f(Event e) {
           int code = e.getKeyCode();
-          if (code == KeyCodes.KEY_RIGHT || code == KeyCodes.KEY_BACKSPACE) {
+          if (code == KeyCodes.KEY_RIGHT || code == ' ') {
             show(true);
           }
-          if (code == KeyCodes.KEY_LEFT) {
+          if (code == KeyCodes.KEY_LEFT || code == KeyCodes.KEY_BACKSPACE) {
             show(false);
           }
           return false;
