@@ -1,10 +1,12 @@
-package org.gquery.slides.client;
+package org.gquery.slides.presentations.gwtcreate;
 
 import static com.google.gwt.query.client.GQuery.*;
 import static org.gquery.slides.client.Utils.getRandom;
 import static org.gquery.slides.client.Utils.setTimeout;
 
 import java.util.Random;
+
+import org.gquery.slides.client.SlidesSource;
 
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -22,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author manolo
  *
  */
-public class SlidesDeferred extends SlidesBase {
+public class GwtCreatePresentation extends SlidesSource {
 
   Widget resizeWidget;
 

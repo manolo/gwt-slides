@@ -3,8 +3,6 @@ package org.gquery.slides.client;
 import static com.google.gwt.query.client.GQuery.*;
 import static org.gquery.slides.client.Utils.hash;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
@@ -15,23 +13,28 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCur
 import com.google.gwt.user.client.Event;
 
 /**
- * Entry point for the presentation
+ * Main class to execute a presentation
  */
-public class Slides implements EntryPoint {
+public class Slides {
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
-  private static final String CODE_SNIPPET = "<div class='code'><div class='code-scroll " +
-  "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
+  private static final String CODE_SNIPPET =
+    "<div class='jCode'>" +
+    " <div class='jCode-scroll jCode-div'>" +
+    "  <div class='jCode-lines'>" +
+    "   <pre>%code%</pre>" +
+    "</div></div></div>";
 
-  private Easing easing = EasingCurve.custom.with(.31,-0.37,.47,1.5);
+  private Easing easing = EasingCurve.easeInOutSine;// EasingCurve.custom.with(.31,-0.37,.47,1.5);
 
   private int currentPage = 1;
-  private SlidesDeferred examplesClass;
+  private SlidesSource slidesSrc;
   private GQuery slides;
   private GQuery currentSlide = $();
 
-  public void onModuleLoad() {
-    examplesClass = GWT.create(SlidesDeferred.class);
+
+  public Slides(SlidesSource presentation) {
+    slidesSrc = presentation;
 
     slides = $(".slides > section")
     // build slide
@@ -65,24 +68,24 @@ public class Slides implements EntryPoint {
 
     // move slides to left out of the window view port
     // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
-    int w = $(window).width();
-    slides.lt(currentPage).stop(true).animate($$("left: -" + w), 2000, easing);
+    int w = (int)($(window).width() * 1.5);
+    slides.lt(currentPage).stop(true).animate($$("left: -" + w), 1000, easing);
     // move slides to right out of the window view port
-    slides.gt(currentPage).stop(true).animate($$("left: +" + w), 2000, easing);
+    slides.gt(currentPage).stop(true).animate($$("left: +" + w), 1000, easing);
 
     // move current slide to the window view port
-    currentSlide = slides.eq(currentPage).stop(true).animate($$("left: 0"), 2000, easing);
+    currentSlide = slides.eq(currentPage).stop(true).animate($$("left: 0"), 1000, easing);
 
     // display the button to execute the snippet
     if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
       // wait until the animation has finished, then show the button and move it.
-      currentSlide.delay(0, movePlayButtonFunction).trigger(SlidesSource.ENTER_EVENT_NAME);
+      currentSlide.delay(0, movePlayButtonFunction, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
     }
   }
 
   private Function movePlayButtonFunction = new Function() {
     public void f() {
-      GQuery currentCode = currentSlide.find(".code");
+      GQuery currentCode = currentSlide.find(".jCode");
       int left = currentCode.offset().left + currentCode.width() - 50;
       int top = currentCode.offset().top;
       // TODO: gQuery.offset(top, left) does not work and sets negative values
@@ -116,19 +119,17 @@ public class Slides implements EntryPoint {
 
     $("#play").click(new Function() {
       public void f() {
-        examplesClass.exec(currentSlide.id());
+        slidesSrc.exec(currentSlide.id());
       }
     });
-
-    examplesClass.bind();
   }
 
   private void buildSlide(GQuery slide) {
     String html = slide.html();
     String id = slide.id().toLowerCase();
 
-    String javadoc = examplesClass.docs.get(id);
-    String code = examplesClass.snippets.get(id);
+    String javadoc = slidesSrc.docs.get(id);
+    String code = slidesSrc.snippets.get(id);
 
     if (javadoc != null){
       html += javadoc;

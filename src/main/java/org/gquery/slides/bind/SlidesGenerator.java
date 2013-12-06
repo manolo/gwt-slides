@@ -104,7 +104,6 @@ public class SlidesGenerator extends Generator {
       sw.commit(treeLogger);
     }
 
-
     return generatedClzFullName;
   }
 
