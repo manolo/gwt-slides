@@ -1,16 +1,14 @@
 package org.gquery.slides.bind;
 
+import com.google.gwt.junit.client.GWTTestCase;
 import japa.parser.JavaParser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
-
-import java.io.InputStream;
-
 import org.gquery.slides.client.SlidesDeferred;
 
-import com.google.gwt.junit.client.GWTTestCase;
+import java.io.InputStream;
 
 public class GeneratorTest extends GWTTestCase {
 

@@ -1,33 +1,34 @@
 package org.gquery.slides.bind;
 
+import com.google.gwt.core.ext.Generator;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
+import com.google.gwt.user.rebind.SourceWriter;
 import japa.parser.JavaParser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
-
-import com.google.gwt.core.ext.Generator;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.dev.jjs.UnifiedAst.AST;
-import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
-import com.google.gwt.user.rebind.SourceWriter;
 
 public class SlidesGenerator extends Generator {
+  private static final String ID_SELECT = GQuery.class.getName() + ".$(\"#%id%\")";
+  private static final String FUNCTION = "new " + Function.class.getName() + "(){public void f(){" +
+      "%call%();}}";
 
   HashMap<String, String> methodBodies = new HashMap<String, String>();
   HashMap<String, String> methodDoc = new HashMap<String, String>();
-  HashMap<String, String> exec = new HashMap<String, String>();
+  HashMap<String, String> execMethods = new HashMap<String, String>();
+  HashMap<String, String> preExecMethods = new HashMap<String, String>();
+  HashMap<String, String> tearDownMethods = new HashMap<String, String>();
 
   @Override
   public String generate(TreeLogger treeLogger,
@@ -65,12 +66,30 @@ public class SlidesGenerator extends Generator {
 
       sw.println("}");
       sw.println("public void exec(String id){\n try {");
-      for (String id: exec.keySet()) {
-        sw.println(" if(id.equals(\"" + id + "\")) " + exec.get(id) + "();\n");
+      for (String id: execMethods.keySet()) {
+        sw.println(" if(id.equals(\"" + id + "\")){ ");
+        sw.indent();
+        if (preExecMethods.containsKey(id)) {
+          sw.println(preExecMethods.get(id) + "();");
+        }
+        sw.println(execMethods.get(id) + "();\n}");
+        sw.outdent();
       }
       sw.println(" } catch (Exception e) {e.printStackTrace();}\n}");
+
+      sw.println("public void bind(){");
+      sw.indent();
+
+      for (String id : tearDownMethods.keySet()) {
+        sw.println(ID_SELECT.replace("%id%", id) + ".bind(\"slideHidden\"," +
+            "" + FUNCTION.replace("%call%", tearDownMethods.get(id)) + ");");
+      }
+
+      sw.outdent();
+      sw.println("}");
       sw.commit(treeLogger);
     }
+
 
     return generatedClzFullName;
   }
@@ -128,39 +147,64 @@ public class SlidesGenerator extends Generator {
 
     VoidVisitorAdapter<?> a = new VoidVisitorAdapter<Object>() {
       public void visit(MethodDeclaration n, Object arg) {
-          String id = n.getName().replaceFirst("^test","").toLowerCase();
-          boolean noParameters = n.getParameters() == null;
-          if (n.getBody() != null) {
-            String s = n.getBody().toString();
-            if (noParameters) {
-              s = s.replaceFirst("^\\s*\\{ *\n*", "")
-                   .replaceFirst("\\s*\\}\\s*$", "")
-                   .replaceAll("\n+", "\n")
-                   .replaceAll("(?m)^    ", "");
-            } else {
-              s = n.getName() + "()" + s;
-            }
-            methodBodies.put(id, s);
-          }
-          if (noParameters) {
-            exec.put(id, n.getName());
-          }
-          if (n.getComment() != null) {
-            methodDoc.put(id,
-               n.getComment().toString()
-                .replaceAll("(?m)^\\s*(/\\*\\*|\\*/|\\*)", "")
-                .replaceAll("(?m)^\\s*-\\s(.*)$", "<li>$1</li>")
-                .replaceAll("(?m)^\\s*@\\s(.+)\\s*$", "<h1>$1</h1>")
-                .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
-                .replaceFirst("<li>", "<section><ul><li>")
-                .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
-                .replaceAll("(?m)    ", "")
-                .trim()
-              );
-          }
+        if (n.getName().startsWith("setup")){
+          handleSetupMethod(n, arg);
+        } else if (n.getName().startsWith("tearDown")){
+          handleTearDownMethod(n, arg);
+        } else {
+          handleSimpleMethod(n, arg);
+        }
       }
     };
     a.visit(cu, null);
+  }
+
+  private void handleSimpleMethod(MethodDeclaration n, Object arg) {
+    String id = n.getName().replaceFirst("^test","").toLowerCase();
+    boolean noParameters = n.getParameters() == null;
+    if (n.getBody() != null) {
+      String s = n.getBody().toString();
+      if (noParameters) {
+        s = s.replaceFirst("^\\s*\\{ *\n*", "")
+            .replaceFirst("\\s*\\}\\s*$", "")
+            .replace("\n\n", "\n") // remove double new line after anonymous class definition
+            .replace("// nl", "") // The comment forces a new line
+            .replaceAll("(?m)^    ", "");
+      } else {
+        s = n.getName() + "()" + s;
+      }
+      methodBodies.put(id, s);
+    }
+    if (noParameters) {
+      execMethods.put(id, n.getName());
+    }
+    if (n.getComment() != null) {
+      methodDoc.put(id,
+          n.getComment().toString()
+              .replaceAll("(?m)^\\s*(/\\*\\*|\\*/|\\*)", "")
+              .replaceAll("(?m)^\\s*-\\s(.*)$", "<li>$1</li>")
+              .replaceAll("(?m)^\\s*@\\s(.+)\\s*$", "<h1>$1</h1>")
+              .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
+              .replaceFirst("<li>", "<section><ul><li>")
+              .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
+              .replaceAll("(?m)    ", "")
+              .trim()
+      );
+    }
+  }
+
+  private void handleTearDownMethod(MethodDeclaration n, Object arg) {
+    if (n.getParameters() == null) {
+      String id = n.getName().replaceFirst("^tearDown","").toLowerCase();
+      tearDownMethods.put(id, n.getName());
+    }
+  }
+
+  private void handleSetupMethod(MethodDeclaration n, Object arg) {
+    if (n.getParameters() == null) {
+      String id = n.getName().replaceFirst("^setup","").toLowerCase();
+      preExecMethods.put(id, n.getName());
+    }
   }
 
   protected SourceWriter getSourceWriter(TreeLogger logger,

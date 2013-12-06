@@ -66,7 +66,7 @@ public class Slides implements EntryPoint {
         if (i < currentPage) {
           slide.addClass(PAST);
         } else if (i > currentPage) {
-          slide.addClass(FUTURE);
+          slide.addClass(FUTURE).trigger("slideRevealed");
         } else {
           slide.addClass(PRESENT);
         }
@@ -105,6 +105,8 @@ public class Slides implements EntryPoint {
         return false;
       }
     });
+
+    examplesClass.bind();
   }
 
   private void buildSlide(GQuery slide) {
@@ -143,7 +145,7 @@ public class Slides implements EntryPoint {
     int nextPage = Math.min(Math.max(currentPage + incr, 0), slides.size());
     String classForOldSlide = forward ? PAST : FUTURE;
 
-    slides.eq(currentPage).removeClass(PRESENT).addClass(classForOldSlide);
+    slides.eq(currentPage).removeClass(PRESENT).addClass(classForOldSlide).trigger("slideHidden");
 
     GQuery nextSlide = slides.eq(nextPage);
     nextSlide.removeClass(FUTURE, PAST).addClass(PRESENT);
@@ -155,12 +157,14 @@ public class Slides implements EntryPoint {
 
     updateMarker();
 
+    nextSlide.trigger("slideRevealed");
     return false;
   }
 
   private void hideOrShowPlayButton(GQuery slide) {
     if (slide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
       $("#play").show();
+      currentExecId = slide.id();
     } else {
       $("#play").hide();
     }

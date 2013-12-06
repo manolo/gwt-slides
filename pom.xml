@@ -15,6 +15,7 @@
       <gQueryVersion>1.4.0-SNAPSHOT</gQueryVersion>
       <gwtversion>2.5.1</gwtversion>
       <gwtmaven>2.5.1</gwtmaven>
+        <gwt.style>PRETTY</gwt.style>
     </properties>
 
     <repositories>
@@ -120,9 +121,7 @@
               <configuration>
                   <style>${gwt.style}</style>
                   <logLevel>${gwt.loglevel}</logLevel>
-                  <gwtVersion>${gwtversion}</gwtVersion>
                   <runTarget>tw/index.html</runTarget>
-                  <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                   <compileReport>${gwt.compiler.compileReport}</compileReport>
                   <compilerMetrics>${gwt.compiler.compileReport}</compilerMetrics>
                   <draftCompile>${gwt.draftCompile}</draftCompile>

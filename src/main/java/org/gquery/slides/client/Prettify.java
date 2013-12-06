@@ -24,13 +24,14 @@ public class Prettify {
 
   public static String prettify(String s) {
     s = s
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
           .replaceAll("([^\\w])(" + GQUERY_KEYWORDS + ")([^\\w])", "$1_$2$3")
           .replaceAll("([^\\w])(" + GQUERY_KEYWORDS + ")([^\\w])", "$1_$2$3")
           .replaceAll("(^|_)(" + GQUERY_KEYWORDS + ")([^\\w])", "<span class='jKey'>$2</span>$3")
           .replaceAll("([^\\w])(\".*?[^\\\\]\")([^\\w])", "$1<span class='jLiteral'>$2</span>$3")
           .replaceAll("()([\\w\\$]+)(\\(.*?)", "$1<span class='jMethod'>$2</span>$3")
-          .replaceAll("(//.+?)\n", "<span class='jComment'>$1\n</span>")
-          .replaceAll(CONTROL_CHARS, "<span class='jControl'>$1</span>");
+          .replaceAll("(//.+?)\n", "<span class='jComment'>$1\n</span>");
     
     return s;
   }

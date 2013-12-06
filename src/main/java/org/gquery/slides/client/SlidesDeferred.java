@@ -1,10 +1,5 @@
 package org.gquery.slides.client;
 
-import static com.google.gwt.query.client.GQuery.*;
-import static org.gquery.slides.client.GQ.*;
-
-import java.util.Random;
-
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
@@ -12,6 +7,20 @@ import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+import java.util.Random;
+
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.when;
+import static org.gquery.slides.client.GQ.$;
+import static org.gquery.slides.client.GQ.console;
+import static org.gquery.slides.client.GQ.getRandom;
+import static org.gquery.slides.client.GQ.setTimeout;
 
 /**
  * @author manolo
@@ -19,6 +28,165 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCur
  */
 @SuppressWarnings("static-access")
 public class SlidesDeferred extends SlidesBase {
+
+  public void setupBindEvent() {
+    $("#viewport").show().height(250);
+  }
+
+  /**
+   * @ Event binding
+   */
+  public void testBindEvent() {
+    // handle the click event on the console
+    $("#console").bind("click", new Function() {
+      public void f() {
+        console.log("It's awesome, you click on the console!!");
+      }
+    });
+
+    // nl
+    // you can handle any type of event supported by the browser
+    $("#console").bind("transitionend", new Function() {
+      public void f() {
+        console.log("Resizing of the console done !");
+      }
+    });
+
+    // nl
+    Widget resizeWidget = new HTML("Hover me to resize the console");
+    RootPanel.get("viewport").add(resizeWidget);
+
+    // nl
+    // works with widget
+    $(resizeWidget).mouseover(new Function() {
+      public void f() {
+        $("#console").css("width", "50%");
+      }
+    }).mouseout(new Function() {
+      public void f() {
+        $("#console").css("width", "96%");
+      }
+    });
+
+    // nl
+    console.log("Ready !");
+  }
+
+  private Widget resizeWidget;
+
+  public void setupUnBindEvent() {
+    resizeWidget = $("#viewport").children().widget();
+  }
+
+  /**
+   * @ Unbind Event
+   */
+  public void testUnBindEvent() {
+    // remove all handlers by event types
+    $("#console").unbind("click");
+    $("#console").unbind("transitionend");
+
+    // nl
+    // you can remove handlers of several types at once.
+    $(resizeWidget).unbind("mouseover mouseout");
+
+    // nl
+    // remove a specific handler
+    $(resizeWidget).click(new Function() {
+      public void f() {
+        console.log("Youhou \\o/ /o\\ ");
+        $(resizeWidget).unbind("click", this);
+      }
+    });
+
+    // nl
+    console.log("Ready !");
+  }
+
+  public void tearDownUnBindEvent() {
+    console.clear();
+    resizeWidget.removeFromParent();
+    resizeWidget = null;
+    $("#viewport").hide();
+  }
+
+  public void setupCustomEvent() {
+    $("#viewport").show();
+  }
+
+  /**
+   *  @ Custom event
+   */
+  public void testCustomEvent() {
+    $("#viewport").append("<input type='text' id='text'></input><button>Send to console</button>");
+
+    // nl
+    // trigger the 'sendToConsole' event when we click on the button
+    $("#viewport > button").click(new Function() {
+      public void f() {
+        $("#console").trigger("sendToConsole", $("#text").val());
+      }
+    });
+
+    // nl
+    // handle the 'sendToConsole' event
+    $("#console").bind("sendToConsole", new Function() {
+      @Override
+      public boolean f(Event e, Object... data) {
+        console.log(data[0]);
+        return false;
+      }
+    });
+
+  }
+
+  public void tearDownCustomEvent() {
+    $("#viewport > button").unbind("click");
+    $("#console").unbind("sendToConsole");
+    $("#viewport").empty().hide();
+  }
+
+  public void setupNamespace() {
+    $("#viewport").append("<button id='unbind'>Unbind events</button>").show();
+  }
+
+  /**
+   *  @ Namespace
+   */
+  public void testNamespace() {
+    // you can specify name space when you bind events
+    $("#console").bind("click.ns1 mouseenter.ns1", new Function() {
+      public void f() {
+        console.log(getEvent().getType() + " from namespace [ns1]");
+      }
+    });
+
+    // nl
+    $("#console").bind("click.ns2 mouseleave.ns2", new Function() {
+      public void f() {
+        console.log(getEvent().getType() + " from namespace [ns2]");
+      }
+    });
+
+    $("#unbind").click(new Function() {
+      public void f() {
+        // you can decide to unbind only some events of some namespace
+        $("#console").unbind("click.ns2");
+
+        // nl
+        // or unbind all events of a certain namespace
+        $("#console").unbind(".ns1");
+      }
+    });
+
+    // nl
+    console.log("Ready !");
+  }
+
+  public void tearDownNamespace() {
+    $("#console").unbind(".ns1");
+    $("#viewport").empty().hide();
+  }
   
   /**
    * @ What is the Deferred object?
