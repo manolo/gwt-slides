@@ -1,10 +1,11 @@
 package org.gquery.slides.client;
 
+import static com.google.gwt.query.client.GQuery.*;
+
 import java.util.Random;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
@@ -12,12 +13,10 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.Timer;
 
-public abstract class GQ extends GQuery {
-  protected GQ(GQuery gq) {
-    super(gq);
-  }
+public abstract class Utils {
 
   public static class ConsoleSlides extends ConsoleBrowser {
+    
     @Override public void clear() {
       $("#console").hide().text("");
     }
@@ -33,8 +32,6 @@ public abstract class GQ extends GQuery {
       }
     }.schedule(t);
   }
-  
-  public static GQuery $ = $();
   
   public static Promise getRandom() {
     return new PromiseFunction() {

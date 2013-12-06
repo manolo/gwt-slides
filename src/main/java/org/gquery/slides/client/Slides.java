@@ -1,7 +1,7 @@
 package org.gquery.slides.client;
 
 import static com.google.gwt.query.client.GQuery.*;
-import static org.gquery.slides.client.GQ.hash;
+import static org.gquery.slides.client.Utils.hash;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.shared.GWT;
