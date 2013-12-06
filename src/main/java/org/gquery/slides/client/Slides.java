@@ -18,10 +18,14 @@ import com.google.gwt.user.client.Event;
 public class Slides {
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
-  private static final String CODE_SNIPPET = "<div class='code'><div class='code-scroll " +
-  "code-div'><div class='code-lines'><pre>%code%</pre></div></div></div>";
+  private static final String CODE_SNIPPET =
+    "<div class='jCode'>" +
+    " <div class='jCode-scroll jCode-div'>" +
+    "  <div class='jCode-lines'>" +
+    "   <pre>%code%</pre>" +
+    "</div></div></div>";
 
-  private Easing easing = EasingCurve.custom.with(.31,-0.37,.47,1.5);
+  private Easing easing = EasingCurve.easeInOutSine;// EasingCurve.custom.with(.31,-0.37,.47,1.5);
 
   private int currentPage = 1;
   private SlidesSource slidesSrc;
