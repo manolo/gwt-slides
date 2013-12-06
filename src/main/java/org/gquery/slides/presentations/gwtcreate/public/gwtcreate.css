@@ -1,0 +1,117 @@
+@charset "UTF-8";
+ .ball {
+     display: none;
+     position: absolute;
+     border: solid 2px black;
+     border-radius: 40px;
+     width: 50px;
+     height: 50px
+ }
+ .red{
+     bottom:8em;
+     right:1em;
+     background: red;
+ }
+ .blue{
+     bottom:4em;
+     right:2em;
+     background: blue;
+ }
+ .yellow{
+     bottom:6em;
+     right:2.7em;
+     background: yellow;
+ }
+/*********
+ * Slides*
+ *********/
+
+/* Slide 1 : #title */
+
+.gwtcreate-logo {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 339px;
+    height: 92px;
+    overflow: hidden;
+    text-indent: -9999px;
+    background: url(gwt-create-logo.svg) no-repeat;
+}
+
+#title .names {
+    padding-top: 50px;
+    font-family: 'Crimson Text';
+    font-size: 40px;
+}
+
+/* Slide 1 : #who */
+#who > div {
+    display: flex;
+    padding: 20px;
+}
+
+#who img {
+    border-radius: 50%;
+    width: 250px;
+    height: 250px;
+}
+
+#who .twitter {
+    display: inline-block;
+    width: 24px;
+    height: 20px;
+    vertical-align: middle;
+    background: url(/img/twitter.png) no-repeat 0 0;
+}
+
+#who .gplus {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+    background: url(/img/gplus.png) no-repeat 0 0;
+}
+
+#who a {
+	font-size: 75%;
+}
+
+#who > div > div {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#who .name {
+    font-family: "Lobster Two";
+    font-size: 50px;
+}
+
+#who ul {
+    list-style: none;
+}
+
+/* Slide 4 : pronunciation */
+#pronunciation > div {
+    width: 100%;
+    height: 40%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#pronunciation .logo {
+    width: 600px;
+    padding: 50px 20px;
+    height: 135px;
+}
+
+#pronunciation .text {
+    width: 300px;
+    font-family: 'Crimson Text';
+    font-size: 80px;
+    padding: 50px 20px;
+    font-style: italic;
+}
