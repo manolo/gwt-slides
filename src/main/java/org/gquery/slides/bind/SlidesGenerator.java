@@ -28,9 +28,11 @@ public class SlidesGenerator extends Generator {
 
   HashMap<String, String> methodBodies = new HashMap<String, String>();
   HashMap<String, String> methodDoc = new HashMap<String, String>();
+  HashMap<String, String> enterMethods = new HashMap<String, String>();
+  HashMap<String, String> beforeMethods = new HashMap<String, String>();
   HashMap<String, String> execMethods = new HashMap<String, String>();
-  HashMap<String, String> preExecMethods = new HashMap<String, String>();
-  HashMap<String, String> tearDownMethods = new HashMap<String, String>();
+  HashMap<String, String> afterMethods = new HashMap<String, String>();
+  HashMap<String, String> leaveMethods = new HashMap<String, String>();
 
   @Override
   public String generate(TreeLogger treeLogger,
@@ -71,10 +73,14 @@ public class SlidesGenerator extends Generator {
       for (String id: execMethods.keySet()) {
         sw.println(" if(id.equals(\"" + id + "\")){ ");
         sw.indent();
-        if (preExecMethods.containsKey(id)) {
-          sw.println(preExecMethods.get(id) + "();");
+        if (beforeMethods.containsKey(id)) {
+          sw.println(beforeMethods.get(id) + "();");
         }
-        sw.println(execMethods.get(id) + "();\n}");
+        sw.println(execMethods.get(id) + "();");
+        if (afterMethods.containsKey(id)) {
+          sw.println(afterMethods.get(id) + "();");
+        }
+        sw.println("\n}");
         sw.outdent();
       }
       sw.println(" } catch (Exception e) {e.printStackTrace();}\n}");
@@ -82,9 +88,15 @@ public class SlidesGenerator extends Generator {
       sw.println("public void bind(){");
       sw.indent();
 
-      for (String id : tearDownMethods.keySet()) {
-        sw.println(ID_SELECT.replace("%id%", id) + ".bind(\"" + SlidesSource.TEARDOWN_EVENT_NAME + "\"," +
-            "" + FUNCTION.replace("%call%", tearDownMethods.get(id)) + ");");
+      for (String id : enterMethods.keySet()) {
+        sw.println(ID_SELECT.replace("%id%", id)
+            + ".bind(\"" + SlidesSource.ENTER_EVENT_NAME + "\","
+            + FUNCTION.replace("%call%", enterMethods.get(id)) + ");");
+      }
+      for (String id : leaveMethods.keySet()) {
+        sw.println(ID_SELECT.replace("%id%", id)
+            + ".bind(\"" + SlidesSource.LEAVE_EVENT_NAME + "\","
+            + FUNCTION.replace("%call%", leaveMethods.get(id)) + ");");
       }
 
       sw.outdent();
@@ -106,10 +118,14 @@ public class SlidesGenerator extends Generator {
 
     VoidVisitorAdapter<?> a = new VoidVisitorAdapter<Object>() {
       public void visit(MethodDeclaration n, Object arg) {
-        if (n.getName().startsWith("setup")){
-          handleSetupMethod(n, arg);
-        } else if (n.getName().startsWith("tearDown")){
-          handleTearDownMethod(n, arg);
+        if (n.getName().startsWith("enter")){
+          handleSpecialMethod(n, "enter", enterMethods);
+        } else if (n.getName().startsWith("before")){
+          handleSpecialMethod(n, "before", beforeMethods);
+        } else if (n.getName().startsWith("after")){
+          handleSpecialMethod(n, "after", afterMethods);
+        } else if (n.getName().startsWith("leave")){
+          handleSpecialMethod(n, "leave", leaveMethods);
         } else {
           handleSimpleMethod(n, arg);
         }
@@ -154,17 +170,10 @@ public class SlidesGenerator extends Generator {
     }
   }
 
-  private void handleTearDownMethod(MethodDeclaration n, Object arg) {
+  private void handleSpecialMethod(MethodDeclaration n, String prefix, HashMap<String, String> map) {
     if (n.getParameters() == null) {
-      String id = n.getName().replaceFirst("^tearDown","").toLowerCase();
-      tearDownMethods.put(id, n.getName());
-    }
-  }
-
-  private void handleSetupMethod(MethodDeclaration n, Object arg) {
-    if (n.getParameters() == null) {
-      String id = n.getName().replaceFirst("^setup","").toLowerCase();
-      preExecMethods.put(id, n.getName());
+      String id = n.getName().replaceFirst(prefix,"").toLowerCase();
+      map.put(id, n.getName());
     }
   }
 

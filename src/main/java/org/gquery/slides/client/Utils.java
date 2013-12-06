@@ -35,7 +35,7 @@ public abstract class Utils {
       }
     }.schedule(t);
   }
-  
+
   public static Promise getRandom() {
     return new PromiseFunction() {
       public void f(final Deferred dfd) {
@@ -43,14 +43,14 @@ public abstract class Utils {
       }
     };
   }
-  
+
   public static boolean fail = false, succeed = true;
-  
+
 
   Promise getRandomAjax() {
     return $ajax($$("url: '/mock-ajax/echo', timeout: 1000, data: " + new Random().nextInt(30)));
   }
-  
+
   public static Promise $ajax(Properties s) {
     final int t  = s.getInt("timeout");
     final String echo = s.getStr("data");
@@ -62,14 +62,14 @@ public abstract class Utils {
       }
     };
   }
-  
+
   private static JavaScriptObject location  = JsUtils.prop(window, "location");
-  
+
   public static String hash() {
     String h = JsUtils.prop(location, "hash");
     return h != null ? h.substring(1) : "";
   }
-  
+
   public static String hash(Object hash) {
     JsUtils.prop(location, "hash", hash);
     return hash();
