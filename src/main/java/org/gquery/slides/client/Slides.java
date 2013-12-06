@@ -61,6 +61,7 @@ public class Slides implements EntryPoint {
     console.clear();
     $("#play").hide();
     $("#marker").text("" + currentPage);
+    currentSlide.trigger(SlidesSource.TEARDOWN_EVENT_NAME);
 
     // move slides to left out of the window view port
     // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
@@ -68,13 +69,14 @@ public class Slides implements EntryPoint {
     slides.lt(currentPage).stop(true).animate($$("left: -" + w), 2000, easing);
     // move slides to right out of the window view port
     slides.gt(currentPage).stop(true).animate($$("left: +" + w), 2000, easing);
+
     // move current slide to the window view port
     currentSlide = slides.eq(currentPage).stop(true).animate($$("left: 0"), 2000, easing);
 
     // display the button to execute the snippet
     if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
       // wait until the animation has finished, then show the button and move it.
-      currentSlide.delay(0, movePlayButtonFunction).trigger("slideHidden");
+      currentSlide.delay(0, movePlayButtonFunction);
     }
   }
 
