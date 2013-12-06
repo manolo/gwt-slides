@@ -85,7 +85,7 @@ public class Slides {
 
   private Function movePlayButtonFunction = new Function() {
     public void f() {
-      GQuery currentCode = currentSlide.find(".code");
+      GQuery currentCode = currentSlide.find(".jCode");
       int left = currentCode.offset().left + currentCode.width() - 50;
       int top = currentCode.offset().top;
       // TODO: gQuery.offset(top, left) does not work and sets negative values

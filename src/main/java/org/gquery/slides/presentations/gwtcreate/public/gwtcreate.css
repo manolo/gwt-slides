@@ -36,7 +36,7 @@
     height: 92px;
     overflow: hidden;
     text-indent: -9999px;
-    background: url(gwt-create-logo.svg) no-repeat;
+    background: url(img/gwt-create-logo.svg) no-repeat;
 }
 
 #title .names {
@@ -62,7 +62,7 @@
     width: 24px;
     height: 20px;
     vertical-align: middle;
-    background: url(/img/twitter.png) no-repeat 0 0;
+    background: url(img/twitter.png) no-repeat 0 0;
 }
 
 #who .gplus {
@@ -70,7 +70,7 @@
     width: 25px;
     height: 25px;
     vertical-align: middle;
-    background: url(/img/gplus.png) no-repeat 0 0;
+    background: url(img/gplus.png) no-repeat 0 0;
 }
 
 #who a {

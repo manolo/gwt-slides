@@ -136,6 +136,9 @@
                   <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=384m </extraJvmArgs>
                   <gen>${project.build.directory}/gen</gen>
                   <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+                  <modules>
+                    <module>org.gquery.slides.GwtCreate</module>
+                  </modules>
               </configuration>
               <executions>
                   <execution>
