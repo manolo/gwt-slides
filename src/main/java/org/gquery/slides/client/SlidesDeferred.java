@@ -24,12 +24,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SlidesDeferred extends SlidesBase {
 
-  public void setupBindEvent() {
+  Widget resizeWidget;
+
+  public void beforeBindEvent() {
+    leaveBindEvent();
     $("#viewport").show().height(250);
-    if (resizeWidget != null) {
-      resizeWidget.removeFromParent();
-    }
-    console.log("Ready !");
   }
 
   /**
@@ -52,7 +51,7 @@ public class SlidesDeferred extends SlidesBase {
     });
 
     // nl
-    Widget resizeWidget = new HTML("Hover me to resize the console");
+    resizeWidget = new HTML("Hover me to resize the console");
     RootPanel.get("viewport").add(resizeWidget);
 
     // nl
@@ -66,13 +65,25 @@ public class SlidesDeferred extends SlidesBase {
         $("#console").css("width", "96%");
       }
     });
-
   }
 
-  private Widget resizeWidget;
+  public void afterBindEvent() {
+    console.log("");
+  }
 
-  public void setupUnBindEvent() {
-    resizeWidget = $("#viewport").children().widget();
+  public void leaveBindEvent() {
+    $("#viewport").hide();
+    if (resizeWidget != null) {
+      resizeWidget.removeFromParent();
+      resizeWidget = null;
+    }
+    testUnBindEvent();
+  }
+
+  public void enterUnBindEvent() {
+    beforeBindEvent();
+    testBindEvent();
+    afterBindEvent();
   }
 
   /**
@@ -95,21 +106,13 @@ public class SlidesDeferred extends SlidesBase {
         $(resizeWidget).unbind("click", this);
       }
     });
-
-    // nl
-    console.log("Ready !");
   }
 
-  public void tearDownUnBindEvent() {
-    console.clear();
-    if (resizeWidget != null) {
-      resizeWidget.removeFromParent();
-      resizeWidget = null;
-    }
-    $("#viewport").hide();
+  public void leaveUnBindEvent() {
+    leaveBindEvent();
   }
 
-  public void setupCustomEvent() {
+  public void beforeCustomEvent() {
     $("#viewport").show();
   }
 
@@ -139,13 +142,13 @@ public class SlidesDeferred extends SlidesBase {
 
   }
 
-  public void tearDownCustomEvent() {
+  public void afterCustomEvent() {
     $("#viewport > button").unbind("click");
     $("#console").unbind("sendToConsole");
     $("#viewport").empty().hide();
   }
 
-  public void setupNamespace() {
+  public void beforeNamespace() {
     $("#viewport").append("<button id='unbind'>Unbind events</button>").show();
   }
 
@@ -182,7 +185,7 @@ public class SlidesDeferred extends SlidesBase {
     console.log("Ready !");
   }
 
-  public void tearDownNamespace() {
+  public void leaveNamespace() {
     $("#console").unbind(".ns1");
     $("#viewport").empty().hide();
   }
