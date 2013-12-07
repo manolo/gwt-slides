@@ -158,6 +158,17 @@ li {
      justify-content: center;
      align-items: center;
  }
+ 
+ #viewport input[type=text] {
+     font-family: monospace;
+     font-size: 0.8em;
+     width: 95%;
+ }
+  #viewport div {
+     font-family: monospace;
+     font-size: 0.8em;
+     margin-bottom: 1em;
+ }
 
  #play {
      position: absolute;
