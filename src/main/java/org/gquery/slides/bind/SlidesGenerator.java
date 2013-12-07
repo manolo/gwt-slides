@@ -142,7 +142,7 @@ public class SlidesGenerator extends Generator {
         s = s.replaceFirst("^\\s*\\{ *\n*", "")
         .replaceFirst("\\s*\\}\\s*$", "")
         .replace("\n\n", "\n") // remove double new line after anonymous class definition
-        .replace("// nl", "") // The comment forces a new line
+        .replaceAll("(?m)^\\s*//\\s*$", "") // remove empty comments, forces a line
         .replaceAll("(?m)^    ", "")
         .replaceAll("    ", "  ");
 
@@ -163,7 +163,7 @@ public class SlidesGenerator extends Generator {
           .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
           .replaceFirst("<li>", "<section><ul><li>")
           .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
-          .replaceAll("(?m)    ", "")
+          .replace("* /", "*/") // If we write jsni in javadoc
           .trim()
       );
     }

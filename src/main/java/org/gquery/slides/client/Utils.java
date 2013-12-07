@@ -2,8 +2,6 @@ package org.gquery.slides.client;
 
 import static com.google.gwt.query.client.GQuery.*;
 
-import java.util.Random;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Promise;
@@ -11,6 +9,7 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
 
 public abstract class Utils {
@@ -24,7 +23,13 @@ public abstract class Utils {
       $("#console").hide().text("");
     }
     @Override public void log(Object o) {
-      $("#console").show().append("<div>" + String.valueOf(o).replace("\n", "<br/>").replace(" ", "&nbsp;") + "</div>");
+      $("#console").show().append("<div>" +
+          String.valueOf(o)
+          // dumpArguments java.lang is obvious
+          .replaceAll("java\\.lang\\.", "")
+          // Formating a the dumpArguments output
+          .replaceAll("\n\\[","\n  [")
+          .replace("\n", "<br/>").replace(" ", "&nbsp;") + "</div>");
     }
   }
 
@@ -39,7 +44,7 @@ public abstract class Utils {
   public static Promise getRandom() {
     return new PromiseFunction() {
       public void f(final Deferred dfd) {
-        dfd.resolve(new Random().nextInt(100));
+        dfd.resolve(Random.nextInt(100));
       }
     };
   }
@@ -48,7 +53,7 @@ public abstract class Utils {
 
 
   Promise getRandomAjax() {
-    return $ajax($$("url: '/mock-ajax/echo', timeout: 1000, data: " + new Random().nextInt(30)));
+    return $ajax($$("url: '/mock-ajax/echo', timeout: 1000, data: " + Random.nextInt(30)));
   }
 
   public static Promise $ajax(Properties s) {
