@@ -4,6 +4,10 @@ import static com.google.gwt.query.client.GQuery.*;
 import static org.gquery.slides.client.Utils.getRandom;
 import static org.gquery.slides.client.Utils.setTimeout;
 
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -16,6 +20,7 @@ import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -282,10 +287,10 @@ public class GwtCreatePresentation extends SlidesSource {
     console.log("Ready");
     exportBar();
     viewPort.height(250).append("<div>Try this javascript code:</div>" +
-        "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>" +
-    "<input type=text id='evaljs' placeholder='Javascript console' >").fadeIn(2000);
+    "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>");
 
-    viewPort.find("input").bind(Event.ONKEYDOWN, new Function() {
+    $("<input type=text id='evaljs' placeholder='Javascript console' >").appendTo(viewPort)
+    .bind(Event.ONKEYDOWN, new Function() {
       public boolean f(Event e) {
         if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
           String js = $(this).val();
@@ -303,6 +308,8 @@ public class GwtCreatePresentation extends SlidesSource {
         return true;
       }
     });
+
+    viewPort.show();
     $("#play").hide();
   }
 
@@ -310,10 +317,113 @@ public class GwtCreatePresentation extends SlidesSource {
     viewPort.empty().hide();
   }
 
+  /**
+   * @ gQuery Animations
+   * - jQuery uses javascript timers.
+   * - gQuery CSS3 transitions or falls back to javascript.
+   * - gQuery supports CSS3 transformation syntax in properties.
+   * - Animaition queue works with both CSS3 and javascript.
+   * - gQuery supports all set of named Bezier curves, and allows customization.
+   *
+       <div class="gQLogo" style='position: fixed'><img src="img/logo-gquery-transp.png"></div>
+   */
+  public void testCss3animations() {
+    $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000);
+    $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000, EasingCurve.custom.with(.31,-0.37,.47,1.5));
+    $(".gQLogo").animate($$("background-color:gold"), 1000, EasingCurve.easeInOutBack);
+    $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
+  }
+
+  public void leaveCss3animations() {
+    $(".animate").hide();
+    viewPort.css("width", "30%").empty().hide();
+  }
+
+  public void beforeCss3animations() {
+    viewPort.css("width", "200ps").hide().delay(7000).fadeIn(2000);
+    $(".gQLogo").show().css($$("top: 105%, left: 105%, background-color: #e54827"));
+    $("#play").hide();
+  }
+
+  public void enterCss3animations() {
+    viewPort.empty().hide();
+    final GQuery logo = $(".gQLogo").hide();
+
+    @SuppressWarnings("serial")
+    TreeMap<String, Function> animations = new TreeMap<String, Function>(){{
+      put("01 fadeOut()      | opacity: 'hide'", lazy().fadeOut().done());
+      put("02 fadeIn()       | opacity: 'show'", lazy().fadeIn().done());
+      put("03 fadeTo(0.5)    | opacity: '0.5'", lazy().fadeTo(.5).done());
+      put("04 fadeTo(1)      | opacity: '1'", lazy().fadeTo(1).done());
+      put("05 fadeToggle()   | opacity: 'toggle'", new Function(){public void f() {$(this).as(Effects).fadeToggle();}});
+      put("06 slideUp()      | height: 'hide'", new Function(){public void f() {$(this).as(Effects).slideUp();}});
+      put("07 slideDown()    | height: 'show'", new Function(){public void f() {$(this).as(Effects).slideDown();}});
+      put("08 slideLeft()    | width: 'hide'", new Function(){public void f() {$(this).as(Effects).slideLeft();}});
+      put("09 slideRight()   | width: 'show' ", new Function(){public void f() {$(this).as(Effects).slideRight();}});
+      put("10 slideToggle()  | height: 'toggle' ", new Function(){public void f() {$(this).slideToggle(400);}});
+      put("11 toggle()       | opacity: 'toggle', width : 'toggle', height : 'toggle'", new Function(){public void f() {$(this).as(Effects).toggle(400);}});
+      put("12 clipUp()       | clip-action: 'hide', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipUp();}});
+      put("13 clipDown()     | clip-action: 'show', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipDown();}});
+      put("14 clipDisappear()| clip-action: 'hide'", new Function(){public void f() {$(this).as(Effects).clipDisappear();}});
+      put("15 clipAppear()   | clip-action: 'hide'", new Function(){public void f() {$(this).as(Effects).clipAppear();}});
+      put("16 clipToggle()   | clip-action: 'toggle', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipToggle(400);}});
+      put("17 animate()      | clip-action: 'toggle', clip-origin: 'bottom-right', opacity: toggle", null);
+      put("18 amimate()      | background-color: #e54827", null);
+      put("19 animate()      | background-color: #ADD9E4", null);
+      put("20 animate()      | rotateY:180deg, rotateX:180deg, background:#e54827, transformOrigin: center", null);
+      put("21 animate()      | rotateY:0deg, rotateX:0deg, background: #ADD9E4, transformOrigin: center", null);
+    }};
+
+    GQuery ul= $("<ul>").appendTo(viewPort);
+
+    final GQuery input =
+      $("<textarea placeholder='Animate' >").appendTo(viewPort)
+      .bind(Event.ONKEYDOWN, new Function() {
+        public boolean f(Event e) {
+          if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
+            logo.stop(false, true).animate($$($(this).val()));
+            return false;
+          }
+          return true;
+        }
+      });
+
+    for (final Entry<String, Function> e : animations.entrySet()) {
+      String name = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$1");
+      final String prop = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$2");
+
+      $("<li>" + name).appendTo(ul).click(new Function() {
+        public void f() {
+          input.val(prop);
+          Function f = e.getValue();
+          if (f != null) {
+            logo.stop(false, true).each(f);
+          } else {
+            logo.stop(false, true).animate($$(prop));
+          }
+          String code = "$(\".logo\").animate($$(\"" + prop + "\");";
+          $("#css3animations .jCode-lines pre").html(Prettify.prettify(code));
+        }});
+    }
+
+    $("<button> disable CSS3 </button>").appendTo(viewPort).click(
+        new Function() {
+          public void f() {
+            if (Fx.css3 = !Fx.css3 ) {
+              $(this).text("disable CSS3");
+            } else {
+              $(this).text("enable CSS3");
+            }
+            console.clear();
+            console.log("CSS3 animations are " + (Fx.css3 ? "enabled" : "disabled"));
+          }
+        });
+  }
+
 
   /**
    * @ What is the Deferred object?
-   * 
+   *
    * - It is a chainable object that holds our callbacks into queues.
    * - It can invoke callback queues, and relay the success or failure state of any synchronous or asynchronous function.
    * - We can easily resolve or reject that deferred

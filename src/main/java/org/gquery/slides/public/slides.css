@@ -64,7 +64,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ul {
-     margin: 0.2em 0;
      max-width: 750px;     
 }
 
@@ -158,11 +157,21 @@ li {
      justify-content: center;
      align-items: center;
  }
- 
+ #viewport ul {
+   margin: 0 0;
+   cursor: pointer;
+ }
  #viewport input[type=text] {
      font-family: monospace;
      font-size: 0.8em;
      width: 95%;
+ }
+  #viewport textarea {
+    font-family: monospace;
+    font-size: 0.7em;
+    height: 5em;
+    opacity: 0.6;
+    width: 95%;
  }
  #viewport div {
      font-family: monospace;
@@ -174,6 +183,19 @@ li {
      font-size: 0.7em;
      margin-bottom: 1em;
  }
+ 
+#viewport button {
+   border: none;
+   border-radius: 3px;
+   height: 30px;
+   outline: none;
+   box-shadow: none;
+   background: #4285f4;
+   background: linear-gradient(top,#4387fd,#4683ea);
+   font-size: 0.7em;
+   margin: 0.4em;
+   color: white;
+}
 
  #play {
      position: absolute;

@@ -40,6 +40,7 @@ public class Slides {
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
       public void onUncaughtException(Throwable e) {
         console.log(e.getMessage());
+        e.printStackTrace();
       }
     });
 
