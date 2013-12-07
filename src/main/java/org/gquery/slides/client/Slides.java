@@ -3,6 +3,8 @@ package org.gquery.slides.client;
 import static com.google.gwt.query.client.GQuery.*;
 import static org.gquery.slides.client.Utils.hash;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
@@ -34,6 +36,13 @@ public class Slides {
 
 
   public Slides(SlidesSource presentation) {
+
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        console.log(e.getMessage());
+      }
+    });
+
     slidesSrc = presentation;
 
     slides = $(".slides > section")
