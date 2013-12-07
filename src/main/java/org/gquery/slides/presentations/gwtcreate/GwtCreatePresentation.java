@@ -290,7 +290,7 @@ public class GwtCreatePresentation extends SlidesSource {
 
   // Show the console, and run a JavaScript console emulator.
   public void beforeJsniexport() {
-    console.log("");
+    console.log("Ready");
     exportBar();
     viewPort.height(250).append("<div>Try this javascript code:</div>" +
         "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>" +
@@ -304,7 +304,7 @@ public class GwtCreatePresentation extends SlidesSource {
           try {
             o = JsUtils.runJavascriptFunction(window, "eval", js);
           } catch (Exception e2) {
-            o = e2.getMessage().replaceAll("^.*:", "");
+            o = e2.getMessage().replaceFirst("^.*:\\s+", "");
           }
           if (o != null) {
             console.log(o);
@@ -314,6 +314,7 @@ public class GwtCreatePresentation extends SlidesSource {
         return true;
       }
     });
+    $("#play").hide();
   }
 
   public void leaveJsniexport() {
