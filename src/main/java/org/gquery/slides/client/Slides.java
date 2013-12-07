@@ -83,12 +83,14 @@ public class Slides {
     slides.gt(currentPage).stop(true).animate($$("left: +" + w), 1000, easing);
 
     // move current slide to the window view port
-    currentSlide = slides.eq(currentPage).stop(true).animate($$("left: 0"), 1000, easing);
+    currentSlide = slides.eq(currentPage).stop(true)
+    .animate($$("left: 0"), 1000, easing)
+    .delay(0, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
 
     // display the button to execute the snippet
     if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
       // wait until the animation has finished, then show the button and move it.
-      currentSlide.delay(0, movePlayButtonFunction, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
+      currentSlide.delay(0, movePlayButtonFunction);
     }
   }
 
