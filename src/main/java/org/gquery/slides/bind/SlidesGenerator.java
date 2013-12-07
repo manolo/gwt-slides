@@ -143,7 +143,6 @@ public class SlidesGenerator extends Generator {
         .replaceFirst("\\s*\\}\\s*$", "")
         .replace("\n\n", "\n") // remove double new line after anonymous class definition
         .replaceAll("(?m)^\\s*//\\s*$", "") // remove empty comments, forces a line
-        .replace("// nl", "") // The comment forces a new line
         .replaceAll("(?m)^    ", "")
         .replaceAll("    ", "  ");
 

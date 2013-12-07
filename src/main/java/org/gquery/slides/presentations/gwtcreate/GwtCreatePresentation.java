@@ -48,20 +48,17 @@ public class GwtCreatePresentation extends SlidesSource {
         console.log("It's awesome, you click on the console!!");
       }
     });
-
-    // nl
+    //
     // you can handle any type of event supported by the browser
     $("#console").bind("transitionend", new Function() {
       public void f() {
         console.log("Resizing of the console done !");
       }
     });
-
-    // nl
+    //
     resizeWidget = new HTML("Hover me to resize the console");
     RootPanel.get("viewport").add(resizeWidget);
-
-    // nl
+    //
     // works with widget
     $(resizeWidget).mouseover(new Function() {
       public void f() {
@@ -100,12 +97,10 @@ public class GwtCreatePresentation extends SlidesSource {
     // remove all handlers by event types
     $("#console").unbind("click");
     $("#console").unbind("transitionend");
-
-    // nl
+    //
     // you can remove handlers of several types at once.
     $(resizeWidget).unbind("mouseover mouseout");
-
-    // nl
+    //
     // remove a specific handler
     $(resizeWidget).click(new Function() {
       public void f() {
@@ -128,16 +123,14 @@ public class GwtCreatePresentation extends SlidesSource {
    */
   public void testCustomEvent() {
     viewPort.append("<input type='text' id='text'></input><button>Send to console</button>");
-
-    // nl
+    //
     // trigger the 'sendToConsole' event when we click on the button
     $("#viewport > button").click(new Function() {
       public void f() {
         $("#console").trigger("sendToConsole", $("#text").val());
       }
     });
-
-    // nl
+    //
     // handle the 'sendToConsole' event
     $("#console").bind("sendToConsole", new Function() {
       @Override
@@ -169,8 +162,7 @@ public class GwtCreatePresentation extends SlidesSource {
         console.log(getEvent().getType() + " from namespace [ns1]");
       }
     });
-
-    // nl
+    //
     $("#console").bind("click.ns2 mouseleave.ns2", new Function() {
       public void f() {
         console.log(getEvent().getType() + " from namespace [ns2]");
@@ -181,14 +173,12 @@ public class GwtCreatePresentation extends SlidesSource {
       public void f() {
         // you can decide to unbind only some events of some namespace
         $("#console").unbind("click.ns2");
-
-        // nl
+        //
         // or unbind all events of a certain namespace
         $("#console").unbind(".ns1");
       }
     });
-
-    // nl
+    //
     console.log("Ready !");
   }
 
@@ -224,7 +214,6 @@ public class GwtCreatePresentation extends SlidesSource {
     JsUtils.runJavascriptFunction(jso, "pushState", "aStateObject", "aTitle", "foo/bar");
     //
     NodeList<?> nodes = JsUtils.runJavascriptFunction(document, "querySelectorAll", "div");
-
     //
     console.log(Window.Location.getHref());
     console.log(nodes.getLength());
