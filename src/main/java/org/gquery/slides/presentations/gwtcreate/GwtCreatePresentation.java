@@ -250,7 +250,7 @@ public class GwtCreatePresentation extends SlidesSource {
    * </pre>
    */
   public void testJsniexport() {
-    JsUtils.prop(window, "foo", JsUtils.wrapGQueryFuntion(new Function() {
+    JsUtils.prop(window, "foo", JsUtils.wrapFunction(new Function() {
       public void f() {
         console.log(dumpArguments());
       }
