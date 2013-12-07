@@ -23,7 +23,13 @@ public abstract class Utils {
       $("#console").hide().text("");
     }
     @Override public void log(Object o) {
-      $("#console").show().append("<div>" + String.valueOf(o).replace("\n", "<br/>").replace(" ", "&nbsp;") + "</div>");
+      $("#console").show().append("<div>" +
+          String.valueOf(o)
+          // dumpArguments java.lang is obvious
+          .replaceAll("java\\.lang\\.", "")
+          // Formating a the dumpArguments output
+          .replaceAll("\n\\[","\n  [")
+          .replace("\n", "<br/>").replace(" ", "&nbsp;") + "</div>");
     }
   }
 

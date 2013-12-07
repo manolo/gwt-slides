@@ -8,6 +8,7 @@ import org.gquery.slides.client.SlidesSource;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
@@ -29,11 +30,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class GwtCreatePresentation extends SlidesSource {
 
+  GQuery viewPort = $("#viewport");
   Widget resizeWidget;
 
   public void beforeBindEvent() {
     leaveBindEvent();
-    $("#viewport").show().height(250);
+    viewPort.show().height(250);
   }
 
   /**
@@ -77,7 +79,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   public void leaveBindEvent() {
-    $("#viewport").hide();
+    viewPort.hide();
     if (resizeWidget != null) {
       resizeWidget.removeFromParent();
       resizeWidget = null;
@@ -118,14 +120,14 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   public void beforeCustomEvent() {
-    $("#viewport").show();
+    viewPort.show();
   }
 
   /**
    *  @ Custom event
    */
   public void testCustomEvent() {
-    $("#viewport").append("<input type='text' id='text'></input><button>Send to console</button>");
+    viewPort.append("<input type='text' id='text'></input><button>Send to console</button>");
 
     // nl
     // trigger the 'sendToConsole' event when we click on the button
@@ -150,11 +152,11 @@ public class GwtCreatePresentation extends SlidesSource {
   public void afterCustomEvent() {
     $("#viewport > button").unbind("click");
     $("#console").unbind("sendToConsole");
-    $("#viewport").empty().hide();
+    viewPort.empty().hide();
   }
 
   public void beforeNamespace() {
-    $("#viewport").append("<button id='unbind'>Unbind events</button>").show();
+    viewPort.append("<button id='unbind'>Unbind events</button>").show();
   }
 
   /**
@@ -192,7 +194,7 @@ public class GwtCreatePresentation extends SlidesSource {
 
   public void leaveNamespace() {
     $("#console").unbind(".ns1");
-    $("#viewport").empty().hide();
+    viewPort.empty().hide();
   }
 
 
@@ -221,52 +223,103 @@ public class GwtCreatePresentation extends SlidesSource {
     JavaScriptObject jso = JsUtils.prop(window, "history");
     JsUtils.runJavascriptFunction(jso, "pushState", "aStateObject", "aTitle", "foo/bar");
     //
-    NodeList nodes = JsUtils.runJavascriptFunction(document, "querySelectorAll", "div");
+    NodeList<?> nodes = JsUtils.runJavascriptFunction(document, "querySelectorAll", "div");
 
     //
     console.log(Window.Location.getHref());
     console.log(nodes.getLength());
   }
 
+  private String url;
+  public void enterJsnicall() {
+    // save pushState before changing it in the snippet
+    url = Window.Location.getPath() + Window.Location.getQueryString();
+  }
+
+  public void leaveJsnicall() {
+    // restore pushState
+    JavaScriptObject jso = JsUtils.prop(window, "history");
+    JsUtils.runJavascriptFunction(jso, "pushState", null, null, url + Window.Location.getHash());
+  }
+
   /**
    * @ Avoiding JSNI
    * @@ Exporting Java methods
    * <pre>
-
+  // Call the native method to export the function
   exportBar();
   ...
-
-  public static void bar(final Object args) {
-    console.log(args);
-  }
-
+  // Write a native JSNI method to set a window property
   native void exportBar() /*-{
     $wnd.bar =
       $entry(
          @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
       );
   }-* /;
-
+  // Write a Jave method to handle the call
+  public static void bar(final Object args) {
+    console.log(args);
+    return "Hello from JSNI exported java";
+  }
    * </pre>
    */
   public void testJsniexport() {
+    // Just set a window property with a wrapped function
     JsUtils.prop(window, "foo", JsUtils.wrapFunction(new Function() {
-      public void f() {
+      public Object f(Object... args) {
         console.log(dumpArguments());
+        return "Hello from gQuery exported java";
       }
     }));
   }
 
-  public static void bar(final Object args) {
+  // TODO: maybe we could figure out a way to copy these methods to
+  // the javadoc <pre></pre> block somehow
+  public static Object bar(final Object args) {
     console.log(args);
+    return "Hello from JSNI exported java";
   }
-
+  // TODO: To copy this method in the <pre> block should be more
+  // difficult because the AST would consider the body as a comment
   native void exportBar() /*-{
     $wnd.bar =
       $entry(
          @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
       );
   }-*/;
+
+  // Show the console, and run a JavaScript console emulator.
+  public void beforeJsniexport() {
+    console.log("");
+    exportBar();
+    viewPort.height(250).append("<div>Try this javascript code:</div>" +
+        "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>" +
+    "<input type=text id='evaljs' placeholder='Javascript console' >").fadeIn(2000);
+
+    viewPort.find("input").bind(Event.ONKEYDOWN, new Function() {
+      public boolean f(Event e) {
+        if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
+          String js = $(this).val();
+          Object o;
+          try {
+            o = JsUtils.runJavascriptFunction(window, "eval", js);
+          } catch (Exception e2) {
+            o = e2.getMessage().replaceAll("^.*:", "");
+          }
+          if (o != null) {
+            console.log(o);
+          }
+          return false;
+        }
+        return true;
+      }
+    });
+  }
+
+  public void leaveJsniexport() {
+    viewPort.empty().hide();
+  }
+
 
   /**
    * @ What is the Deferred object?
