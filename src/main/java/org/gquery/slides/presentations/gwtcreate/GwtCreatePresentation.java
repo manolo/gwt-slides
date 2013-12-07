@@ -4,18 +4,21 @@ import static com.google.gwt.query.client.GQuery.*;
 import static org.gquery.slides.client.Utils.getRandom;
 import static org.gquery.slides.client.Utils.setTimeout;
 
-import java.util.Random;
-
 import org.gquery.slides.client.SlidesSource;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -192,6 +195,79 @@ public class GwtCreatePresentation extends SlidesSource {
     $("#viewport").empty().hide();
   }
 
+
+  /**
+   * @ Avoiding JSNI
+   * @@ calling external code.
+   * <pre>
+   pushStateImpl("aStateObject", "aTitle", "foo/bar");
+   ...
+   native void pushStateImpl(Object stateObject, String title, String url) /*-{
+       if ($wnd.history && $wnd.history.pushState) {
+          $wnd.history.pushState(stateObject, title, url);
+       }
+   }-* /;
+
+   NodeList nodes = querySelectorAll("div")
+   ...
+   native JavaScriptObject querySelectorAll(String selector) /*-{
+       if ($doc.querySelectorAll) {
+           return $doc.querySelectorAll(selector);
+       }
+   }-* /;
+   * </pre>
+   */
+  public void testJsnicall() {
+    JavaScriptObject jso = JsUtils.prop(window, "history");
+    JsUtils.runJavascriptFunction(jso, "pushState", "aStateObject", "aTitle", "foo/bar");
+    //
+    NodeList nodes = JsUtils.runJavascriptFunction(document, "querySelectorAll", "div");
+
+    //
+    console.log(Window.Location.getHref());
+    console.log(nodes.getLength());
+  }
+
+  /**
+   * @ Avoiding JSNI
+   * @@ Exporting Java methods
+   * <pre>
+
+  exportBar();
+  ...
+
+  public static void bar(final Object args) {
+    console.log(args);
+  }
+
+  native void exportBar() /*-{
+    $wnd.bar =
+      $entry(
+         @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
+      );
+  }-* /;
+
+   * </pre>
+   */
+  public void testJsniexport() {
+    JsUtils.prop(window, "foo", JsUtils.wrapGQueryFuntion(new Function() {
+      public void f() {
+        console.log(dumpArguments());
+      }
+    }));
+  }
+
+  public static void bar(final Object args) {
+    console.log(args);
+  }
+
+  native void exportBar() /*-{
+    $wnd.bar =
+      $entry(
+         @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
+      );
+  }-*/;
+
   /**
    * @ What is the Deferred object?
    * 
@@ -352,7 +428,7 @@ public class GwtCreatePresentation extends SlidesSource {
   public void testN7() throws Exception {
     // We can join simultaneous promises, functions or data into a single promise which
     // will be resolved only in the case all of them succeed.
-    when( getRandom(), "JQ", getRandom(), true, new Random())
+    when( getRandom(), "JQ", getRandom(), true, new Button())
     .done( new Function(){public void f(){
       // We get a bi-dimensional array with the output of each call
       console.log(arguments(0, 0));
