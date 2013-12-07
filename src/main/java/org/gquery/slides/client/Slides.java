@@ -99,14 +99,19 @@ public class Slides {
     // handle key events to move slides back/forward
     .bind(Event.ONKEYDOWN, new Function() {
       public boolean f(Event e) {
-        int code = e.getKeyCode();
-        if (code == KeyCodes.KEY_RIGHT || code == ' ') {
-          show(true);
+        // By pass if the cursor is in an input widget
+        if (!$(e.getEventTarget()).is("input, textarea")) {
+          int code = e.getKeyCode();
+          if (code == KeyCodes.KEY_RIGHT || code == ' ') {
+            show(true);
+            return false;
+          }
+          if (code == KeyCodes.KEY_LEFT || code == KeyCodes.KEY_BACKSPACE) {
+            show(false);
+            return false;
+          }
         }
-        if (code == KeyCodes.KEY_LEFT || code == KeyCodes.KEY_BACKSPACE) {
-          show(false);
-        }
-        return false;
+        return true;
       }
     })
     // handle hash change to select the appropriate slide
@@ -120,6 +125,15 @@ public class Slides {
     $("#play").click(new Function() {
       public void f() {
         slidesSrc.exec(currentSlide.id());
+      }
+    });
+
+    // Clear the console if we push mouse right
+    $("#console").bind(Event.ONCONTEXTMENU, new Function() {
+      public boolean f(Event e) {
+        console.clear();
+        console.log("");
+        return false;
       }
     });
   }
