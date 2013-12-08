@@ -3,6 +3,8 @@ package org.gquery.slides.bind;
 import japa.parser.JavaParser;
 import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.body.BodyDeclaration;
+import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
@@ -33,6 +35,7 @@ public class SlidesGenerator extends Generator {
   HashMap<String, String> execMethods = new HashMap<String, String>();
   HashMap<String, String> afterMethods = new HashMap<String, String>();
   HashMap<String, String> leaveMethods = new HashMap<String, String>();
+  HashMap<String, String> innerClasses = new HashMap<String, String>();
 
   @Override
   public String generate(TreeLogger treeLogger,
@@ -58,13 +61,14 @@ public class SlidesGenerator extends Generator {
     if (sw != null) {
       sw.println("public " + generatedClzName + "() {");
       for (String id : methodBodies.keySet()) {
-        String s = methodBodies.get(id).replaceAll("\n", "\\\\\\n").replaceAll("\"", "\\\\\"");
-        sw.println("  snippets.put(\"" + id + "\", \"" + s + "\");");
+        String s = methodBodies.get(id);
+        s = resolveIncludes(s);
+        sw.println("  snippets.put(\"" + id + "\", \"" + escape(s) + "\");");
 
         s = methodDoc.get(id);
         if (s != null) {
-          s = s.replaceAll("\n", "\\\\\\n").replaceAll("\"", "\\\\\"");
-          sw.println("  docs.put(\"" + id + "\", \"" + s + "\");");
+          s = resolveIncludes(s);
+          sw.println("  docs.put(\"" + id + "\", \"" + escape(s) + "\");");
         }
       }
 
@@ -107,6 +111,7 @@ public class SlidesGenerator extends Generator {
     return generatedClzFullName;
   }
 
+
   public void parseJavaFile(String file) throws ParseException {
     InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
 
@@ -115,7 +120,20 @@ public class SlidesGenerator extends Generator {
     CompilationUnit cu = null;
     cu = JavaParser.parse(in);
 
-    VoidVisitorAdapter<?> a = new VoidVisitorAdapter<Object>() {
+    final VoidVisitorAdapter<?> memberVisitor = new VoidVisitorAdapter<Object>() {
+      public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+        innerClasses.put(n.getName(), formatBody(n.toString()));
+      }
+    };
+
+    final VoidVisitorAdapter<?> mainVisitor = new VoidVisitorAdapter<Object>() {
+      public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+        for (BodyDeclaration b : n.getMembers()) {
+          b.accept(memberVisitor, null);
+        }
+        super.visit(n, arg);
+      }
+
       public void visit(MethodDeclaration n, Object arg) {
         if (n.getName().startsWith("enter")){
           handleSpecialMethod(n, "enter", enterMethods);
@@ -130,43 +148,84 @@ public class SlidesGenerator extends Generator {
         }
       }
     };
-    a.visit(cu, null);
+
+    mainVisitor.visit(cu, null);
   }
 
   private void handleSimpleMethod(MethodDeclaration n, Object arg) {
     String id = n.getName().replaceFirst("^test","").toLowerCase();
     boolean noParameters = n.getParameters() == null;
     if (n.getBody() != null) {
-      String s = n.getBody().toString();
+      String s;
       if (noParameters) {
-        s = s.replaceFirst("^\\s*\\{ *\n*", "")
-        .replaceFirst("\\s*\\}\\s*$", "")
-        .replace("\n\n", "\n") // remove double new line after anonymous class definition
-        .replaceAll("(?m)^\\s*//\\s*$", "") // remove empty comments, forces a line
-        .replaceAll("(?m)^    ", "")
-        .replaceAll("    ", "  ");
-
+        // Body comes wrapped by curly brackets.
+        s = n.getBody().toString()
+          // remove method declaration line
+          .replaceFirst("^\\s*\\{ *\n*", "")
+          // remove last close method line
+          .replaceFirst("\\s*\\}\\s*$", "")
+          // remove 4 spaces indentation
+          .replaceAll("(?m)^    ", "");
       } else {
-        s = n.getName() + "()" + s;
+        s = n.toString();
       }
-      methodBodies.put(id, s);
+      methodBodies.put(id, formatBody(s));
     }
     if (noParameters) {
       execMethods.put(id, n.getName());
     }
     if (n.getComment() != null) {
-      methodDoc.put(id,
-          n.getComment().toString()
-          .replaceAll("(?m)^\\s*(/\\*\\*|\\*/|\\*)", "")
-          .replaceAll("(?m)^\\s*-\\s(.*)$", "<li>$1</li>")
-          .replaceAll("(?m)^\\s*@\\s(.+)\\s*$", "<h1>$1</h1>")
-          .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
-          .replaceFirst("<li>", "<section><ul><li>")
-          .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
-          .replace("* /", "*/") // If we write jsni in javadoc
-          .trim()
-      );
+      methodDoc.put(id, formatComment(n.getComment().toString()));
     }
+  }
+
+  private String formatComment(String comment) {
+    return comment
+      .replaceAll("(?m)^\\s*(/\\*\\*|\\*/|\\*)", "")
+      .replaceAll("(?m)^\\s*-\\s(.*)$", "<li>$1</li>")
+      .replaceAll("(?m)^\\s*@\\s(.+)\\s*$", "<h1>$1</h1>")
+      .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
+      .replaceFirst("<li>", "<section><ul><li>")
+      .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
+      .replace("* /", "*/") // If we write jsni in javadoc
+      .trim();
+  }
+
+  // Replace all occurrences of '@include: method_name or inner_class_name' by
+  // the content of method or class present in the source class
+  private String resolveIncludes(String body) {
+
+    String regex = "(?s)(?:|.*\n)([\\s/]*@include:\\s*)(\\w+)(\\s*?)(?:\n.*|).*";
+
+    while (body.matches(regex)) {
+      String id = body.replaceFirst(regex, "$2");
+      String replace = body.replaceFirst(regex, "$1$2$3");
+
+      String s = innerClasses.get(id);
+      if (s == null) {
+        s = methodBodies.get(id);
+      }
+      if (s == null) {
+        s = methodBodies.get(id.toLowerCase().replaceFirst("^test", ""));
+      }
+      if (s == null) {
+        s = "\n// " + id + " class/method not found\n";
+      }
+
+      body = body.replace(replace, s );
+    }
+
+    return body;
+  }
+
+  private String formatBody(String body) {
+    return body
+      // remove double new line after anonymous class definition
+      .replace("\n\n", "\n")
+      // remove empty comments, forces a new line
+      .replaceAll("(?m)^\\s*//\\s*$", "")
+      // replace 4 spaces identation with 2 spaces
+      .replaceAll("    ", "  ");
   }
 
   private void handleSpecialMethod(MethodDeclaration n, String prefix, HashMap<String, String> map) {
