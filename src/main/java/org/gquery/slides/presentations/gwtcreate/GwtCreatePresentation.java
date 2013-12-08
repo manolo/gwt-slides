@@ -335,7 +335,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   public void leaveCss3animations() {
-    $(".animate").hide();
+    $(".gQLogo").hide();
     viewPort.css($$("width: '', height: ''")).empty().hide();
   }
 
