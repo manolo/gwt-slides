@@ -322,7 +322,7 @@ public class GwtCreatePresentation extends SlidesSource {
    * - jQuery uses javascript timers.
    * - gQuery CSS3 transitions or falls back to javascript.
    * - gQuery supports CSS3 transformation syntax in properties.
-   * - Animaition queue works with both CSS3 and javascript.
+   * - Animation queue works with both CSS3 and javascript.
    * - gQuery supports all set of named Bezier curves, and allows customization.
    *
        <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
