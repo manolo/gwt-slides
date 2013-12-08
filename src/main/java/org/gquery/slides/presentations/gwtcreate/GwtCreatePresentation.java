@@ -340,7 +340,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   public void beforeCss3animations() {
-    viewPort.css($$("width: 200px, height: 800px")).hide().delay(7000).fadeIn(2000);
+    viewPort.css($$("width: 200px, height: auto")).hide().delay(7000).fadeIn(2000);
     $(".gQLogo").show().css($$("top: 105%, left: 105%, background-color: #e54827"));
     $("#play").hide();
   }

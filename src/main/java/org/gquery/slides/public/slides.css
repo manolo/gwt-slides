@@ -113,7 +113,7 @@ li {
      font-size: 1em;
      padding: 0.2em;
      position: absolute;
-     right: 10px;
+     left: 15px;
      text-shadow: 0 0 0.3em #145FDC;
      z-index: 9001;
  }
