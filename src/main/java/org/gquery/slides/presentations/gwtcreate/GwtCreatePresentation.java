@@ -21,6 +21,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
@@ -245,21 +246,21 @@ public class GwtCreatePresentation extends SlidesSource {
    * @ Avoiding JSNI
    * @@ Exporting Java methods
    * <pre>
-  // Call the native method to export the function
-  exportBar();
-  ...
-  // Write a native JSNI method to set a window property
-  native void exportBar() /*-{
-    $wnd.bar =
-      $entry(
-         @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
-      );
-  }-* /;
-  // Write a Jave method to handle the call
-  public static void bar(final Object args) {
-    console.log(args);
-    return "Hello from JSNI exported java";
-  }
+// Call the native method to export the function
+exportBar();
+...
+
+// Write a native JSNI method to set a window property
+native void exportBar() /*-{
+  $wnd.bar =
+    $entry(
+       @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
+    );
+}-* /;
+
+// Write a Java method to handle the call
+@include: bar
+
    * </pre>
    */
   public void testJsniexport() {
@@ -272,15 +273,15 @@ public class GwtCreatePresentation extends SlidesSource {
     }));
   }
 
-  // TODO: maybe we could figure out a way to copy these methods to
-  // the javadoc <pre></pre> block somehow
-  public static Object bar(final Object args) {
+  public static Object bar(Object args) {
     console.log(args);
     return "Hello from JSNI exported java";
   }
-  // TODO: To copy this method in the <pre> block should be more
-  // difficult because the AST would consider the body as a comment
-  native void exportBar() /*-{
+
+  // TODO: To copy this method in the <pre> block it is
+  // difficult because the AST removes the jsni body, so
+  // we have to figure out a way to get that comment block
+  native void exportBar(String b)  /*-{
     $wnd.bar =
       $entry(
          @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
@@ -290,7 +291,7 @@ public class GwtCreatePresentation extends SlidesSource {
   // Show the console, and run a JavaScript console emulator.
   public void beforeJsniexport() {
     console.log("Ready");
-    exportBar();
+    exportBar(null);
     viewPort.append("<div>Try this javascript code:</div>" +
     "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>");
 
@@ -444,6 +445,13 @@ public class GwtCreatePresentation extends SlidesSource {
     }
   }
 
+  public static class SlidesConsole extends ConsoleBrowser {
+    public void log(Object o) {
+      $("#console").show()
+        .append(String.valueOf(o));
+    }
+  }
+
   /**
    * @ The gQuery Console class
    *
@@ -453,33 +461,48 @@ public class GwtCreatePresentation extends SlidesSource {
    * - It is injected using Deferred binding, so we can override the implementation.
    */
   public void testConsoleClass() {
-    class SlidesConsole extends ConsoleBrowser {
-      @Override
-      public void log(Object o) {
-        $("#console").show().append(String.valueOf(o));
-      }
-    }
-
+    // @include: SlidesConsole
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
       public void onUncaughtException(Throwable e) {
         console.log(e.getMessage());
       }
     });
-
+    //
     $(window).delay(1000, new Function(){
       public void f() {
         throw new RuntimeException("An uncaugh exception");
       }
     });
+
+  }
+
+  public static abstract class JsniSlidesExample implements JsniBundle {
+    @MethodSource("jsni-example.js")
+    public abstract String foo(String arg1, String arg2);
   }
 
   /**
    * @ JSNI Bundle
+   * - A generated class with JSNI methods whose content is taken from external files.
+   * @@ GOALS
+   * - Use IDEs for editing, formating... instead of dealing with code in comment blocks.
+   * - Easier to test JS in the browser before compiling it.
+   * - Include third-party libraries without modification of the original source.
+   * - Easier to write GWT wrappers: not need of html tags, nor .gwt.xml modifications, nor TextResources.
+   * - Get rid of any jsni java method if the application does not use it.
+   * - Take advantage of GWT jsni validators, obfuscators and optimizers.
+   <pre>
+   $ cat jsni-example.js
+   return arguments[0] + " " + arguments[1] + " : gQuery rocks !" ;
+   </pre>
    */
   public void testJsniBundle() {
+    // @include: JsniSlidesExample
+    //
+    JsniSlidesExample jsniExample = GWT.create(JsniSlidesExample.class);
+    console.log(jsniExample.foo("Say", "something"));
 
   }
-
 
   /**
    * @ What is the Deferred object?
@@ -526,6 +549,9 @@ public class GwtCreatePresentation extends SlidesSource {
     // resolve (tip the done bucket)
     dfd.reject();
   }
+
+
+
 
   Promise doSomethingAsync(final boolean ok) {
     return new PromiseFunction() {public void f(final Deferred dfd) {
