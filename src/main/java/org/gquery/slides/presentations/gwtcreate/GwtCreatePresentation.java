@@ -327,30 +327,30 @@ public class GwtCreatePresentation extends SlidesSource {
    * - jQuery uses javascript timers.
    * - gQuery CSS3 transitions or falls back to javascript.
    * - gQuery supports CSS3 transformation syntax in properties.
-   * - Animaition queue works with both CSS3 and javascript.
+   * - Animation queue works with both CSS3 and javascript.
    * - gQuery supports all set of named Bezier curves, and allows customization.
    * - It comes with a set of predefined animations.
    *
        <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
    */
-  public void testCss3animations() {
+  public void testCss3Animations() {
     $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000, easeOutBack);
     $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000, EasingCurve.custom.with(.31,-0.37,.47,1.5));
     $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
     $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
   }
 
-  public void leaveCss3animations() {
+  public void leaveCss3Animations() {
     $(".gQLogo").hide();
     viewPort.css($$("width: '', height: ''")).empty().hide();
   }
 
-  public void beforeCss3animations() {
+  public void beforeCss3Animations() {
     viewPort.css($$("width: 200px, height: auto")).hide().delay(7000).fadeIn(2000);
     $(".gQLogo").show().css($$("top: 105%, left: 105%, background-color: #e54827"));
   }
 
-  public void enterCss3animations() {
+  public void enterCss3Animations() {
     viewPort.empty().hide();
     final GQuery logo = $(".gQLogo").hide();
 
@@ -471,6 +471,13 @@ public class GwtCreatePresentation extends SlidesSource {
         throw new RuntimeException("An uncaugh exception");
       }
     });
+  }
+
+  /**
+   * @ JSNI Bundle
+   */
+  public void testJsniBundle() {
+
   }
 
 
