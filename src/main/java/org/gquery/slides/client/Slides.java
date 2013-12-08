@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Event;
@@ -91,10 +92,24 @@ public class Slides {
 
     // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
     int w = (int)($(window).width() * 1.5);
+    Properties pLeft = $$("left: -" + w);
+    Properties pRight = $$("left: " + w);
+
     // move slides to left out of the window view port
-    slides.lt(currentPage).animate($$("left: -" + w), 1000, easing);
+    if (currentPage - 2 >= 0) {
+      slides.lt(currentPage - 1).css(pLeft);
+    }
+    if (currentPage - 1 >= 0) {
+      slides.eq(currentPage - 1).animate(pLeft, 1000, easing);
+    }
+
     // move slides to right out of the window view port
-    slides.gt(currentPage).animate($$("left: " + w), 1000, easing);
+    if ((currentPage + 2) <= totalPages) {
+      slides.gt(currentPage + 1).css(pRight);
+    }
+    if ((currentPage + 1) <= totalPages) {
+      slides.eq(currentPage + 1).animate(pRight, 1000, easing);
+    }
 
     // move current slide to the window view port
     currentSlide = slides.eq(currentPage)
