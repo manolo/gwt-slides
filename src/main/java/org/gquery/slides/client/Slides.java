@@ -68,25 +68,39 @@ public class Slides {
   private void showCurrentSlide() {
     // compute current page based on hash
     String hash = hash();
+
     currentPage = hash.matches("\\d+") ? Integer.parseInt(hash) : 0;
+    int totalPages = slides.size() -1;
+
+    // prevent going to any page out of our limits
+    if (currentPage < 0 || currentPage > totalPages) {
+      hash(0);
+      return;
+    }
 
     // update page elements
     console.clear();
-    $("#play").hide();
+    $("#play, #viewport").hide();
     $("#marker").text("" + currentPage);
+
+    // stop any pending animation
+    slides.stop(true);
+
+    // notify last slide to execute it's clean up code
     currentSlide.trigger(SlidesSource.LEAVE_EVENT_NAME);
 
-    // move slides to left out of the window view port
     // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
     int w = (int)($(window).width() * 1.5);
-    slides.lt(currentPage).stop(true).animate($$("left: -" + w), 1000, easing);
+    // move slides to left out of the window view port
+    slides.lt(currentPage).animate($$("left: -" + w), 1000, easing);
     // move slides to right out of the window view port
-    slides.gt(currentPage).stop(true).animate($$("left: +" + w), 1000, easing);
+    slides.gt(currentPage).animate($$("left: " + w), 1000, easing);
 
     // move current slide to the window view port
-    currentSlide = slides.eq(currentPage).stop(true)
-    .animate($$("left: 0"), 1000, easing)
-    .delay(0, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
+    currentSlide = slides.eq(currentPage)
+      .animate($$("left: 0"), 1000, easing)
+      // notify new slide to execute it's start up code
+      .delay(0, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
 
     // display the button to execute the snippet
     if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
