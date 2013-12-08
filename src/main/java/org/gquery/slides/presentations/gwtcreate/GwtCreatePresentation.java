@@ -1,6 +1,8 @@
 package org.gquery.slides.presentations.gwtcreate;
 
 import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
 import static org.gquery.slides.client.Utils.getRandom;
 import static org.gquery.slides.client.Utils.setTimeout;
 
@@ -10,6 +12,8 @@ import java.util.TreeMap;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -17,6 +21,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
@@ -324,13 +329,14 @@ public class GwtCreatePresentation extends SlidesSource {
    * - gQuery supports CSS3 transformation syntax in properties.
    * - Animaition queue works with both CSS3 and javascript.
    * - gQuery supports all set of named Bezier curves, and allows customization.
+   * - It comes with a set of predefined animations.
    *
        <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
    */
   public void testCss3animations() {
-    $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000);
+    $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000, easeOutBack);
     $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000, EasingCurve.custom.with(.31,-0.37,.47,1.5));
-    $(".gQLogo").animate($$("background-color:gold"), 1000, EasingCurve.easeInOutBack);
+    $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
     $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
   }
 
@@ -342,7 +348,6 @@ public class GwtCreatePresentation extends SlidesSource {
   public void beforeCss3animations() {
     viewPort.css($$("width: 200px, height: auto")).hide().delay(7000).fadeIn(2000);
     $(".gQLogo").show().css($$("top: 105%, left: 105%, background-color: #e54827"));
-    $("#play").hide();
   }
 
   public void enterCss3animations() {
@@ -355,23 +360,21 @@ public class GwtCreatePresentation extends SlidesSource {
       put("02 fadeIn()       | opacity: 'show'", lazy().fadeIn().done());
       put("03 fadeTo(0.5)    | opacity: '0.5'", lazy().fadeTo(.5).done());
       put("04 fadeTo(1)      | opacity: '1'", lazy().fadeTo(1).done());
-      put("05 fadeToggle()   | opacity: 'toggle'", new Function(){public void f() {$(this).as(Effects).fadeToggle();}});
-      put("06 slideUp()      | height: 'hide'", new Function(){public void f() {$(this).as(Effects).slideUp();}});
-      put("07 slideDown()    | height: 'show'", new Function(){public void f() {$(this).as(Effects).slideDown();}});
-      put("08 slideLeft()    | width: 'hide'", new Function(){public void f() {$(this).as(Effects).slideLeft();}});
-      put("09 slideRight()   | width: 'show' ", new Function(){public void f() {$(this).as(Effects).slideRight();}});
-      put("10 slideToggle()  | height: 'toggle' ", new Function(){public void f() {$(this).slideToggle(400);}});
-      put("11 toggle()       | opacity: 'toggle', width : 'toggle', height : 'toggle'", new Function(){public void f() {$(this).as(Effects).toggle(400);}});
-      put("12 clipUp()       | clip-action: 'hide', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipUp();}});
-      put("13 clipDown()     | clip-action: 'show', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipDown();}});
-      put("14 clipDisappear()| clip-action: 'hide'", new Function(){public void f() {$(this).as(Effects).clipDisappear();}});
-      put("15 clipAppear()   | clip-action: 'hide'", new Function(){public void f() {$(this).as(Effects).clipAppear();}});
-      put("16 clipToggle()   | clip-action: 'toggle', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipToggle(400);}});
-      put("17 animate()      | clip-action: 'toggle', clip-origin: 'bottom-right', opacity: toggle", null);
-      put("18 amimate()      | background-color: #e54827", null);
-      put("19 animate()      | background-color: #ADD9E4", null);
-      put("20 animate()      | rotateY:180deg, rotateX:180deg, background:#e54827, transformOrigin: center", null);
-      put("21 animate()      | rotateY:0deg, rotateX:0deg, background: #ADD9E4, transformOrigin: center", null);
+      put("05 fadeToggle()   | opacity: 'toggle'", null);
+      put("06 slideUp()      | height: 'hide'", null);
+      put("07 slideDown()    | height: 'show'", null);
+      put("08 slideLeft()    | width: 'hide'", null);
+      put("09 slideRight()   | width: 'show' ", null);
+      put("10 slideToggle()  | height: 'toggle' ", null);
+      put("11 toggle()       | opacity: 'toggle', width : 'toggle', height : 'toggle'", null);
+      put("12 clipUp()       | clip-action: 'hide', clip-origin: 'top-left'", null);
+      put("13 clipDown()     | clip-action: 'show', clip-origin: 'top-left'", null);
+      put("14 clipDisappear()| clip-action: 'hide'", null);
+      put("15 clipAppear()   | clip-action: 'show'", null);
+      put("16 clipToggle()   | clip-action: 'toggle', clip-origin: 'top-left'", null);
+      put("17 custom         | clip-action: 'toggle', clip-origin: 'bottom-right', opacity: toggle, background: #e54827, easing: easeOutBack, duration: 4000", null);
+      put("20 css3 transform | rotateY:180deg, rotateX:180deg, background:navy, transformOrigin: center, easing: easeInOutBack, duration: 3000, scale: 0.5, opacity: 0.3", null);
+      put("21 restore        | rotateY:0deg, rotateX:0deg, background: #ADD9E4, transformOrigin: center, scale: 1, opacity: 1", null);
     }};
 
     GQuery ul= $("<ul>").appendTo(viewPort);
@@ -389,7 +392,7 @@ public class GwtCreatePresentation extends SlidesSource {
       });
 
     for (final Entry<String, Function> e : animations.entrySet()) {
-      String name = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$1");
+      final String name = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$1");
       final String prop = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$2");
 
       $("<li>" + name).appendTo(ul).click(new Function() {
@@ -401,7 +404,9 @@ public class GwtCreatePresentation extends SlidesSource {
           } else {
             logo.stop(false, true).animate($$(prop));
           }
-          String code = "$(\".logo\").animate($$(\"" + prop + "\");";
+          String code = "$(\".logo\").";
+          code += name.contains("(") ? ("as(Effects)." + name) :  ("animate($$(\"" + prop + "\")" )+ ";" ;
+          $("#play").hide();
           $("#css3animations .jCode-lines pre").html(Prettify.prettify(code));
         }});
     }
@@ -418,6 +423,54 @@ public class GwtCreatePresentation extends SlidesSource {
             console.log("CSS3 animations are " + (Fx.css3 ? "enabled" : "disabled"));
           }
         });
+  }
+
+  /**
+   * @ The gQuery Browser class
+   *
+   * - Equivalent to the jQuery.browser object.
+   * - gQuery provide these flags: webkit, mozilla, opera, msie, ie9, ie8, ie6
+   * - A Generator produces the implementation which return false/true in compile time.
+   * - Any code inside a non matching block is removed by the GWT optimizer.
+   * - This approach saves a lot of code for browser specific code.
+   */
+  public void testBrowserClass() {
+    if (browser.webkit) {
+      console.log("This code goes to the chrome and safari permutation.");
+    } else if (browser.mozilla) {
+      console.log("This code goes to  the Firefox permutation.");
+    } else {
+      console.log("This code goes to IE and Opera permutations ");
+    }
+  }
+
+  /**
+   * @ The gQuery Console class
+   *
+   * - Equivalent to the javascript `window.console` object.
+   * - Methods available: "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd"
+   * - There are specific tweaks per browser (ie: IE8, IE9 console is not part of the DOM)
+   * - It is injected using Deferred binding, so we can override the implementation.
+   */
+  public void testConsoleClass() {
+    class SlidesConsole extends ConsoleBrowser {
+      @Override
+      public void log(Object o) {
+        $("#console").show().append(String.valueOf(o));
+      }
+    }
+
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        console.log(e.getMessage());
+      }
+    });
+
+    $(window).delay(1000, new Function(){
+      public void f() {
+        throw new RuntimeException("An uncaugh exception");
+      }
+    });
   }
 
 
