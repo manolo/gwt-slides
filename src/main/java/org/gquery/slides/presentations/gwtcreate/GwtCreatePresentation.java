@@ -325,7 +325,7 @@ public class GwtCreatePresentation extends SlidesSource {
    * - Animaition queue works with both CSS3 and javascript.
    * - gQuery supports all set of named Bezier curves, and allows customization.
    *
-       <div class="gQLogo" style='position: fixed'><img src="img/logo-gquery-transp.png"></div>
+       <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
    */
   public void testCss3animations() {
     $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000);
