@@ -40,7 +40,7 @@ public class GwtCreatePresentation extends SlidesSource {
 
   public void beforeBindEvent() {
     leaveBindEvent();
-    viewPort.show().height(250);
+    viewPort.show();
   }
 
   /**
@@ -286,7 +286,7 @@ public class GwtCreatePresentation extends SlidesSource {
   public void beforeJsniexport() {
     console.log("Ready");
     exportBar();
-    viewPort.height(250).append("<div>Try this javascript code:</div>" +
+    viewPort.append("<div>Try this javascript code:</div>" +
     "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>");
 
     $("<input type=text id='evaljs' placeholder='Javascript console' >").appendTo(viewPort)
@@ -336,11 +336,11 @@ public class GwtCreatePresentation extends SlidesSource {
 
   public void leaveCss3animations() {
     $(".animate").hide();
-    viewPort.css("width", "30%").empty().hide();
+    viewPort.css($$("width: '', height: ''")).empty().hide();
   }
 
   public void beforeCss3animations() {
-    viewPort.css("width", "200ps").hide().delay(7000).fadeIn(2000);
+    viewPort.css($$("width: 200px, height: 800px")).hide().delay(7000).fadeIn(2000);
     $(".gQLogo").show().css($$("top: 105%, left: 105%, background-color: #e54827"));
     $("#play").hide();
   }
