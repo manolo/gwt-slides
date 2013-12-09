@@ -64,6 +64,8 @@ public class Slides {
     bindEvents();
 
     showCurrentSlide();
+
+    slides.fadeTo(1, 3000);
   }
 
   private void showCurrentSlide() {
@@ -119,21 +121,9 @@ public class Slides {
 
     // display the button to execute the snippet
     if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
-      // wait until the animation has finished, then show the button and move it.
-      currentSlide.delay(0, movePlayButtonFunction);
+      currentSlide.find(".jCode").prepend($("#play").show());
     }
   }
-
-  private Function movePlayButtonFunction = new Function() {
-    public void f() {
-      GQuery currentCode = currentSlide.find(".jCode");
-      int left = currentCode.offset().left + currentCode.width() - 50;
-      int top = currentCode.offset().top;
-      // TODO: gQuery.offset(top, left) does not work and sets negative values
-      // although we are passing positive numbers.
-      $("#play").css("top", top + "px").css("left", left + "px").fadeIn();
-    }
-  };
 
   private void bindEvents() {
     $(window)
@@ -160,8 +150,7 @@ public class Slides {
       public void f() {
         showCurrentSlide();
       }
-    })
-    .bind("resize", movePlayButtonFunction);
+    });
 
     $("#play").click(new Function() {
       public void f() {
