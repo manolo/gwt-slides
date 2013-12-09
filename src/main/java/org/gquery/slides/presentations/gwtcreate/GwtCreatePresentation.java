@@ -477,7 +477,7 @@ native void exportBar() /*-{
   }
 
   public static abstract class JsniSlidesExample implements JsniBundle {
-    @MethodSource("jsni-example.js")
+    @MethodSource("js/jsni-example.js")
     public abstract String foo(String arg1, String arg2);
   }
 
@@ -502,6 +502,45 @@ native void exportBar() /*-{
     JsniSlidesExample jsniExample = GWT.create(JsniSlidesExample.class);
     console.log(jsniExample.foo("Say", "something"));
 
+  }
+
+  public static abstract class HighCharts implements JsniBundle {
+    @LibrarySource("http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js")
+    public abstract void initJQuery();
+    //
+    @LibrarySource("js/highcharts.src.js")
+    public abstract void initHighcharts();
+    //
+    public void drawChart(String id, JavaScriptObject props) {
+      JavaScriptObject $container = JsUtils.runJavascriptFunction(window, "jQuery", "#" + id);
+      JsUtils.runJavascriptFunction($container, "highcharts", props);
+    }
+  }
+
+  private JavaScriptObject charProps = $$("title: {text: 'Monthly Average Temperature'},"
+      + "xAxis: {categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']},"
+      + "yAxis: {title: {text: 'Temperature (°C)'},},"
+      + "series: [{name: 'Tokyo', data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5]},"
+      + "{name: 'New York', data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0]},"
+      + "{name: 'London',data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2]}]");
+
+  /**
+   * @ JSNI Bundle: Importing third-party javascript files
+   *
+   * <div id="container" style='display: none'></div>
+   */
+  public void testHighCharts() {
+    // @include: HighCharts
+    //
+    HighCharts highCharts = GWT.create(HighCharts.class);
+    //
+    highCharts.initJQuery();
+    highCharts.initHighcharts();
+    highCharts.drawChart("viewport", charProps);
+  }
+
+  public void beforeHighCharts() {
+    viewPort.show();
   }
 
   /**

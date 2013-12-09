@@ -16,6 +16,7 @@ target
 .classpath
 .project
 .settings
+.gwt
 
 #GWT generated file
 *~
