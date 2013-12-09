@@ -121,6 +121,7 @@ var UNDEFINED,
 
 // The Highcharts namespace
 // MCM
+delete win.Highcharts; 
 Highcharts = win.Highcharts = win.Highcharts ? error(16, true) : {};
 
 /**
@@ -1442,7 +1443,8 @@ pathAnim = {
 			$(el).stop();
 		}
 	});
-}(win.jQuery));
+	// MCM
+}(win.$ || win.gQuery || win.jQuery));
 
 
 // check for a custom HighchartsAdapter defined prior to this file

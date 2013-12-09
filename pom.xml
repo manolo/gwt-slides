@@ -92,6 +92,12 @@
             <version>${gQueryVersion}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.timepedia.exporter</groupId>
+            <artifactId>gwtexporter</artifactId>
+            <version>2.5.1</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- GWT 2.3.0 depends on these -->
         <dependency>
             <groupId>javax.validation</groupId>
