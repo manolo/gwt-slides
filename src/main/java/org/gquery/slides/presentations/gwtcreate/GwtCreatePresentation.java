@@ -1,6 +1,8 @@
 package org.gquery.slides.presentations.gwtcreate;
 
 import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
 import static org.gquery.slides.client.Utils.getRandom;
 import static org.gquery.slides.client.Utils.setTimeout;
 
@@ -10,6 +12,8 @@ import java.util.TreeMap;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -17,6 +21,8 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.builders.JsniBundle;
+import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
@@ -240,21 +246,21 @@ public class GwtCreatePresentation extends SlidesSource {
    * @ Avoiding JSNI
    * @@ Exporting Java methods
    * <pre>
-  // Call the native method to export the function
-  exportBar();
-  ...
-  // Write a native JSNI method to set a window property
-  native void exportBar() /*-{
-    $wnd.bar =
-      $entry(
-         @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
-      );
-  }-* /;
-  // Write a Jave method to handle the call
-  public static void bar(final Object args) {
-    console.log(args);
-    return "Hello from JSNI exported java";
-  }
+// Call the native method to export the function
+exportBar();
+...
+
+// Write a native JSNI method to set a window property
+native void exportBar() /*-{
+  $wnd.bar =
+    $entry(
+       @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
+    );
+}-* /;
+
+// Write a Java method to handle the call
+@include: bar
+
    * </pre>
    */
   public void testJsniexport() {
@@ -267,15 +273,15 @@ public class GwtCreatePresentation extends SlidesSource {
     }));
   }
 
-  // TODO: maybe we could figure out a way to copy these methods to
-  // the javadoc <pre></pre> block somehow
-  public static Object bar(final Object args) {
+  public static Object bar(Object args) {
     console.log(args);
     return "Hello from JSNI exported java";
   }
-  // TODO: To copy this method in the <pre> block should be more
-  // difficult because the AST would consider the body as a comment
-  native void exportBar() /*-{
+
+  // TODO: To copy this method in the <pre> block it is
+  // difficult because the AST removes the jsni body, so
+  // we have to figure out a way to get that comment block
+  native void exportBar(String b)  /*-{
     $wnd.bar =
       $entry(
          @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
@@ -285,7 +291,7 @@ public class GwtCreatePresentation extends SlidesSource {
   // Show the console, and run a JavaScript console emulator.
   public void beforeJsniexport() {
     console.log("Ready");
-    exportBar();
+    exportBar(null);
     viewPort.append("<div>Try this javascript code:</div>" +
     "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>");
 
@@ -324,28 +330,28 @@ public class GwtCreatePresentation extends SlidesSource {
    * - gQuery supports CSS3 transformation syntax in properties.
    * - Animation queue works with both CSS3 and javascript.
    * - gQuery supports all set of named Bezier curves, and allows customization.
+   * - It comes with a set of predefined animations.
    *
        <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
    */
-  public void testCss3animations() {
-    $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000);
+  public void testCss3Animations() {
+    $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000, easeOutBack);
     $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000, EasingCurve.custom.with(.31,-0.37,.47,1.5));
-    $(".gQLogo").animate($$("background-color:gold"), 1000, EasingCurve.easeInOutBack);
+    $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
     $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
   }
 
-  public void leaveCss3animations() {
+  public void leaveCss3Animations() {
     $(".gQLogo").hide();
     viewPort.css($$("width: '', height: ''")).empty().hide();
   }
 
-  public void beforeCss3animations() {
-    viewPort.css($$("width: 200px, height: 800px")).hide().delay(7000).fadeIn(2000);
+  public void beforeCss3Animations() {
+    viewPort.css($$("width: 200px, height: auto")).hide().delay(7000).fadeIn(2000);
     $(".gQLogo").show().css($$("top: 105%, left: 105%, background-color: #e54827"));
-    $("#play").hide();
   }
 
-  public void enterCss3animations() {
+  public void enterCss3Animations() {
     viewPort.empty().hide();
     final GQuery logo = $(".gQLogo").hide();
 
@@ -355,23 +361,21 @@ public class GwtCreatePresentation extends SlidesSource {
       put("02 fadeIn()       | opacity: 'show'", lazy().fadeIn().done());
       put("03 fadeTo(0.5)    | opacity: '0.5'", lazy().fadeTo(.5).done());
       put("04 fadeTo(1)      | opacity: '1'", lazy().fadeTo(1).done());
-      put("05 fadeToggle()   | opacity: 'toggle'", new Function(){public void f() {$(this).as(Effects).fadeToggle();}});
-      put("06 slideUp()      | height: 'hide'", new Function(){public void f() {$(this).as(Effects).slideUp();}});
-      put("07 slideDown()    | height: 'show'", new Function(){public void f() {$(this).as(Effects).slideDown();}});
-      put("08 slideLeft()    | width: 'hide'", new Function(){public void f() {$(this).as(Effects).slideLeft();}});
-      put("09 slideRight()   | width: 'show' ", new Function(){public void f() {$(this).as(Effects).slideRight();}});
-      put("10 slideToggle()  | height: 'toggle' ", new Function(){public void f() {$(this).slideToggle(400);}});
-      put("11 toggle()       | opacity: 'toggle', width : 'toggle', height : 'toggle'", new Function(){public void f() {$(this).as(Effects).toggle(400);}});
-      put("12 clipUp()       | clip-action: 'hide', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipUp();}});
-      put("13 clipDown()     | clip-action: 'show', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipDown();}});
-      put("14 clipDisappear()| clip-action: 'hide'", new Function(){public void f() {$(this).as(Effects).clipDisappear();}});
-      put("15 clipAppear()   | clip-action: 'hide'", new Function(){public void f() {$(this).as(Effects).clipAppear();}});
-      put("16 clipToggle()   | clip-action: 'toggle', clip-origin: 'top-left'", new Function(){public void f() {$(this).as(Effects).clipToggle(400);}});
-      put("17 animate()      | clip-action: 'toggle', clip-origin: 'bottom-right', opacity: toggle", null);
-      put("18 amimate()      | background-color: #e54827", null);
-      put("19 animate()      | background-color: #ADD9E4", null);
-      put("20 animate()      | rotateY:180deg, rotateX:180deg, background:#e54827, transformOrigin: center", null);
-      put("21 animate()      | rotateY:0deg, rotateX:0deg, background: #ADD9E4, transformOrigin: center", null);
+      put("05 fadeToggle()   | opacity: 'toggle'", null);
+      put("06 slideUp()      | height: 'hide'", null);
+      put("07 slideDown()    | height: 'show'", null);
+      put("08 slideLeft()    | width: 'hide'", null);
+      put("09 slideRight()   | width: 'show' ", null);
+      put("10 slideToggle()  | height: 'toggle' ", null);
+      put("11 toggle()       | opacity: 'toggle', width : 'toggle', height : 'toggle'", null);
+      put("12 clipUp()       | clip-action: 'hide', clip-origin: 'top-left'", null);
+      put("13 clipDown()     | clip-action: 'show', clip-origin: 'top-left'", null);
+      put("14 clipDisappear()| clip-action: 'hide'", null);
+      put("15 clipAppear()   | clip-action: 'show'", null);
+      put("16 clipToggle()   | clip-action: 'toggle', clip-origin: 'top-left'", null);
+      put("17 custom         | clip-action: 'toggle', clip-origin: 'bottom-right', opacity: toggle, background: #e54827, easing: easeOutBack, duration: 4000", null);
+      put("20 css3 transform | rotateY:180deg, rotateX:180deg, background:navy, transformOrigin: center, easing: easeInOutBack, duration: 3000, scale: 0.5, opacity: 0.3", null);
+      put("21 restore        | rotateY:0deg, rotateX:0deg, background: #ADD9E4, transformOrigin: center, scale: 1, opacity: 1", null);
     }};
 
     GQuery ul= $("<ul>").appendTo(viewPort);
@@ -389,7 +393,7 @@ public class GwtCreatePresentation extends SlidesSource {
       });
 
     for (final Entry<String, Function> e : animations.entrySet()) {
-      String name = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$1");
+      final String name = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$1");
       final String prop = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$2");
 
       $("<li>" + name).appendTo(ul).click(new Function() {
@@ -401,7 +405,9 @@ public class GwtCreatePresentation extends SlidesSource {
           } else {
             logo.stop(false, true).animate($$(prop));
           }
-          String code = "$(\".logo\").animate($$(\"" + prop + "\");";
+          String code = "$(\".logo\").";
+          code += name.contains("(") ? ("as(Effects)." + name) :  ("animate($$(\"" + prop + "\")" )+ ";" ;
+          $("#play").hide();
           $("#css3animations .jCode-lines pre").html(Prettify.prettify(code));
         }});
     }
@@ -420,6 +426,125 @@ public class GwtCreatePresentation extends SlidesSource {
         });
   }
 
+  /**
+   * @ The gQuery Browser class
+   *
+   * - Equivalent to the jQuery.browser object.
+   * - gQuery provide these flags: webkit, mozilla, opera, msie, ie9, ie8, ie6
+   * - A Generator produces the implementation which return false/true in compile time.
+   * - Any code inside a non matching block is removed by the GWT optimizer.
+   * - This approach saves a lot of code for browser specific code.
+   */
+  public void testBrowserClass() {
+    if (browser.webkit) {
+      console.log("This code goes to the chrome and safari permutation.");
+    } else if (browser.mozilla) {
+      console.log("This code goes to  the Firefox permutation.");
+    } else {
+      console.log("This code goes to IE and Opera permutations ");
+    }
+  }
+
+  public static class SlidesConsole extends ConsoleBrowser {
+    public void log(Object o) {
+      $("#console").show()
+        .append(String.valueOf(o));
+    }
+  }
+
+  /**
+   * @ The gQuery Console class
+   *
+   * - Equivalent to the javascript `window.console` object.
+   * - Methods available: "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd"
+   * - There are specific tweaks per browser (ie: IE8, IE9 console is not part of the DOM)
+   * - It is injected using Deferred binding, so we can override the implementation.
+   */
+  public void testConsoleClass() {
+    // @include: SlidesConsole
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        console.log(e.getMessage());
+      }
+    });
+    //
+    $(window).delay(1000, new Function(){
+      public void f() {
+        throw new RuntimeException("An uncaugh exception");
+      }
+    });
+
+  }
+
+  public static abstract class JsniSlidesExample implements JsniBundle {
+    @MethodSource("js/jsni-example.js")
+    public abstract String foo(String arg1, String arg2);
+  }
+
+  /**
+   * @ JSNI Bundle
+   * - A generated class with JSNI methods whose content is taken from external files.
+   * @@ GOALS
+   * - Use IDEs for editing, formating... instead of dealing with code in comment blocks.
+   * - Easier to test JS in the browser before compiling it.
+   * - Include third-party libraries without modification of the original source.
+   * - Easier to write GWT wrappers: not need of html tags, nor .gwt.xml modifications, nor TextResources.
+   * - Get rid of any jsni java method if the application does not use it.
+   * - Take advantage of GWT jsni validators, obfuscators and optimizers.
+   <pre>
+   $ cat jsni-example.js
+   return arguments[0] + " " + arguments[1] + " : gQuery rocks !" ;
+   </pre>
+   */
+  public void testJsniBundle() {
+    // @include: JsniSlidesExample
+    //
+    JsniSlidesExample jsniExample = GWT.create(JsniSlidesExample.class);
+    console.log(jsniExample.foo("Say", "something"));
+
+  }
+
+  // Define either an abstract class or an interface.
+  public static abstract class HighCharts implements JsniBundle {
+    // GWT Closure compiler fails with jQuery unless we change this occurrence
+    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
+                   replace = {"\"\":\"outer\"", "\".\":\"outer\""})
+    public abstract void initJQuery();
+    // The highChart library will be optimized and obfuscated
+    @LibrarySource("js/highcharts.src.js")
+    public abstract void initHighcharts();
+    // We can add other methods to our class
+    public void drawChart(String id, JavaScriptObject props) {
+      JavaScriptObject $container = JsUtils.runJavascriptFunction(window, "jQuery", "#" + id);
+      JsUtils.runJavascriptFunction($container, "highcharts", props);
+    }
+  }
+
+  private JavaScriptObject charProps = $$("title: {text: 'Monthly Average Temperature'},"
+      + "xAxis: {categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']},"
+      + "yAxis: {title: {text: 'Temperature (°C)'},},"
+      + "series: [{name: 'Tokyo', data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5]},"
+      + "{name: 'New York', data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0]},"
+      + "{name: 'London',data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2]}]");
+
+  /**
+   * @ JSNI Bundle: Importing third-party javascript files
+   *
+   * <div id="container" style='display: none'></div>
+   */
+  public void testHighCharts() {
+    // @include: HighCharts
+    //
+    HighCharts highCharts = GWT.create(HighCharts.class);
+    //
+    highCharts.initJQuery();
+    highCharts.initHighcharts();
+    highCharts.drawChart("viewport", charProps);
+  }
+
+  public void beforeHighCharts() {
+    viewPort.show();
+  }
 
   /**
    * @ What is the Deferred object?
@@ -466,6 +591,9 @@ public class GwtCreatePresentation extends SlidesSource {
     // resolve (tip the done bucket)
     dfd.reject();
   }
+
+
+
 
   Promise doSomethingAsync(final boolean ok) {
     return new PromiseFunction() {public void f(final Deferred dfd) {

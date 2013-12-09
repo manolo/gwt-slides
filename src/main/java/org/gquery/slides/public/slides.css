@@ -104,6 +104,7 @@ li {
     font-family: monospace;
     line-height: 1.3em;
     padding-top: 0.8em;
+    padding-left: 1em;
     font-size: 0.8em;
 }
 
@@ -113,7 +114,7 @@ li {
      font-size: 1em;
      padding: 0.2em;
      position: absolute;
-     right: 10px;
+     left: 15px;
      text-shadow: 0 0 0.3em #145FDC;
      z-index: 9001;
  }
