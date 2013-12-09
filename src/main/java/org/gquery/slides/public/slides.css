@@ -89,6 +89,7 @@ li {
     position: absolute;
     width: 100%;
     height: 100%;
+    opacity: 0;
 }
 
 .slides > section > section, .slides > section > pre {
@@ -154,7 +155,7 @@ li {
      width: 30%;
      height: 250px;
      z-index: 9002;
-     display: flex;
+     display: none;
      flex-direction: column;
      justify-content: center;
      align-items: center;
@@ -200,20 +201,19 @@ li {
 }
 
  #play {
-     position: absolute;
-     font-size: 1.5em;
-     top: 5px;
-     right: 10px;
+     font-size: 2.5em;
      color: green;
      cursor: pointer;
      text-shadow: 0 0 0.3em #145FDC;
+     float: right;
+     position: static;
+     display: none;
  }
  
  .jCode {
      transition: all 0.8s ease-in-out 0s;
  	 background: #353536;
      box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.6) inset;     
-     padding-left: 1.4m;
      -moz-box-pack: center;
      
      display: -moz-box;
@@ -225,19 +225,18 @@ li {
      
      margin-top: 10px;
      border-radius: 7px;
+     max-width: 860px;
+     overflow: hidden;
+     padding-left: 20px;
+     padding-right: 20px;
  }
  .jCode-div {
     color: rgb(169,183,198);
     font-size: 0.8em;
     letter-spacing: -0.06em;
-    overflow: hidden;
-    padding: 20px;
 }
 .jCode-scroll {
     height: auto;
-}
-.jCode-scroll {
-    overflow: auto;
     position: relative;
 }
 .jCode-lines {
