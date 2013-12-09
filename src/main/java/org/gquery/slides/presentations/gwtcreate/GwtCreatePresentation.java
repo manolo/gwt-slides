@@ -504,13 +504,16 @@ native void exportBar() /*-{
 
   }
 
+  // Define either an abstract class or an interface.
   public static abstract class HighCharts implements JsniBundle {
-    @LibrarySource("http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js")
+    // GWT Closure compiler fails with jQuery unless we change this occurrence
+    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
+                   replace = {"\"\":\"outer\"", "\".\":\"outer\""})
     public abstract void initJQuery();
-    //
+    // The highChart library will be optimized and obfuscated
     @LibrarySource("js/highcharts.src.js")
     public abstract void initHighcharts();
-    //
+    // We can add other methods to our class
     public void drawChart(String id, JavaScriptObject props) {
       JavaScriptObject $container = JsUtils.runJavascriptFunction(window, "jQuery", "#" + id);
       JsUtils.runJavascriptFunction($container, "highcharts", props);
