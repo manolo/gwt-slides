@@ -201,13 +201,15 @@ li {
 }
 
  #play {
-     font-size: 2.5em;
+     font-size: 2.1em;
      color: green;
      cursor: pointer;
      text-shadow: 0 0 0.3em #145FDC;
-     float: right;
-     position: static;
+     position: absolute;
      display: none;
+     z-index: 1;
+     margin-left: -10px;
+     margin-top: 2px;
  }
  
  .jCode {
@@ -223,7 +225,6 @@ li {
      line-height: 1em;
      color: #A6E22E;
      
-     margin-top: 10px;
      border-radius: 7px;
      max-width: 860px;
      overflow: hidden;
