@@ -124,15 +124,6 @@ public class SlidesGenerator extends Generator {
       public void visit(ClassOrInterfaceDeclaration n, Object arg) {
         innerClasses.put(n.getName(), formatBody(n.toString()));
       }
-    };
-
-    final VoidVisitorAdapter<?> mainVisitor = new VoidVisitorAdapter<Object>() {
-      public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-        for (BodyDeclaration b : n.getMembers()) {
-          b.accept(memberVisitor, null);
-        }
-        super.visit(n, arg);
-      }
 
       public void visit(MethodDeclaration n, Object arg) {
         if (n.getName().startsWith("enter")){
@@ -145,6 +136,14 @@ public class SlidesGenerator extends Generator {
           handleSpecialMethod(n, "leave", leaveMethods);
         } else {
           handleSimpleMethod(n, arg);
+        }
+      }
+    };
+
+    final VoidVisitorAdapter<?> mainVisitor = new VoidVisitorAdapter<Object>() {
+      public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+        for (BodyDeclaration b : n.getMembers()) {
+          b.accept(memberVisitor, null);
         }
       }
     };
@@ -225,7 +224,9 @@ public class SlidesGenerator extends Generator {
       // remove empty comments, forces a new line
       .replaceAll("(?m)^\\s*//\\s*$", "")
       // replace 4 spaces identation with 2 spaces
-      .replaceAll("    ", "  ");
+      .replace("    ", "  ")
+      // put in new lines split lines
+      .replace("\" + \"", "\"\n       + \"");
   }
 
   private void handleSpecialMethod(MethodDeclaration n, String prefix, HashMap<String, String> map) {
