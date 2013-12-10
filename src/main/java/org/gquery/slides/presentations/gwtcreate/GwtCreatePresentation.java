@@ -443,7 +443,7 @@ native void exportBar() /*-{
     red.animate("bottom: 0, delay: 0, duration: 4000, easing: easeOut");
     yellow.animate("bottom: 0, delay: 4000, duration: 2000, easing: easeOut");
     green.animate("bottom: 0, delay: 6000, duration: 3000, easing: easeOut");
-    balls.animate("right: 100%, delay: 9000, duration: 1000,easing: easeOut");
+    balls.animate("left: 120%, delay: 9000, duration: 1000,easing: easeOut");
   }
 
   public void enterAnimationsAdvanced() {
@@ -738,11 +738,11 @@ native void exportBar() /*-{
   Transitions red = $(".red").as(Transitions), blue = $(".blue").as(Transitions), yellow = $(".yellow").as(Transitions), green = $(".green").as(Transitions);
 
   void drawBalls() {
-    if (!balls.isVisible() || balls.cur("left", true) <= 0) {
+    if (!balls.isVisible() || balls.cur("left", true) > 350 ) {
       balls.show().each(new Function() {
         int h = $(window).height() - 50;
         public void f(Element e) {
-          $(e).css("bottom", (h - Random.nextInt(300)) + "px").css("right", Random.nextInt(300) + "px");
+          $(e).css("bottom", (h - Random.nextInt(300)) + "px").css("left", Random.nextInt(300) + "px");
         }
       });
     }
@@ -760,7 +760,7 @@ native void exportBar() /*-{
     //
     when(dropBall(blue,1000), dropBall(red, 4000)).then(dropBall(yellow,2000)).then(dropBall(green, 3000))
     .then(new Function(){public Object f(Object...o){
-      return balls.animate($$("right: 100%"), 1000).promise();
+      return balls.animate($$("left: 120%"), 1000).promise();
     }}).done(new Function() {
       public void f() {
         console.log("All balls were dropt");
@@ -801,7 +801,7 @@ native void exportBar() /*-{
               drop_ball(green, 3000, new Function() {
                 @Override
                 public void f() {
-                  balls.animate($$("right: 100%"), 1000, new Function() {
+                  balls.animate($$("left: 120%"), 1000, new Function() {
                     boolean done = false;
                     @Override
                     public void f() {

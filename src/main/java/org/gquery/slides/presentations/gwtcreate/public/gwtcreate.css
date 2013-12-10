@@ -106,7 +106,7 @@
 }
 
 #promisesdeferred > section, #promisespipeline > section {
-    left: 40px;
+    right: 5px;
     position: absolute;
     top: 0;
     opacity: 0.6;
