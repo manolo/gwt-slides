@@ -1,10 +1,9 @@
 package org.gquery.slides.presentations.gwtcreate;
 
 import static com.google.gwt.query.client.GQuery.*;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.*;
+import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
 import static org.gquery.slides.client.Utils.getRandom;
-import static org.gquery.slides.client.Utils.setTimeout;
 
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -29,10 +28,12 @@ import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.jsquery.JsQuery;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -153,7 +154,6 @@ public class GwtCreatePresentation extends SlidesSource {
         return false;
       }
     });
-
   }
 
   public void afterCustomEvent() {
@@ -342,24 +342,24 @@ native void exportBar() /*-{
    *
        <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
    */
-  public void testCss3Animations() {
+  public void testAnimationsCss3() {
     $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000, easeOutBack);
     $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000, EasingCurve.custom.with(.31,-0.37,.47,1.5));
     $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
     $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
   }
 
-  public void leaveCss3Animations() {
+  public void leaveAnimationsCss3() {
     $(".gQLogo").hide();
     viewPort.css($$("width: '', height: ''")).empty().hide();
   }
 
-  public void beforeCss3Animations() {
+  public void beforeAnimationsCss3() {
     viewPort.css($$("width: 200px, height: auto")).hide().delay(7000).fadeIn(2000);
     $(".gQLogo").show().css($$("top: 105%, left: 105%, background-color: #e54827"));
   }
 
-  public void enterCss3Animations() {
+  public void enterAnimationsCss3() {
     viewPort.empty().hide();
     final GQuery logo = $(".gQLogo").hide();
 
@@ -432,6 +432,28 @@ native void exportBar() /*-{
             console.log("CSS3 animations are " + (Fx.css3 ? "enabled" : "disabled"));
           }
         });
+  }
+
+  /**
+   * @ Advanced animations
+   * - use css3 delays so as we don't have to chain animations.
+   */
+  public void testAnimationsAdvanced() {
+    blue.animate("bottom: 0, delay: 0, duration: 1000, easing: easeOut");
+    red.animate("bottom: 0, delay: 0, duration: 4000, easing: easeOut");
+    yellow.animate("bottom: 0, delay: 4000, duration: 2000, easing: easeOut");
+    green.animate("bottom: 0, delay: 6000, duration: 3000, easing: easeOut");
+    balls.animate("right: 100%, delay: 9000, duration: 1000,easing: easeOut");
+  }
+
+  public void enterAnimationsAdvanced() {
+    drawBalls();
+  }
+  public void beforeAnimationsAdvanced() {
+    drawBalls();
+  }
+  public void leaveAnimationsAdvanced() {
+    balls.hide();
   }
 
   /**
@@ -587,14 +609,19 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ gQuery + gwtExporter == JsQuery
-   * @@ A jQuery clone for handwritten javascript.
+   * @ jsQuery
+   * @@ gwtQuery + gwtExporter
+   *
+   * - A way to expose gQuery methods to javascript
+   * - Use javascript libraries in GWT without importing jQuery.
+   * - Vaadin imports jQuery using a TextResource. Using JsniBundle + JsQuery they would save some code.
+   *
     <pre>
  &lt;inherits name='com.google.gwt.query.JsQuery'/>
     </pre>
    */
   public void testJsQuery() {
-    //
+//    //
     GWT.create(JsQuery.class);
     HighCharts highCharts = GWT.create(HighCharts.class);
     //
@@ -603,183 +630,71 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ What is the Deferred object?
-   *
-   * - It is a chainable object that holds our callbacks into queues.
-   * - It can invoke callback queues, and relay the success or failure state of any synchronous or asynchronous function.
+   * @ Promises
+   * - Based on the CommonJS Promises/A and Promises/A+ specs.
+   * - gQuery promises: MVP compliant , it runs in JVM.
+   * @@ What is a Promise
+   * - A Promise is an one-time event, It is in a pending state until resolved or rejected.
+   * - Once resolved attached callbacks are run and status remains
+   * - Adding more callbacks to resolved promises are executed inmediatelly.
+   * - We can combine logically promises: parallel execution, pipelining.
+   * - Promises is an Interface which prevents changing its state.
+   * @@ Deferred Object
+   * - Its the underlying object of a Promise
+   * - A chainable object that holds our callbacks into queues
    * - We can easily resolve or reject that deferred
-   * - We can return, pass around, and store Promises, an interface for the deferred which prevents change the state.
-   * - Resolved or rejected data is passed to the callbacks no matter where/when they were assigned
-   * - It is Based on the CommonJS Promises/A and Promise/A+ specs.
+   * - We can return, pass around, and store Promises
    */
-  public void slide1() {
+  public void testPromises() {
   }
 
   /**
    * @ What does it look like?
+   * - Handling success and failures
+   * - Receiving data
+   * - Chaining
+   * - Maintain status and data.
    */
-  public void testN1() throws Exception {
+  public void testPromisesDeferred() throws Exception {
     // create a Deferred
     Deferred dfd = Deferred();
-    // do something when it's done
+    //
+    // Add callbacks to the promise
     dfd.promise()
+    .progress(new Function(){public void f(){
+      console.log("progress! " + arguments(0));
+    }})
     .done(new Function(){public void f(){
-      console.log( "dun dun dum" );
-    }});
-    // resolve (tip the done bucket)
-    dfd.resolve();
-  }
-
-  /**
-   * @ Handling success and failures
-   */
-  public void testN2() throws Exception {
-    // create a Deferred
-    Deferred dfd = Deferred();
-    // do something when it's done
-    dfd.promise()
-    .done(new Function(){public void f(){
-      console.log("success!");
+      console.log("success! " + arguments(0));
     }})
     .fail(new Function(){public void f(){
-      console.log("broked!");
+      console.log("broked! " + arguments(0));
     }});
-    // resolve (tip the done bucket)
-    dfd.reject();
-  }
+    //
+    dfd.notify("Notifications can be sent only when status is pending");
+    console.log("state:" + dfd.promise().state());
+    //
+    dfd.reject("When we reject/resolve a deferred it status remains for ever");
+    dfd.notify("This notification should not be executed");
+    console.log("state:" + dfd.promise().state());
+    //
+    dfd.resolve("We cannot change the final status of a deferred object");
+    dfd.notify("Notifications are not sent after it is resolved");
+    console.log("state:" + dfd.promise().state());
+    //
+    // New callbacks added to finished promises are executed immediately
+    dfd.promise().always(new Function() {
+      public void f() {
+        console.log("Always. " + arguments(0));
+      }
+    });
 
-
-
-
-  Promise doSomethingAsync(final boolean ok) {
-    return new PromiseFunction() {public void f(final Deferred dfd) {
-      setTimeout(new Function(){public void f(){
-        if (ok) dfd.resolve("OK");
-        else dfd.reject("ERR");
-      }}, 1000);
-    }};
-  }
-
-  /**
-   * @ Receiving succeed or failed data
-   */
-  public void testN3() throws Exception {
-    // Call an asynchronous method which will succeed
-    doSomethingAsync(true)
-    .done(new Function(){public void f(){
-      // get the succeed data
-      console.log("we " + arguments(0));
-    }});
-    // Call an asynchronous method which will fail
-    doSomethingAsync(false)
-    .fail(new Function(){public void f(){
-      // get the failed message
-      console.log("we " + arguments(0));
-    }});
-  }
-
-  /**
-   * @ Chaining
-   */
-  public void testN4_1() throws Exception {
-    Function didIt = new Function(){public void f(){
-      console.log("did it!");
-    }};
-    Function failed = new Function(){public void f(){
-      console.log("failed!");
-    }};
-
-    // Call a failed asynchronous
-    doSomethingAsync(false)
-    .done(didIt)
-    .fail(failed)
-    .always(didIt);
-  }
-
-  /**
-   * @ Pipelining
-   */
-  public void testN4_2() throws Exception {
-    Function didIt = new Function(){public void f(){
-      console.log("did it!");
-    }};
-    Function failed = new Function(){public void f(){
-      console.log("failed!");
-    }};
-
-    // Call a failed asynchronous
-    doSomethingAsync(true)
-    .then(didIt, failed)
-    .done(didIt)
-    .fail(failed);
-
-    // Call a failed asynchronous
-    doSomethingAsync(false)
-    .then(didIt, failed)
-    .done(didIt)
-    .fail(failed);
-  }
-
-  /**
-   * @ Promises maintain status and data.
-   */
-  public void testN5() throws Exception {
-    // create a Deferred
-    final Deferred dfd = Deferred();
-    // resolve it
-    dfd.resolve( "OH NO YOU DIDNT");
-
-    // Check that the promise status is resolved
-    console.log("Promise status is: " + dfd.promise().state());
-
-    // Add a handle to the promise in the future.
-    setTimeout( new Function(){public void f(){
-      dfd.promise().done( new Function(){public void f() {
-        console.log(arguments(0));
-      }});
-    }}, 1000 );
-  }
-
-  public void testN5_2() throws Exception {
-    final Promise customDfd = getRandom();
-    when(customDfd)
-    .done(new Function(){public void f(){
-      console.log(dumpArguments());
-      when(customDfd).done(new Function(){public void f(){
-        console.log(dumpArguments());
-      }});
-    }});
-  }
-
-  public void testN6() throws Exception {
-    // call an async random generator
-    getRandom().done(new Function(){public void f(){
-      // We get an array of arguments
-      console.log(arguments(0));
-    }});
-  }
-
-  /**
-   * @ Joining multiple calls
-   */
-  public void testN7() throws Exception {
-    // We can join simultaneous promises, functions or data into a single promise which
-    // will be resolved only in the case all of them succeed.
-    when( getRandom(), "JQ", getRandom(), true, new Button())
-    .done( new Function(){public void f(){
-      // We get a bi-dimensional array with the output of each call
-      console.log(arguments(0, 0));
-      console.log(arguments(1, 0));
-      console.log(arguments(2, 0));
-      console.log(arguments(3, 0));
-      console.log(arguments(4, 0));
-    }});
   }
 
   /**
    * @ The helper method `dumpArguments`
    */
-  public void testN7_2() throws Exception {
+  public void testPromisesDump_Hidden_Slide() throws Exception {
     // Join different calls
     when( getRandom(), "JQ", new Boolean[]{true, false})
     .done( new Function(){public void f(){
@@ -789,45 +704,9 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ Wait until everything is resolved.
-   */
-  public void testN8() throws Exception {
-    // customized deferred will be resolved after a delay
-    Function customDfd = new Function(){public Object f(Object...args){
-      final Deferred dfd = Deferred();
-      setTimeout(new Function(){public void f(){
-        dfd.resolve("all done!");
-      }}, 4000);
-      return dfd.promise();
-    }};
-    // run simultaneous asynchronous callbacks
-    when( getRandom(), customDfd)
-    .done(new Function(){public void f(){
-      // Done will be fired when all promises are resolved
-      console.log(arguments(0, 0));
-      console.log(arguments(1, 0));
-    }});
-  }
-
-  public void testN9() throws Exception {
-    Function customDfd = new Function(){public Object f(Object...args){
-      final Deferred dfd = Deferred();
-      setTimeout(new Function(){public void f(){
-        dfd.resolve("all done!");
-      }}, 4000);
-      return dfd.promise();
-    }};
-
-    when( getRandom(), customDfd)
-    .done(new Function(){public void f(){
-      console.log(dumpArguments());
-    }});
-  }
-
-  /**
    * @ gQuery Helper Functions
    */
-  public void testN10() throws Exception {
+  public void testPromisesHelper_Hidden_Slide() throws Exception {
     // The normal way create a function returning a promise
     Function customDfd = new Function(){public Object f(Object...args){
       Deferred dfd = Deferred();
@@ -849,115 +728,112 @@ native void exportBar() /*-{
     }});
   }
 
+  Function dropBall(final GQuery ball, final int timeout) {
+    return new Function(){public Object f(Object...o){
+      return ball.animate($$("bottom: 0"), timeout, easeOut).promise();
+    }};
+  }
+
+  Transitions balls = $(".ball").as(Transitions);
+  Transitions red = $(".red").as(Transitions), blue = $(".blue").as(Transitions), yellow = $(".yellow").as(Transitions), green = $(".green").as(Transitions);
+
+  void drawBalls() {
+    if (!balls.isVisible() || balls.cur("left", true) <= 0) {
+      balls.show().each(new Function() {
+        int h = $(window).height() - 50;
+        public void f(Element e) {
+          $(e).css("bottom", (h - Random.nextInt(300)) + "px").css("right", Random.nextInt(300) + "px");
+        }
+      });
+    }
+  }
+
   /**
-   * @ How to use deferred for caching calls
+   * @ pipelining: 'then()'
+   * - declarative language
+   * - less errors.
+   * - return a promise to pipe
+   * - an object to modify previous data
    */
-  public void testN12() throws Exception {
-    // Define a customized deferred function
-    final Function customDfd = new Function() {
-      // Response cache
-      Integer cache;
-      public Object f(Object...o) {
-        if (cache != null) {
-          return cache;
-        } else {
-          // If the call is not cached return the callback promise
-          return getRandom().done(new Function(){public void f(){
-            cache = arguments(0);
-          }});
+  public void testPromisesPipeline() {
+    // @include: dropBall
+    //
+    when(dropBall(blue,1000), dropBall(red, 4000)).then(dropBall(yellow,2000)).then(dropBall(green, 3000))
+    .then(new Function(){public Object f(Object...o){
+      return balls.animate($$("right: 100%"), 1000).promise();
+    }}).done(new Function() {
+      public void f() {
+        console.log("All balls were dropt");
+      }
+    });
+  }
+  public void enterPromisesPipeline() {
+    drawBalls();
+  }
+  public void beforePromisesPipeline() {
+    drawBalls();
+  }
+  public void leavePromisesPipeline() {
+    balls.hide();
+  }
+
+  GQuery drop_ball(final GQuery ball, final int timeout, final Function callback) {
+    return ball.animate($$("bottom: 0"), timeout, easeOut, callback);
+  }
+
+  int done = 0;
+
+  /**
+   * @ The Pyramid Of Doom
+   */
+  public void testPromisesPyramidOfDoom() {
+    // @include: drop_ball
+    //
+    Function dropMore = new Function() {
+      int cont = 0;
+      @Override
+      public void f() {
+        cont ++;
+        if (cont == 2) {
+          drop_ball(yellow, 2000, new Function() {
+            @Override
+            public void f() {
+              drop_ball(green, 3000, new Function() {
+                @Override
+                public void f() {
+                  balls.animate($$("right: 100%"), 1000, new Function() {
+                    boolean done = false;
+                    @Override
+                    public void f() {
+                      if (!done) {
+                        console.log("All balls were dropt");
+                      }
+                      done = true;
+                    };
+                  });
+                }
+              });
+            }
+          });
         }
       }
     };
 
-    // Calling the function always returns the same value
-    when(customDfd)
-    .done(new Function(){public void f(){
-      console.log(dumpArguments());
-      when(customDfd).done(new Function(){public void f(){
-        console.log(dumpArguments());
-      }});
-    }});
+    // console.log("All Asynchronous process have finished");
+
+
+    drop_ball(blue, 1000, dropMore);
+    drop_ball(red, 4000, dropMore);
   }
 
-  Function drop(final GQuery ball, final int timeout) {
-    return new Function(){public Object f(Object...o){
-      System.out.println(ball);
-      return ball.animate($$("bottom: 0"), timeout, EasingCurve.custom.with(.31,-0.37,.47,1.5)).promise();
-    }};
+  public void enterPromisesPyramidOfDoom() {
+    enterPromisesPipeline();
   }
-
-  GQuery red = $(".red"), blue = $(".blue"), yellow = $(".yellow");
-  void drawBalls() {
-    red.css($$("bottom:8em;right:1em;display:block"));
-    blue.css($$("bottom:4em;right:2em;display:block"));
-    yellow.css($$("bottom:6em;right:2.7em;display:block"));
+  public void beforePromisesPyramidOfDoom() {
+    beforePromisesPipeline();
   }
-  public void testSomething() {
-    drawBalls();
-    when(drop(blue,500)).then(drop(yellow,2000)).then(drop(red,4000))
-    .done(new Function(){public void f(){
-      System.out.println(arguments(3));
-    }});
+  public void leavePromisesPyramidOfDoom() {
+    leavePromisesPipeline();
   }
-
-  public void testSomething1() {
-    drawBalls();
-    when($(".ball").animate($$("bottom: 0"), 1700, EasingCurve.custom.with(.31,-0.37,.47,1.5)))
-    .done(new Function(){public void f(){
-      console.log("all done");
-    }});
-  }
-
-  public void testSomething2() {
-    drawBalls();
-    final Function $a = drop(blue,500),
-    $b = drop(yellow,2000),
-    $c = drop(red,4000);
-
-    when($a, $b, $c)
-    .done(new Function(){public void f(){
-      console.log("all done");
-    }});
-  }
-  public void testSomething3() {
-    drawBalls();
-    final Function
-    $a = drop(blue,4000),
-    $b = drop(yellow,2000),
-    $c = drop(red,4000);
-
-    setTimeout(new Function(){public void f(){
-      red.stop();
-    }}, 1000);
-    when($a, $b, $c)
-    .done(new Function(){public void f(){
-      console.log("all done");
-    }});
-  }
-  public void testSomething4() {
-    drawBalls();
-    final Function $a = drop(blue,500),
-    $b = drop(yellow,2000),
-    $c = drop(red,4000);
-
-    when($a, $b, $c, getRandom())
-    .done(new Function(){public void f(){
-      System.out.println(arguments(3));
-    }});
-  }
-
-  public void testSomething5() {
-    drawBalls();
-    Promise promise = getRandom()
-    .then(new Function(){public Object f(Object...args){
-      console.log(dumpArguments());
-      return getRandom();
-    }});
-
-    when(promise).then(new Function(){public void f(){
-      console.log(dumpArguments());
-    }});
-  }
-
 
 }
