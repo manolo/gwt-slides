@@ -23,11 +23,13 @@ import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
+import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.jsquery.JsQuery;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -42,6 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class GwtCreatePresentation extends SlidesSource {
 
   GQuery viewPort = $("#viewport");
+  GQuery play = $("#play");
   Widget resizeWidget;
 
   public void beforeBindEvent() {
@@ -281,21 +284,17 @@ native void exportBar() /*-{
   // TODO: To copy this method in the <pre> block it is
   // difficult because the AST removes the jsni body, so
   // we have to figure out a way to get that comment block
-  native void exportBar(String b)  /*-{
-    $wnd.bar =
+  native void exportBar(String fnc)  /*-{
+    $wnd[fnc] =
       $entry(
          @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
       );
   }-*/;
 
-  // Show the console, and run a JavaScript console emulator.
-  public void beforeJsniexport() {
-    console.log("Ready");
-    exportBar(null);
-    viewPort.append("<div>Try this javascript code:</div>" +
-    "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>");
+  public void createJavascriptConsole(String tip) {
+    viewPort.empty().append(tip);
 
-    $("<input type=text id='evaljs' placeholder='Javascript console' >").appendTo(viewPort)
+    $("<input type=text id='evaljs' placeholder='Javascript console' >")
     .bind(Event.ONKEYDOWN, new Function() {
       public boolean f(Event e) {
         if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
@@ -313,10 +312,19 @@ native void exportBar() /*-{
         }
         return true;
       }
-    });
+    }).appendTo(viewPort);
 
     viewPort.show();
-    $("#play").hide();
+  }
+
+  // Show the console, and run a JavaScript console emulator.
+  public void beforeJsniexport() {
+    console.log("Ready");
+    exportBar("bar");
+    createJavascriptConsole("<div>Try this javascript code:</div>" +
+        "<pre>bar('hello', 'bye');\nbar(1);\nfoo('hello','bye');" +
+        "\nfoo('hi', 2, {a: 1, b:true, c:'foo'});</pre>");
+    play.hide();
   }
 
   public void leaveJsniexport() {
@@ -473,7 +481,6 @@ native void exportBar() /*-{
         throw new RuntimeException("An uncaugh exception");
       }
     });
-
   }
 
   public static abstract class JsniSlidesExample implements JsniBundle {
@@ -501,19 +508,20 @@ native void exportBar() /*-{
     //
     JsniSlidesExample jsniExample = GWT.create(JsniSlidesExample.class);
     console.log(jsniExample.foo("Say", "something"));
-
   }
 
-  // Define either an abstract class or an interface.
-  public static abstract class HighCharts implements JsniBundle {
-    // GWT Closure compiler fails with jQuery unless we change this occurrence
+
+  public interface JQueryBundle extends JsniBundle {
     @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
-                   replace = {"\"\":\"outer\"", "\".\":\"outer\""})
+        replace = {"\"\":\"outer\"", "\".\":\"outer\""})
     public abstract void initJQuery();
-    // The highChart library will be optimized and obfuscated
+  }
+
+  public static abstract class HighCharts implements JsniBundle {
+    //
     @LibrarySource("js/highcharts.src.js")
     public abstract void initHighcharts();
-    // We can add other methods to our class
+    //
     public void drawChart(String id, JavaScriptObject props) {
       JavaScriptObject $container = JsUtils.runJavascriptFunction(window, "jQuery", "#" + id);
       JsUtils.runJavascriptFunction($container, "highcharts", props);
@@ -530,20 +538,68 @@ native void exportBar() /*-{
   /**
    * @ JSNI Bundle: Importing third-party javascript files
    *
-   * <div id="container" style='display: none'></div>
    */
   public void testHighCharts() {
+    // @include: JQueryBundle
+    //
     // @include: HighCharts
     //
+    JQueryBundle jQuery = GWT.create(JQueryBundle.class);
     HighCharts highCharts = GWT.create(HighCharts.class);
     //
-    highCharts.initJQuery();
+    jQuery.initJQuery();
     highCharts.initHighcharts();
-    highCharts.drawChart("viewport", charProps);
+    highCharts.drawChart("container", charProps);
   }
 
   public void beforeHighCharts() {
-    viewPort.show();
+    $("#container").empty().show();
+    createJavascriptConsole("<div>Try this javascript code:</div>" +
+        "<pre>$('div');\n</pre>");
+  }
+
+  public void leaveHighCharts() {
+    $("#container").empty().hide();
+    viewPort.empty().hide();
+    window.<JsCache>cast().delete("$");
+    window.<JsCache>cast().delete("Highcharts");
+    window.<JsCache>cast().delete("HighchartsAdapter");
+  }
+
+  public void beforeJsQuery() {
+    beforeHighCharts();
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        if (!"null".equals(String.valueOf(e.getMessage()))) {
+          System.err.println(e.getMessage());
+        }
+      }
+    });
+  }
+
+  public void leaveJsQuery() {
+    leaveHighCharts();
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        console.log(e.getMessage());
+      }
+    });
+  }
+
+  /**
+   * @ gQuery + gwtExporter == JsQuery
+   * @@ A jQuery clone for handwritten javascript.
+    <pre>
+ &lt;inherits name='com.google.gwt.query.JsQuery'/>
+    </pre>
+   */
+  public void testJsQuery() {
+    //
+    GWT.create(JsQuery.class);
+    HighCharts highCharts = GWT.create(HighCharts.class);
+    //
+    highCharts.initHighcharts();
+    highCharts.drawChart("container", charProps);
   }
 
   /**

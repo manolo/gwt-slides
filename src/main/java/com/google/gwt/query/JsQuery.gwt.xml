@@ -1,0 +1,12 @@
+<module>
+
+    <inherits name='com.google.gwt.query.Query'/>
+
+    <inherits name='org.timepedia.exporter.Exporter'/>
+
+    <set-property name="export" value="yes"/>
+    
+    <source path="jsquery" />
+    
+</module>
+

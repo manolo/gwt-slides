@@ -1,6 +1,8 @@
 <module rename-to='slides'>
     <inherits name='org.gquery.slides.Slides'/>
 
+    <inherits name='com.google.gwt.query.JsQuery'/>
+
     <entry-point class='org.gquery.slides.presentations.gwtcreate.GwtCreateEntryPoint'/>
 
     <source path="presentations" />
