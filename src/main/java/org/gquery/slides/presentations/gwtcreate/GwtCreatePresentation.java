@@ -38,6 +38,18 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.Deferred;
+import static com.google.gwt.query.client.GQuery.browser;
+import static com.google.gwt.query.client.GQuery.console;
+import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.lazy;
+import static com.google.gwt.query.client.GQuery.when;
+import static com.google.gwt.query.client.GQuery.window;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
+
 /**
  * @author manolo
  *
@@ -130,14 +142,14 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   public void beforeCustomEvent() {
-    viewPort.show();
+    $("#viewport").show();
   }
 
   /**
    *  @ Custom event
    */
   public void testCustomEvent() {
-    viewPort.append("<input type='text' id='text'></input><button>Send to console</button>");
+    $("#viewport").append("<input type='text' id='text'></input><button>Send to console</button>");
     //
     // trigger the 'sendToConsole' event when we click on the button
     $("#viewport > button").click(new Function() {
@@ -161,47 +173,21 @@ public class GwtCreatePresentation extends SlidesSource {
     $("#console").unbind("sendToConsole");
     viewPort.empty().hide();
   }
-
-  public void beforeNamespace() {
-    viewPort.append("<button id='unbind'>Unbind events</button>").show();
-  }
-
+	
   /**
-   *  @ Namespace
+   * @ Event Delegation
+   *  Mechanism of handling the events via a single common ancestor rather than each child descendant.  
    */
-  public void testNamespace() {
-    // you can specify name space when you bind events
-    $("#console").bind("click.ns1 mouseenter.ns1", new Function() {
-      public void f() {
-        console.log(getEvent().getType() + " from namespace [ns1]");
-      }
-    });
-    //
-    $("#console").bind("click.ns2 mouseleave.ns2", new Function() {
-      public void f() {
-        console.log(getEvent().getType() + " from namespace [ns2]");
-      }
-    });
-
-    $("#unbind").click(new Function() {
-      public void f() {
-        // you can decide to unbind only some events of some namespace
-        $("#console").unbind("click.ns2");
-        //
-        // or unbind all events of a certain namespace
-        $("#console").unbind(".ns1");
-      }
-    });
-    //
-    console.log("Ready !");
+  public void testEventDelegation() {
+  	viewPort.show().height(300).append("<div id='container'>Container<div class='child'>Child1</div><div class='child'>Child2</div></div>");
+  	
+  	//
+  	$("#container").live(".class", "click", new Function() {
+  	  public void f(Element e) {
+  	    console.log($(e).text());
+  	  }
+	});  	  
   }
-
-  public void leaveNamespace() {
-    $("#console").unbind(".ns1");
-    viewPort.empty().hide();
-  }
-
-
   /**
    * @ Avoiding JSNI
    * @@ calling external code.
@@ -534,10 +520,8 @@ native void exportBar() /*-{
 
 
   public interface JQueryBundle extends JsniBundle {
-//    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
-//        replace = {"\"\":\"outer\"", "\".\":\"outer\""})
-    @LibrarySource(value = "js/jquery.min.js",
-    replace = {"\"\":\"outer\"", "\".\":\"outer\""})
+    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
+        replace = {"\"\":\"outer\"", "\".\":\"outer\""})
    public abstract void initJQuery();
   }
 
@@ -889,4 +873,30 @@ native void exportBar() /*-{
   public Function respond(){return null;};
   
 
+  
+  /**
+   * @ Enhance existing widgets
+   * - Add missing behaviors.
+   * - Modify or style the inner HTML
+   * - Overcome the API limitation.
+   * - Example
+   */
+  public void testEnhanceWidget() {
+  	
+  }
+  
+  /**
+   * @ Create new widgets.
+   * - TODO add gwt chosen
+   */
+  public void testCreateWidget() {
+  	
+  }
+  
+   /**
+   * @ Avoid to use widgets.
+   */
+  public void testAvoidWidget() {
+  	
+  }
 }
