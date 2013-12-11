@@ -839,4 +839,54 @@ native void exportBar() /*-{
     leavePromisesPipeline();
   }
 
+  
+  /**
+   * @ gQuery Features
+   * - jQuery API: syntax almost identical.
+   * - Traversal DOM and XML manipulation.
+   * - Full GWT widget integration.
+   * - New event mechanism.
+   * - CSS3 Animations out-of-the-box
+   * - Declarative asynchronous language: Promises
+   * - Browser & Console,
+   * - Easier iteration with JS: avoid JSNI
+   * - JsniBundle
+   * - Easy Ajax Syntax
+   * - Data binding: JSON, XML
+   */
+  public void testFeatures() {
+    
+  }
+  
+  /**
+   * @ Roadmap
+   * - make more gQuery components testable in JVM
+   * - Generators and utilities to wrap jQuery plugins
+   * 
+   */
+  public void testRoadmap() {
+    
+  }
+  /**
+   * @ gQuery Announce
+   * 
+   * @@ .
+   * @@ gQuery 1.4.0 released right now
+   */
+  public void testAnnounce() {
+    
+  }
+  
+  /**
+   * @ Questions and Answers
+   */
+  public void testQuestions() {
+    when(haveDoubts()).then(ask()).always(respond());
+    
+  }
+  public Function haveDoubts(){return null;};
+  public Function ask(){return null;};
+  public Function respond(){return null;};
+  
+
 }
