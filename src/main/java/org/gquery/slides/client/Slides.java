@@ -1,8 +1,5 @@
 package org.gquery.slides.client;
 
-import static com.google.gwt.query.client.GQuery.*;
-import static org.gquery.slides.client.Utils.hash;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.dom.client.Element;
@@ -14,6 +11,13 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Event;
+
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.console;
+import static com.google.gwt.query.client.GQuery.lazy;
+import static com.google.gwt.query.client.GQuery.window;
+import static org.gquery.slides.client.Utils.hash;
 
 /**
  * Main class to execute a presentation

@@ -17,4 +17,3 @@
     <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="false" />
     <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="false" />
 </module>
-

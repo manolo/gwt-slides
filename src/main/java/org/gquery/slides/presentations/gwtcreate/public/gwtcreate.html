@@ -53,11 +53,52 @@
         <div style="padding:100px;background-color:#0769AD;">
             <img src="img/logo-jquery.png">
         </div>
+        <div class="jCode noPlay">
+            <div class="jCode-scroll jCode-div">
+                <div class="jCode-lines js">
+<pre><span class="s0">$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
+    .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
+    .click(</span><span class="s2">function </span><span class="s0">() {
+        $(</span><span class="s2">this</span><span class="s0">)
+            .siblings(</span><span class="s1">".content"</span><span class="s0">)
+            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span><span class="s3">, </span><span class="s2">null</span><span class="s3">, </span><span class="s2">function </span><span class="s0">() {
+                $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s4">250</span><span class="s0">)</span><span class="s3">;</span><span class="s0">
+            })</span><span class="s3">;</span><span class="s0">
+    })</span><span class="s3">;</span></pre>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="gquery">
         <div style="padding:100px;background-color:#e54827;">
             <img src="img/logo-gquery.png">
+        </div>
+        <div class="jCode noPlay">
+            <div class="jCode-scroll jCode-div">
+                <div class="jCode-lines">
+<pre><span class="s0">$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
+    .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
+    .click(</span><span class="s2">new </span><span class="s0">Function() {
+      </span><span class="s2">public void </span><span class="s0">f() {
+        $(</span><span class="s2">this</span><span class="s0">)
+            .siblings(</span><span class="s1">".content"</span><span class="s0">)
+            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span><span class="s2">, null, new </span><span class="s0">Function() {
+              </span><span class="s2">public void </span><span class="s0">f() {
+                $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0">
+              }
+            })</span><span class="s2">;</span><span class="s0">
+      }
+    })</span><span class="s2">;</span><span class="s0">
+
+Label label = </span><span class="s2">new </span><span class="s0">Label(</span><span class="s1">"GQuery is awesome!"</span><span class="s0">)</span><span class="s2">;</span><span class="s0">
+
+$(label).addClass(</span><span class="s1">"myLabel"</span><span class="s0">).css(</span><span class="s1">"background-color"</span><span class="s2">, </span><span class="s1">"#fefefe"</span><span class="s0">)</span><span class="s2">;</span><span class="s0">
+
+</span><span class="s4">// ...</span><span class="s0">
+Label myLabel = $(</span><span class="s1">".myLabel"</span><span class="s0">).widget()</span><span class="s2">;</span></pre>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -81,26 +122,27 @@
         </div>
     </section>
 
-    <section id="compareCode">
-        <div>
-            <h2>jQuery</h2>
-            <div class="code">
-                “some jQuery code”
-            </div>
-        </div>
-
-        <div>
-            <h2>gQuery</h2>
-            <div class="code">
-                “some gwitQuery code”
-            </div>
-        </div>
+    <section id="whenandwhy">
+        <h1>When to use gQuery ?</h1>
     </section>
     <section id="features"></section>
+    <section id="progressiveenhancement">
+        <h2>Progressive enhancement</h2>
+        <img src="img/christmasTree.png">
+    </section>
+    <section id="gwtproject">
+        <h2>www.gwtproject.org</h2>
+        <img src="img/gwtproject.png">
+    </section>
+	<section id="enhancewidget">
+	</section>
+	<section id="createwidget">
+	</section>
+	<section id="avoidwidget">
+	</section>
     <section id="bindevent"></section>
     <section id="unbindevent"></section>
     <section id="customevent"></section>
-    <section id="namespace"></section>
     <section id="eventdelegation"></section>
     <section id="jsnicall"></section>
     <section id="jsniexport"></section>
