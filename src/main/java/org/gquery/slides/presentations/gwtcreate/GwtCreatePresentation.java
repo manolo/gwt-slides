@@ -534,9 +534,11 @@ native void exportBar() /*-{
 
 
   public interface JQueryBundle extends JsniBundle {
-    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
-        replace = {"\"\":\"outer\"", "\".\":\"outer\""})
-    public abstract void initJQuery();
+//    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
+//        replace = {"\"\":\"outer\"", "\".\":\"outer\""})
+    @LibrarySource(value = "js/jquery.min.js",
+    replace = {"\"\":\"outer\"", "\".\":\"outer\""})
+   public abstract void initJQuery();
   }
 
   public static abstract class HighCharts implements JsniBundle {
@@ -545,7 +547,7 @@ native void exportBar() /*-{
     public abstract void initHighcharts();
     //
     public void drawChart(String id, JavaScriptObject props) {
-      JavaScriptObject $container = JsUtils.runJavascriptFunction(window, "jQuery", "#" + id);
+      JavaScriptObject $container = JsUtils.runJavascriptFunction(window, "$", "#" + id);
       JsUtils.runJavascriptFunction($container, "highcharts", props);
     }
   }
@@ -571,11 +573,12 @@ native void exportBar() /*-{
     //
     jQuery.initJQuery();
     highCharts.initHighcharts();
-    highCharts.drawChart("container", charProps);
+    highCharts.drawChart("chart", charProps);
   }
 
   public void beforeHighCharts() {
-    $("#container").empty().show();
+    GQuery c = $("#container").empty().show();
+    $("<div id='chart'>").appendTo(c);
     createJavascriptConsole("<div>Try this javascript code:</div>" +
         "<pre>$('div');\n</pre>");
   }
@@ -626,7 +629,7 @@ native void exportBar() /*-{
     HighCharts highCharts = GWT.create(HighCharts.class);
     //
     highCharts.initHighcharts();
-    highCharts.drawChart("container", charProps);
+    highCharts.drawChart("chart", charProps);
   }
 
   /**
