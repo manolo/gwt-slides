@@ -1,26 +1,11 @@
 @charset "UTF-8";
  .ball {
      display: none;
-     position: absolute;
-     border: solid 2px black;
-     border-radius: 40px;
-     width: 50px;
-     height: 50px
- }
- .red{
-     bottom:8em;
-     right:1em;
-     background: red;
- }
- .blue{
-     bottom:4em;
-     right:2em;
-     background: blue;
- }
- .yellow{
-     bottom:6em;
-     right:2.7em;
-     background: yellow;
+     position: fixed;
+     border-radius: 3em;
+     width: 3em;
+     height: 3em;
+     box-shadow: inset 0 -5px 15px rgba(255,255,255,0.4), inset -2px -1px 40px rgba(0,0,0,0.4), 0 0 1px #000;        
  }
 /*********
  * Slides*
@@ -114,4 +99,18 @@
     font-size: 80px;
     padding: 50px 20px;
     font-style: italic;
+}
+
+#jsnibundle > section {
+    font-size: 0.8em;
+}
+
+#promisesdeferred > section, #promisespipeline > section {
+    right: 5px;
+    position: absolute;
+    top: 0;
+    opacity: 0.6;
+}
+#promisesdeferred .jCode, #promisespyramidofdoom .jCode, #promisespipeline .jCode {
+    font-size: 0.8em;
 }

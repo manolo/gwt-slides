@@ -1,5 +1,8 @@
 package org.gquery.slides.client;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+
 
 /**
  * A very simple prettify class for java code which can be run in gwt.
@@ -20,11 +23,19 @@ public class Prettify {
   public static final String GQUERY_KEYWORDS = JAVA_KEYWORDS + "|"
       + "GWT|GQuery|Function|Promise|PromiseFunction|FunctionDeferred";
 
+  public static final String GQUERY_CHAIN_METHODS = "(when|then|done|fail|always|and|or|animate|promise)";
+
   public static final String CONTROL_CHARS = "([\\{\\}\\(\\)\\[\\]\\;\\,\\+\\-\\*\\|\\&]+)";
 
   public static final String JAVA_ANNOTATIONS = "(@)([A-Z]\\w+)";
 
+  static RegExp chainRex = RegExp.compile("(\n[^\\s].*?\\))\\." + GQUERY_CHAIN_METHODS + "\\(");
+
   public static String prettify(String s) {
+    MatchResult r = chainRex.exec(s);
+    while ((r = chainRex.exec(s)) != null) {
+      s = s.replace(r.getGroup(0), r.getGroup(1) + "\n." + r.getGroup(2) + "(");
+    }
     s = s
           .replaceAll("<", "&lt;")
           .replaceAll(">", "&gt;")
