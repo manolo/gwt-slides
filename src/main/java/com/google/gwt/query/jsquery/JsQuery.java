@@ -2,6 +2,11 @@ package com.google.gwt.query.jsquery;
 
 import static com.google.gwt.query.client.GQuery.window;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportAfterCreateMethod;
 import org.timepedia.exporter.client.ExportClosure;
@@ -193,8 +198,18 @@ public class JsQuery implements Exportable {
     Deferred reject(Object... o);
     Deferred resolve(Object... o);
   }
+  
+  @Target(
+      {ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.TYPE})
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface CopyOfExport {
 
-  @Export("gQuery")
+    String value() default "";
+
+    boolean all() default false;
+  }
+
+  @Export(value = "gQuery", all = false)
   public static abstract class GQueryOverlay implements ExportOverlay<GQuery> {
 
     /**
@@ -210,17 +225,17 @@ public class JsQuery implements Exportable {
     @ExportJsInitMethod
     public abstract NodeList<Element> get();
 
-    @ExportInstanceMethod
+    @Export @ExportInstanceMethod
     // TODO: normally plugins adds new easing functions to jquery.easing array
     public static GQuery animate(GQuery g, Object stringOrProperties, int duration, String easing, Function... funcs) {
       Easing e = EasingCurve.valueOf(easing);
       return g.animate(stringOrProperties, duration, e);
     }
     // public GQuery animate(Object stringOrProperties, int duration, Easing easing, Function... funcs);
-    public abstract GQuery animate(Object stringOrProperties, Function... funcs);
-    public abstract GQuery animate(Object stringOrProperties, int duration, Function... funcs);
+    @Export public abstract GQuery animate(Object stringOrProperties, Function... funcs);
+    @Export public abstract GQuery animate(Object stringOrProperties, int duration, Function... funcs);
 
-    @ExportInstanceMethod
+    @NoExport @ExportInstanceMethod
     public static Object css(GQuery g, Object o) {
       if (o instanceof String) {
         return g.css((String)o, false);
@@ -229,39 +244,39 @@ public class JsQuery implements Exportable {
       }
     }
 
-    @ExportInstanceMethod
+    @NoExport @ExportInstanceMethod
     public static GQuery css(GQuery g, String k, Object v) {
       return g.css(k, String.valueOf(v));
     }
 
-    @ExportInstanceMethod
+    @Export @ExportInstanceMethod
     public static JavaScriptObject offset(GQuery instance) {
       Offset o = instance.offset();
       return Properties.create("left: " + o.left + ", top:" + o.top);
     }
 
-    @ExportInstanceMethod
+    @Export @ExportInstanceMethod
     public static GQuery offset(GQuery instance, JsCache o) {
       return instance.offset(new Offset(o.getInt("left"), o.getInt("top")));
     }
 
-    @ExportInstanceMethod
+    @NoExport @ExportInstanceMethod
     public static Element[] toArray(GQuery g) {
       return g.elements();
     }
 
-    @ExportInstanceMethod
+    @Export @ExportInstanceMethod
     public static GQuery trigger(GQuery g, String name, Function f) {
       g.as(Events.Events).triggerHtmlEvent(name, f);
       return g;
     }
 
-    @ExportInstanceMethod
+    @Export @ExportInstanceMethod
     public static GQuery unbind(GQuery g, String s, Function o) {
       return g.unbind(s);
     }
 
-    public abstract String toString();
+    @Export public abstract String toString();
     @NoExport public abstract GQuery add(GQuery previousObject);
     @NoExport public abstract GQuery add(String selector);
     @NoExport public abstract GQuery addClass(String... classes);
@@ -271,10 +286,10 @@ public class JsQuery implements Exportable {
     @NoExport public abstract GQuery andSelf();
 
   // public GQuery attr(Properties properties);
-    public abstract String attr(String name);
+    @NoExport public abstract String attr(String name);
   // public GQuery attr(String key, Function closure);
     @NoExport public abstract GQuery attr(String key, Object value);
-    public abstract int size();
+    @NoExport public abstract int size();
 
     @NoExport public abstract GQuery append(GQuery query);
     @NoExport public abstract GQuery append(Node n);
@@ -289,7 +304,7 @@ public class JsQuery implements Exportable {
     @NoExport public abstract GQuery before(String html);
   // public GQuery bind(int eventbits, Object data, Function... funcs);
   // public GQuery bind(String eventType, Object data, Function... funcs);
-    @ExportInstanceMethod
+    @Export @ExportInstanceMethod
     public static GQuery bind(GQuery g, String events, Function func) {
       // FIXME: For some reason when highcharts bind the onresize event to window
       // we lose previous bound events
@@ -309,13 +324,13 @@ public class JsQuery implements Exportable {
     @NoExport public abstract GQuery closest(String selector, Node context);
     @NoExport public abstract GQuery contains(String text);
     @NoExport public abstract GQuery contents();
-  //    @NoExport public abstract GQuery css(Properties properties);
+  //    public abstract GQuery css(Properties properties);
   //    public abstract String css(String name);
   //    public abstract String css(String name, boolean force);
     @NoExport public abstract GQuery css(String prop, String val);
-    public abstract double cur(String prop);
-    public abstract double cur(String prop, boolean force);
-    public abstract Object data(String name);
+    @NoExport public abstract double cur(String prop);
+    @NoExport public abstract double cur(String prop, boolean force);
+    @NoExport public abstract Object data(String name);
   //    public abstract <T> T data(String name, Class<T> clz);
     @NoExport public abstract GQuery data(String name, Object value);
     @NoExport public abstract GQuery dblclick(Function... f);
@@ -337,7 +352,7 @@ public class JsQuery implements Exportable {
     @NoExport public abstract GQuery detach(String filter);
     @NoExport public abstract GQuery die();
     @NoExport public abstract GQuery die(String eventName);
-  //    @NoExport public abstract GQuery die(int eventbits);
+  //    public abstract GQuery die(int eventbits);
     @NoExport public abstract GQuery each(Function... f);
   //    public abstract Element[] elements();
     @NoExport public abstract GQuery empty();
@@ -350,35 +365,35 @@ public class JsQuery implements Exportable {
     @NoExport public abstract GQuery fadeOut(int millisecs, Function... f);
     @NoExport public abstract GQuery fadeTo(double opacity, Function... f);
     @NoExport public abstract GQuery fadeTo(int millisecs, double opacity, Function... f);
-    public abstract Effects fadeToggle(int millisecs, Function... f);
+    @NoExport public abstract Effects fadeToggle(int millisecs, Function... f);
     @NoExport public abstract GQuery filter(Predicate filterFn);
-  //    @NoExport public abstract GQuery filter(String... filters);
+  //    public abstract GQuery filter(String... filters);
     @NoExport public abstract GQuery find(String... filters);
     @NoExport public abstract GQuery first();
     // TODO: focusIn
     // TODO: focusOut
     @NoExport public abstract GQuery focus(Function... f);
-    public abstract Element get(int i);
-    public abstract Node getContext();
-  //    @NoExport public abstract GQuery getPreviousObject();
+    @NoExport public abstract Element get(int i);
+    @NoExport public abstract Node getContext();
+  //    public abstract GQuery getPreviousObject();
   //    public abstract String getSelector();
-  //    @NoExport public abstract GQuery gt(int pos);
+  //    public abstract GQuery gt(int pos);
     @NoExport public abstract GQuery has(String selector);
     @NoExport public abstract GQuery has(Element elem);
-    public abstract boolean hasClass(String... classes);
-    public abstract int height();
-    public abstract GQuery height(int height);
-    public abstract GQuery height(String height);
+    @NoExport public abstract boolean hasClass(String... classes);
+    @Export public abstract int height();
+    @Export public abstract GQuery height(int height);
+    @Export public abstract GQuery height(String height);
     @NoExport public abstract GQuery hide();
     @NoExport public abstract GQuery hover(Function fover, Function fout);
-    public abstract String html();
+    @NoExport public abstract String html();
     @NoExport public abstract GQuery html(String html);
   //    public abstract String id();
-  //    @NoExport public abstract GQuery id(String id);
-    public abstract int index(Element element);
+  //    public abstract GQuery id(String id);
+    @NoExport public abstract int index(Element element);
     // TODO: init
-    public abstract int innerHeight();
-    public abstract int innerWidth();
+    @NoExport public abstract int innerHeight();
+    @NoExport public abstract int innerWidth();
     @NoExport public abstract GQuery insertAfter(Element elem);
     @NoExport public abstract GQuery insertAfter(GQuery query);
     @NoExport public abstract GQuery insertAfter(String selector);
@@ -397,11 +412,11 @@ public class JsQuery implements Exportable {
   //    public abstract int left();
   //    public abstract int length();
     @NoExport public abstract GQuery live(String eventName, Function... funcs);
-  //    @NoExport public abstract GQuery live(int eventbits, Function... funcs);
-  //    @NoExport public abstract GQuery live(int eventbits, Object data, Function... funcs);
+  //    public abstract GQuery live(int eventbits, Function... funcs);
+  //    public abstract GQuery live(int eventbits, Object data, Function... funcs);
     @NoExport public abstract GQuery live(String eventName, Object data, Function... funcs);
-  //    TODO: @NoExport public abstract GQuery load(Function f);
-  //    @NoExport public abstract GQuery lt(int pos);
+  //    TODO: public abstract GQuery load(Function f);
+  //    public abstract GQuery lt(int pos);
   //    TODO: public abstract <W> List<W> map(Function f);
     @NoExport public abstract GQuery mousedown(Function... f);
     @NoExport public abstract GQuery mouseenter(Function... f);
@@ -419,10 +434,10 @@ public class JsQuery implements Exportable {
     @NoExport public abstract GQuery not(String... filters);
     @NoExport public abstract GQuery offsetParent();
     @NoExport public abstract GQuery one(int eventbits, Object data, Function f);
-    public abstract int outerHeight();
-    public abstract int outerHeight(boolean includeMargin);
-    public abstract int outerWidth();
-    public abstract int outerWidth(boolean includeMargin);
+    @NoExport public abstract int outerHeight();
+    @NoExport public abstract int outerHeight(boolean includeMargin);
+    @NoExport public abstract int outerWidth();
+    @NoExport public abstract int outerWidth(boolean includeMargin);
     @NoExport public abstract GQuery parent();
     @NoExport public abstract GQuery parent(String... filters);
     @NoExport public abstract GQuery parents();
@@ -439,13 +454,12 @@ public class JsQuery implements Exportable {
     @NoExport public abstract GQuery prevAll();
     @NoExport public abstract GQuery prevUntil(String selector);
     // TODO: pushStack
-    public abstract Object prop(String key);
+    @NoExport public abstract Object prop(String key);
     @NoExport public abstract GQuery prop(String key, Object value);
     @NoExport public abstract GQuery prop(String key, Function closure);
-    public abstract Promise promise();
-    public abstract int queue();
-
-    public abstract int queue(String queueName);
+    @NoExport public abstract Promise promise();
+    @NoExport public abstract int queue();
+    @NoExport public abstract int queue(String queueName);
     @NoExport public abstract GQuery queue(Function... f);
     @NoExport public abstract GQuery queue(String queueName, Function... f);
     @NoExport public abstract GQuery remove();
@@ -465,56 +479,56 @@ public class JsQuery implements Exportable {
   //    public abstract void resize(Function f);
   //    public abstract void saveCssAttrs(String... cssProps);
     @NoExport public abstract GQuery scroll(Function... f);
-  //    @NoExport public abstract GQuery scrollIntoView();
-  //    @NoExport public abstract GQuery scrollIntoView(boolean ensure);
-    public abstract int scrollLeft();
+  //    public abstract GQuery scrollIntoView();
+  //    public abstract GQuery scrollIntoView(boolean ensure);
+    @NoExport public abstract int scrollLeft();
     @NoExport public abstract GQuery scrollLeft(int left);
-  //    @NoExport public abstract GQuery scrollTo(int left, int top);
-    public abstract int scrollTop();
+  //    public abstract GQuery scrollTo(int left, int top);
+    @NoExport public abstract int scrollTop();
     @NoExport public abstract GQuery scrollTop(int top);
     @NoExport public abstract GQuery select();
     // TODO: selector
     // TODO: selector
     // TODO: serialize
     // TODO: serializeArray
-    // @NoExport public abstract GQuery setArray(NodeList<Element> list);
+    // public abstract GQuery setArray(NodeList<Element> list);
     // public abstract void setPreviousObject(GQuery previousObject);
-    // @NoExport public abstract GQuery setSelector(String selector);
+    // public abstract GQuery setSelector(String selector);
     @NoExport public abstract GQuery show();
     @NoExport public abstract GQuery siblings();
     @NoExport public abstract GQuery siblings(String... selectors);
     @NoExport public abstract GQuery slice(int start, int end);
-    public abstract Effects slideDown(Function... f);
-    public abstract Effects slideDown(int millisecs, Function... f);
-    public abstract Effects slideToggle(int millisecs, Function... f);
-    public abstract Effects slideUp(Function... f);
-    public abstract Effects slideUp(int millisecs, Function... f);
-    public abstract GQuery stop();
-    public abstract GQuery stop(boolean clearQueue);
-    public abstract GQuery stop(boolean clearQueue, boolean jumpToEnd);
+    @NoExport public abstract Effects slideDown(Function... f);
+    @NoExport public abstract Effects slideDown(int millisecs, Function... f);
+    @NoExport public abstract Effects slideToggle(int millisecs, Function... f);
+    @NoExport public abstract Effects slideUp(Function... f);
+    @NoExport public abstract Effects slideUp(int millisecs, Function... f);
+    @Export public abstract GQuery stop();
+    @Export public abstract GQuery stop(boolean clearQueue);
+    @Export public abstract GQuery stop(boolean clearQueue, boolean jumpToEnd);
     @NoExport public abstract GQuery submit(Function... funcs);
-    public abstract String text();
+    @NoExport public abstract String text();
     @NoExport public abstract GQuery text(String txt);
     @NoExport public abstract GQuery toggle();
     @NoExport public abstract GQuery toggle(Function... fn);
     @NoExport public abstract GQuery toggleClass(String... classes);
     @NoExport public abstract GQuery toggleClass(String clz, boolean addOrRemove);
-    public abstract String toString(boolean pretty);
-  //    @NoExport public abstract GQuery unbind(String eventName);
-  //    @NoExport public abstract GQuery unbind(String eventName, Function f);
+    @NoExport public abstract String toString(boolean pretty);
+  //    public abstract GQuery unbind(String eventName);
+  //    public abstract GQuery unbind(String eventName, Function f);
     @NoExport public abstract GQuery undelegate();
     @NoExport public abstract GQuery undelegate(String selector);
     @NoExport public abstract GQuery undelegate(String selector, String eventName);
-  //    @NoExport public abstract GQuery undelegate(String selector, int eventBit);
+  //    public abstract GQuery undelegate(String selector, int eventBit);
   //    public abstract JsNodeArray unique(NodeList<Element> result);
     // TODO: unload
     @NoExport public abstract GQuery unwrap();
-    public abstract String val();
+    @NoExport public abstract String val();
     @NoExport public abstract GQuery val(String... values);
   //    public abstract String[] vals();
   //    public abstract boolean isVisible();
-    public abstract int width();
-    public abstract GQuery width(int width);
+    @Export public abstract int width();
+    @Export public abstract GQuery width(int width);
     @NoExport public abstract GQuery wrap(Element elem);
     @NoExport public abstract GQuery wrap(GQuery query);
     @NoExport public abstract GQuery wrap(String html);
