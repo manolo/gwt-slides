@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -20,6 +21,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsCache;
@@ -34,7 +36,10 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -845,12 +850,12 @@ native void exportBar() /*-{
    * - jQuery API: syntax almost identical.
    * - Traversal DOM and XML manipulation.
    * - Full GWT widget integration.
-   * - New event mechanism.
-   * - CSS3 Animations out-of-the-box
-   * - Declarative asynchronous language: Promises
-   * - Browser & Console,
-   * - Easier iteration with JS: avoid JSNI
-   * - JsniBundle
+   * - ► New event mechanism.
+   * - ► CSS3 Animations out-of-the-box
+   * - ► Declarative asynchronous language: Promises
+   * - ► Browser & Console,
+   * - ► Easier iteration with JS: avoid JSNI
+   * - ► JsniBundle
    * - Easy Ajax Syntax
    * - Data binding: JSON, XML
    */
@@ -888,5 +893,30 @@ native void exportBar() /*-{
   public Function ask(){return null;};
   public Function respond(){return null;};
   
+  public static class MyPopupPanel extends DecoratedPopupPanel {
 
+    public MyPopupPanel(boolean autoHide, boolean modal) {
+      super(autoHide, modal);
+      hide();
+    }
+
+    Properties show = $$("{opacity: hide, scale: 1, rotate: 180, background: red, duration: 1500}");
+    Properties hide = $$("{opacity: show, scale: 0, rotate: 0, background: violet, duration: 1500}");
+
+    Animation a;
+
+    public void center() {
+      $(this).animate(show);
+    }
+
+    public void hide(final boolean b) {
+      $(this).animate(hide);
+    }
+  }
+  
+  public void testEnhanceWidget() {
+    PopupPanel p = new PopupPanel(true, true);
+    p.add(new Image("img/logo-gquery.png"));
+    p.center();
+  }
 }

@@ -114,3 +114,7 @@
 #promisesdeferred .jCode, #promisespyramidofdoom .jCode, #promisespipeline .jCode {
     font-size: 0.8em;
 }
+
+.gwt-PopupPanel {
+	background: white;
+}

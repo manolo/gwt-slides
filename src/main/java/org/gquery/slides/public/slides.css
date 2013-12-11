@@ -109,7 +109,7 @@ li {
     font-size: 0.8em;
 }
 
- #marker {
+ #marker, #clock {
      bottom: 10px;
      color: #145FDC;
      font-size: 1em;
@@ -118,6 +118,10 @@ li {
      left: 15px;
      text-shadow: 0 0 0.3em #145FDC;
      z-index: 9001;
+ }
+ 
+ #clock {
+    left: 93%;
  }
 
  #console {
@@ -218,7 +222,7 @@ li {
      display: none;
      z-index: 1;
      margin-left: -10px;
-     margin-top: 2px;
+     margin-top: -10px;
  }
  
  .jCode {
