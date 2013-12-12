@@ -106,8 +106,8 @@ public class Slides {
 
     // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
     int w = (int)($(window).width() * 1.5);
-    Properties pLeft = $$("clip-action: hide, rotateX: -180deg, rotateY: -180deg, left: -" + w);
-    Properties pRight = $$("clip-action: hide, rotateX: 180deg, rotateY: 180deg,  left: " + w);
+    Properties pLeft = $$("scale:0, rotateX: -180deg, rotateY: -180deg, left: -" + w);
+    Properties pRight = $$("scale:0, rotateX: 180deg, rotateY: 180deg,  left: " + w);
 
     // move slides to left out of the window view port
     if (currentPage - 2 >= 0) {
@@ -127,7 +127,7 @@ public class Slides {
 
     // move current slide to the window view port
     currentSlide = slides.eq(currentPage)
-      .animate($$("clip-action: show, left: 0"), 1000, easing)
+      .animate($$("scale: 1, rotateX: 0deg, rotateY: 0deg, left: 0"), 1000, easing)
       // notify new slide to execute it's start up code
       .delay(0, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
 
@@ -140,7 +140,7 @@ public class Slides {
   private void bindEvents() {
     $(window)
     // handle key events to move slides back/forward
-    .bind(Event.ONKEYDOWN, new Function() {
+    .on("keydown", new Function() {
       public boolean f(Event e) {
         // By pass if the cursor is in an input widget
         if (!$(e.getEventTarget()).is("input, textarea")) {
@@ -158,20 +158,20 @@ public class Slides {
       }
     })
     // handle hash change to select the appropriate slide
-    .bind("hashchange", new Function() {
+    .on("hashchange", new Function() {
       public void f() {
         showCurrentSlide();
       }
     });
 
-    $("#play").click(new Function() {
+    $("#play").on("click", new Function() {
       public void f() {
         slidesSrc.exec(currentSlide.id());
       }
     });
 
     // Clear the console if we push mouse right
-    $("#console").bind(Event.ONCONTEXTMENU, new Function() {
+    $("#console").on("contextmenu", new Function() {
       public boolean f(Event e) {
         console.clear();
         console.log("");
