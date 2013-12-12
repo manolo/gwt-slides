@@ -745,7 +745,7 @@ native void exportBar() /*-{
    * @ pipelining: 'then()'
    * - declarative language
    * - less errors.
-   * - Async Functions return:<br/>· a promise to pipe<br/>· an object to modify previous data
+   * - Async Functions return:<br/> &gt; a promise to pipe<br/> &gt; an object to modify previous data
    */
   public void testPromisesPipeline() {
     // @include: dropBall
