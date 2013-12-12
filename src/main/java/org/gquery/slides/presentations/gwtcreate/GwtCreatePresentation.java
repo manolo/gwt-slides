@@ -451,6 +451,7 @@ native void exportBar() /*-{
    *
    * - Equivalent to the jQuery.browser object.
    * - gQuery provide these flags: webkit, mozilla, opera, msie, ie9, ie8, ie6
+   * @@ Main Goal: Alternative to Deferred binding
    * - A Generator produces the implementation which return false/true in compile time.
    * - Any code inside a non matching block is removed by the GWT optimizer.
    * - This approach saves a lot of code for browser specific code.
@@ -604,7 +605,7 @@ native void exportBar() /*-{
    * @@ gwtQuery + gwtExporter
    *
    * - A way to expose gQuery methods to javascript
-   * - Use javascript libraries in GWT without importing jQuery.
+   * - Use any jQuery plugin in GWT without importing jQuery.
    * - Vaadin imports jQuery using a TextResource. Using JsniBundle + JsQuery they would save some code.
    *
     <pre>
@@ -849,19 +850,18 @@ native void exportBar() /*-{
   
   /**
    * @ Roadmap
-   * - make some gQuery components run in JVM: Ajax, Data Binding
-   * - Generators and utilities to wrap jQuery plugins
-   * - 
-   * 
+   * - Make some gQuery components run in JVM: Ajax, Data Binding
+   * - Generators and utilities to wrap jQuery plugins to java without writing jsni
+   * - Revision of actual plugins
+   * - More plugins.
    */
   public void testRoadmap() {
     
   }
   /**
    * @ gQuery Announce
-   * 
-   * @@ .
-   * @@ gQuery 1.4.0 released right now
+   * @@ gQuery Slides a new way to write GWT presentations based on Java test code.
+   * @@ gQuery 1.4.0 released today !
    */
   public void testAnnounce() {
     
