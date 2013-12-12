@@ -336,10 +336,10 @@ native void exportBar() /*-{
     $(".gQLogo").animate(
         $$("top:50px, left:5px, background-color:#ADD9E4, rotateY:180deg, rotateX:180deg, transformOrigin: center"),
         3000, easeOutBack);
-//    $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000,
-//        EasingCurve.custom.with(.31, -0.37, .47, 1.5));
-//    $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
-//    $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
+    $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000,
+        EasingCurve.custom.with(.31, -0.37, .47, 1.5));
+    $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
+    $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
   }
 
   public void leaveAnimationsCss3() {
@@ -409,7 +409,7 @@ native void exportBar() /*-{
           String code = "$(\".logo\").";
           code += name.contains("(") ? ("as(Effects)." + name) :  ("animate($$(\"" + prop + "\")" )+ ";" ;
           $("#play").hide();
-          $("#css3animations .jCode-lines pre").html(Prettify.prettify(code));
+          $("#animationscss3 .jCode-lines pre").html(Prettify.prettify(code));
         }});
     }
 
