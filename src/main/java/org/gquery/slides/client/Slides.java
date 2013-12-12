@@ -106,8 +106,8 @@ public class Slides {
 
     // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
     int w = (int)($(window).width() * 1.5);
-    Properties pLeft = $$("scale:0, rotateX: -180deg, rotateY: -180deg, left: -" + w);
-    Properties pRight = $$("scale:0, rotateX: 180deg, rotateY: 180deg,  left: " + w);
+    Properties pLeft = $$("scale:0, left: -" + w);
+    Properties pRight = $$("scale:0, left: " + w);
 
     // move slides to left out of the window view port
     if (currentPage - 2 >= 0) {

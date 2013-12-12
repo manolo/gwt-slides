@@ -835,13 +835,13 @@ native void exportBar() /*-{
    * - Data binding: JSON, XML
    * - Full GWT widget integration.
    * - Plugin system.
-   * - -► A New event mechanism.
-   * - -► Console & Browser classes.
-   * - -► Declarative asynchronous language: Promises
-   * - -► CSS3 Animations out-of-the-box
-   * - -► Easier iteration with JS: avoiding JSNI
-   * - -► JsniBundle
-   * - -► JsQuery
+   * - -> A New event mechanism.
+   * - -> Console & Browser classes.
+   * - -> Declarative asynchronous language: Promises
+   * - -> CSS3 Animations out-of-the-box
+   * - -> Easier iteration with JS: avoiding JSNI
+   * - -> JsniBundle
+   * - -> JsQuery
    */
   public void testFeatures() {
     
