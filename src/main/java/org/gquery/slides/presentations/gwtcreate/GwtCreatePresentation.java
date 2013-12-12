@@ -869,7 +869,7 @@ native void exportBar() /*-{
    * @ Demo of plugins
    * - <a href="http://jdramaix.github.io/gwtchosen/" target="_blank">GwtChosen</a>
    * - <a href="http://arcbees.github.io/ArcBees-GQuery-Plugins/" target="_blank">Tooltip plugin</a>
-   * - <a href="http://gwtquery-plugins.googlecode .com/svn/branches/droppable_1_0/demo/GwtPortletSample/GwtPortletSample.html" target="_blank">Drag-n-drop plugin</a>
+   * - <a href="http://gwtquery-plugins.googlecode.com/svn/branches/droppable_1_0/demo/GwtPortletSample/GwtPortletSample.html" target="_blank">Drag-n-drop plugin</a>
    */
   public void testPlugins() {
 
