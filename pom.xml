@@ -116,6 +116,12 @@
             <artifactId>javaparser</artifactId>
             <version>1.0.9</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.jdramaix</groupId>
+            <artifactId>gwtchosen</artifactId>
+            <version>1.2.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

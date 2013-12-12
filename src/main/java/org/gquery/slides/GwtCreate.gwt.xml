@@ -2,6 +2,7 @@
     <inherits name='org.gquery.slides.Slides'/>
 
     <inherits name='com.google.gwt.query.JsQuery'/>
+    <inherits name="com.watopi.chosen.Chosen"/>
 
     <entry-point class='org.gquery.slides.presentations.gwtcreate.GwtCreateEntryPoint'/>
 
@@ -17,4 +18,3 @@
     <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="false" />
     <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="false" />
 </module>
-

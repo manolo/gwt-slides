@@ -58,7 +58,7 @@ public class Slides {
       public void f(Element e) {
         buildSlide($(this));
       }
-    })
+    }).css("right", "-150%")
     // remove empty slides
     .filter(new Predicate() {
       public boolean f(Element e, int index) {

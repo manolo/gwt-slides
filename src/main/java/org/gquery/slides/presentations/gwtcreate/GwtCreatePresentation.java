@@ -8,6 +8,7 @@ import static org.gquery.slides.client.Utils.getRandom;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.watopi.chosen.client.Chosen;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
@@ -42,6 +43,18 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.Deferred;
+import static com.google.gwt.query.client.GQuery.browser;
+import static com.google.gwt.query.client.GQuery.console;
+import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.lazy;
+import static com.google.gwt.query.client.GQuery.when;
+import static com.google.gwt.query.client.GQuery.window;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
+
 /**
  * @author manolo
  *
@@ -62,14 +75,14 @@ public class GwtCreatePresentation extends SlidesSource {
    */
   public void testBindEvent() {
     // handle the click event on the console
-    $("#console").bind("click", new Function() {
+    $("#console").on("click", new Function() {
       public void f() {
         console.log("It's awesome, you click on the console!!");
       }
     });
     //
     // you can handle any type of event supported by the browser
-    $("#console").bind("transitionend", new Function() {
+    $("#console").on("transitionend", new Function() {
       public void f() {
         console.log("Resizing of the console done !");
       }
@@ -79,11 +92,11 @@ public class GwtCreatePresentation extends SlidesSource {
     RootPanel.get("viewport").add(resizeWidget);
     //
     // works with widget
-    $(resizeWidget).mouseover(new Function() {
+    $(resizeWidget).on("mouseover",new Function() {
       public void f() {
         $("#console").css("width", "50%");
       }
-    }).mouseout(new Function() {
+    }).on("mouseout", new Function() {
       public void f() {
         $("#console").css("width", "96%");
       }
@@ -114,17 +127,17 @@ public class GwtCreatePresentation extends SlidesSource {
    */
   public void testUnBindEvent() {
     // remove all handlers by event types
-    $("#console").unbind("click");
-    $("#console").unbind("transitionend");
+    $("#console").off("click");
+    $("#console").off("transitionend");
     //
     // you can remove handlers of several types at once.
-    $(resizeWidget).unbind("mouseover mouseout");
+    $(resizeWidget).off("mouseover mouseout");
     //
     // remove a specific handler
-    $(resizeWidget).click(new Function() {
+    $(resizeWidget).on("click", new Function() {
       public void f() {
         console.log("Youhou \\o/ /o\\ ");
-        $(resizeWidget).unbind("click", this);
+        $(resizeWidget).off("click", this);
       }
     });
   }
@@ -141,14 +154,14 @@ public class GwtCreatePresentation extends SlidesSource {
     viewPort.append("<input type='text' id='text'><button>Send to console</button>");
     //
     // trigger the 'sendToConsole' event when we click on the button
-    $("#viewport > button").click(new Function() {
+    $("#viewport > button").on("click", new Function() {
       public void f() {
         $("#console").trigger("sendToConsole", $("#text").val());
       }
     });
     //
     // handle the 'sendToConsole' event
-    $("#console").bind("sendToConsole", new Function() {
+    $("#console").on("sendToConsole", new Function() {
       @Override
       public boolean f(Event e, Object... data) {
         console.log(data[0]);
@@ -157,52 +170,28 @@ public class GwtCreatePresentation extends SlidesSource {
     });
   }
 
-  public void afterCustomEvent() {
-    $("#viewport > button").unbind("click");
-    $("#console").unbind("sendToConsole");
+  public void leaveCustomEvent() {
+    $("#viewport > button").off("click");
+    $("#console").off("sendToConsole");
     viewPort.empty().hide();
   }
-
-  public void beforeNamespace() {
-    viewPort.append("<button id='unbind'>Unbind events</button>").show();
-  }
-
+	
   /**
-   *  @ Namespace
+   * @ Event Delegation
+   *  Mechanism of handling the events via a single common ancestor rather than each child descendant.  
    */
-  public void testNamespace() {
-    // you can specify name space when you bind events
-    $("#console").bind("click.ns1 mouseenter.ns1", new Function() {
-      public void f() {
-        console.log(getEvent().getType() + " from namespace [ns1]");
-      }
-    });
+  public void testEventDelegation() {
+    viewPort.show().height(300).append(
+        "<div id='container'>Container<div class='child'>Child1</div><div " +
+            "class='child'>Child2</div></div>");
+
     //
-    $("#console").bind("click.ns2 mouseleave.ns2", new Function() {
-      public void f() {
-        console.log(getEvent().getType() + " from namespace [ns2]");
+    $("#container").live(".class", "click", new Function() {
+      public void f(Element e) {
+        console.log($(e).text());
       }
     });
-
-    $("#unbind").click(new Function() {
-      public void f() {
-        // you can decide to unbind only some events of some namespace
-        $("#console").unbind("click.ns2");
-        //
-        // or unbind all events of a certain namespace
-        $("#console").unbind(".ns1");
-      }
-    });
-    //
-    console.log("Ready !");
   }
-
-  public void leaveNamespace() {
-    $("#console").unbind(".ns1");
-    viewPort.empty().hide();
-  }
-
-
   /**
    * @ Avoiding JSNI
    * @@ calling external code.
@@ -535,10 +524,8 @@ native void exportBar() /*-{
 
 
   public interface JQueryBundle extends JsniBundle {
-//    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
-//        replace = {"\"\":\"outer\"", "\".\":\"outer\""})
-    @LibrarySource(value = "js/jquery.min.js",
-    replace = {"\"\":\"outer\"", "\".\":\"outer\""})
+    @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
+        replace = {"\"\":\"outer\"", "\".\":\"outer\""})
    public abstract void initJQuery();
   }
 
@@ -920,5 +907,29 @@ native void exportBar() /*-{
     PopupPanel p = new MyPopupPanel(true, true);
     p.add(new Image("img/logo-gquery.png"));
     p.center();
+  }
+  
+  /**
+   * @ Enhance existing widgets
+   * - Add missing behaviors.
+   * - Modify or style the inner HTML
+   * - Overcome the API limitation.
+   * - <a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html">Example</a>
+   */
+  public void testEnhanceWidgets() {
+
+  }
+
+  /**
+   *
+   */
+  public void enterCreateWidget() {
+    $("#countries").as(Chosen.Chosen).chosen();
+  }
+  
+   /**
+   * @ Avoid to use widgets.
+   */
+  public void testAvoidWidget() {
   }
 }
