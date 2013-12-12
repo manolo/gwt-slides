@@ -223,10 +223,10 @@ public class GwtCreatePresentation extends SlidesSource {
     console.log(nodes.getLength());
   }
 
-  private String url;
-  public void enterJsnicall() {
+  private String url = enterJsnicall();
+  public String enterJsnicall() {
     // save pushState before changing it in the snippet
-    url = Window.Location.getPath() + Window.Location.getQueryString();
+    return url = Window.Location.getPath() + Window.Location.getQueryString();
   }
 
   public void leaveJsnicall() {

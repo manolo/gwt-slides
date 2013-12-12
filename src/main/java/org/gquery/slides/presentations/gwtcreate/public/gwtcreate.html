@@ -93,7 +93,7 @@
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
             .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span><span class="s3">,
                   </span><span class="s2">null</span><span class="s3">, </span>
-    <span class="s2">function </span><span class="s0">() {
+                  <span class="s2">function </span><span class="s0">() {
                 $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s4">250</span><span class="s0">)</span><span class="s3">;</span><span class="s0">
             })</span><span class="s3">;</span><span class="s0">
     })</span><span class="s3">;</span></pre>
@@ -117,7 +117,8 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
         $(</span><span class="s2">this</span><span class="s0">)
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
             .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span>
-                  <span class="s2">, null, new </span><span class="s0">Function() {
+                <span class="s2">, null,
+                new </span><span class="s0">Function() {
               </span><span class="s2">public void </span><span class="s0">f() {
                 $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0">
               }
