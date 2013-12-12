@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.watopi.chosen.client.Chosen;
+import com.watopi.chosen.client.ChosenOptions;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
@@ -92,7 +93,7 @@ public class GwtCreatePresentation extends SlidesSource {
     RootPanel.get("viewport").add(resizeWidget);
     //
     // works with widget
-    $(resizeWidget).on("mouseover",new Function() {
+    $(resizeWidget).on("mouseover", new Function() {
       public void f() {
         $("#console").css("width", "50%");
       }
@@ -175,23 +176,25 @@ public class GwtCreatePresentation extends SlidesSource {
     $("#console").off("sendToConsole");
     viewPort.empty().hide();
   }
-	
+
+  public void beforeEventDelegation() {
+    testCustomEvent();
+  }
   /**
    * @ Event Delegation
-   *  Mechanism of handling the events via a single common ancestor rather than each child descendant.  
+   *
+   *  - Mechanism of handling the events via a single common ancestor rather than each child
+   *  descendant.
+   *  - Use the on() but add a selector string to filter the descendants of the selected elements that trigger the event.
    */
   public void testEventDelegation() {
-    viewPort.show().height(300).append(
-        "<div id='container'>Container<div class='child'>Child1</div><div " +
-            "class='child'>Child2</div></div>");
-
-    //
-    $("#container").live(".class", "click", new Function() {
-      public void f(Element e) {
-        console.log($(e).text());
+    $("#console").on("click", ".consoleItem", new Function() {
+      public void f(Element element) {
+        $(element).fadeToggle(200);
       }
     });
   }
+
   /**
    * @ Avoiding JSNI
    * @@ calling external code.
@@ -333,8 +336,12 @@ native void exportBar() /*-{
        <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
    */
   public void testAnimationsCss3() {
-    $(".gQLogo").animate($$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, transformOrigin: center"), 3000, easeOutBack);
-    $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000, EasingCurve.custom.with(.31,-0.37,.47,1.5));
+    $(".gQLogo").animate(
+        $$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, " +
+            "transformOrigin: center"),
+        3000, easeOutBack);
+    $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000,
+        EasingCurve.custom.with(.31, -0.37, .47, 1.5));
     $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
     $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
   }
@@ -413,7 +420,7 @@ native void exportBar() /*-{
     $("<button> disable CSS3 </button>").appendTo(viewPort).click(
         new Function() {
           public void f() {
-            if (Fx.css3 = !Fx.css3 ) {
+            if (Fx.css3 = !Fx.css3) {
               $(this).text("disable CSS3");
             } else {
               $(this).text("enable CSS3");
@@ -849,24 +856,28 @@ native void exportBar() /*-{
   }
   
   /**
+   * @ Announce
+   * - These Slides opensourced: a new way to write GWT presentations using java.
+   * - gQuery 1.4.0 released today !
    * @ Roadmap
-   * - Make some gQuery components run in JVM: Ajax, Data Binding
-   * - Generators and utilities to wrap jQuery plugins to java without writing jsni
-   * - Revision of actual plugins
-   * - More plugins.
+   * - Some components run in JVM: Ajax, Data Binding
+   * - More Generators and utilities to automatically wrap jQuery plugins.
+   * - Revision of actual plugins.
+   * - Write More plugins.
    */
   public void testRoadmap() {
     
   }
+
   /**
-   * @ gQuery Announce
-   * @@ gQuery Slides a new way to write GWT presentations based on Java test code.
-   * @@ gQuery 1.4.0 released today !
+   * @ Demo of plugins
+   * - <a href="http://jdramaix.github.io/gwtchosen/" target="_blank">GwtChosen</a>
+   * - <a href="http://arcbees.github.io/ArcBees-GQuery-Plugins/" target="_blank">Tooltip plugin</a>
+   * - <a href="http://gwtquery-plugins.googlecode.com/svn/branches/droppable_1_0/demo/GwtPortletSample/GwtPortletSample.html" target="_blank">Drag-n-drop plugin</a>
    */
-  public void testAnnounce() {
-    
+  public void testPlugins() {
   }
-  
+
   /**
    * @ Questions and Answers
    */
@@ -914,10 +925,9 @@ native void exportBar() /*-{
    * - Add missing behaviors.
    * - Modify or style the inner HTML
    * - Overcome the API limitation.
-   * - <a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html">Example</a>
+   * - <a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html" target="_blank">Example</a>
    */
   public void testEnhanceWidgets() {
-
   }
 
   /**
