@@ -72,7 +72,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   /**
-   * @ Event binding
+   * @ Binding events.
    */
   public void testBindEvent() {
     // handle the click event on the console
@@ -124,7 +124,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   /**
-   * @ Unbind Event
+   * @ Unbinding Events.
    */
   public void testUnBindEvent() {
     // remove all handlers by event types
@@ -148,10 +148,9 @@ public class GwtCreatePresentation extends SlidesSource {
   }
   
   /**
-   *  @ Custom event
+   *  @ Custom events
    */
   public void testCustomEvent() {
-    System.out.println("P");
     viewPort.append("<input type='text' id='text'><button>Send to console</button>");
     //
     // trigger the 'sendToConsole' event when we click on the button
@@ -183,9 +182,8 @@ public class GwtCreatePresentation extends SlidesSource {
   /**
    * @ Event Delegation
    *
-   *  - Mechanism of handling the events via a single common ancestor rather than each child
-   *  descendant.
-   *  - Use the on() but add a selector string to filter the descendants of the selected elements that trigger the event.
+   *  - Handling events via a single common ancestor rather than each child descendant.
+   *  - Use on() adding a selector string to filter the descendants now and in the future, receiving the event.
    */
   public void testEventDelegation() {
     $("#console").on("click", ".consoleItem", new Function() {
@@ -196,8 +194,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   /**
-   * @ Avoiding JSNI
-   * @@ calling external code.
+   * @ Calling external JS from Java.
    * <pre>
    pushStateImpl("aStateObject", "aTitle", "foo/bar");
    ...
@@ -239,8 +236,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   /**
-   * @ Avoiding JSNI
-   * @@ Exporting Java methods
+   * @ Exporting Java methods to JS
    * <pre>
 // Call the native method to export the function
 exportBar();
@@ -336,14 +332,14 @@ native void exportBar() /*-{
        <div class="gQLogo" style='position: fixed; display: none'><img src="img/logo-gquery-transp.png"></div>
    */
   public void testAnimationsCss3() {
+    //
     $(".gQLogo").animate(
-        $$("top:50px, left:5px, background-color:#ADD9E4; rotateY:180deg, rotateX:180deg, " +
-            "transformOrigin: center"),
+        $$("top:50px, left:5px, background-color:#ADD9E4, rotateY:180deg, rotateX:180deg, transformOrigin: center"),
         3000, easeOutBack);
-    $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000,
-        EasingCurve.custom.with(.31, -0.37, .47, 1.5));
-    $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
-    $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
+//    $(".gQLogo").animate($$("rotateY:0deg, rotateX:0deg, transformOrigin: center"), 1000,
+//        EasingCurve.custom.with(.31, -0.37, .47, 1.5));
+//    $(".gQLogo").animate($$("background-color:gold"), 1000, easeInOutBack);
+//    $(".gQLogo").animate($$("background-color:#ADD9E4"), 1000);
   }
 
   public void leaveAnimationsCss3() {
@@ -433,7 +429,8 @@ native void exportBar() /*-{
 
   /**
    * @ Advanced animations
-   * - use css3 delays so as we don't have to chain animations.
+   * - Although gQuery has a mechanism to chain and queue animations.
+   * - using css3 delays is easier.
    */
   public void testAnimationsAdvanced() {
     blue.animate("bottom: 0, delay: 0, duration: 1000, easing: easeOut");
@@ -484,7 +481,7 @@ native void exportBar() /*-{
    * @ The gQuery Console class
    *
    * - Equivalent to the javascript `window.console` object.
-   * - Methods available: "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd"
+   * - Methods available: "log info warn error dir", "time timestamp timeEnd", "profile profileEnd", "clear"
    * - There are specific tweaks per browser (ie: IE8, IE9 console is not part of the DOM)
    * - It is injected using Deferred binding, so we can override the implementation.
    */
@@ -509,15 +506,16 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ JSNI Bundle
+   * @ JsniBundle
    * - A generated class with JSNI methods whose content is taken from external files.
    * @@ GOALS
-   * - Use IDEs for editing, formating... instead of dealing with code in comment blocks.
-   * - Easier to test JS in the browser before compiling it.
-   * - Include third-party libraries without modification of the original source.
-   * - Easier to write GWT wrappers: not need of html tags, nor .gwt.xml modifications, nor TextResources.
-   * - Get rid of any jsni java method if the application does not use it.
+   * - Easier to edit JS instead of dealing with code in comment blocks.
+   * - Easier to test JS in the browser without compiling it.
+   * - Include third-party code without changing the original source.
+   * - Not need of html tags, nor .gwt.xml modifications, nor TextResources.
+   * @@ MORE GOALS
    * - Take advantage of GWT jsni validators, obfuscators and optimizers.
+   * - Get rid of any jsni java method when the application does not use it.
    <pre>
    $ cat jsni-example.js
    return arguments[0] + " " + arguments[1] + " : gQuery rocks !" ;
@@ -534,11 +532,10 @@ native void exportBar() /*-{
   public interface JQueryBundle extends JsniBundle {
     @LibrarySource(value = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js",
         replace = {"\"\":\"outer\"", "\".\":\"outer\""})
-   public abstract void initJQuery();
+   public void initJQuery();
   }
 
   public static abstract class HighCharts implements JsniBundle {
-    //
     @LibrarySource("js/highcharts.src.js")
     public abstract void initHighcharts();
     //
@@ -556,7 +553,7 @@ native void exportBar() /*-{
       + "{name: 'London',data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2]}]");
 
   /**
-   * @ JSNI Bundle: Importing third-party javascript files
+   * @ Importing third-party javascript files.
    *
    */
   public void testHighCharts() {
@@ -608,12 +605,11 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ jsQuery
-   * @@ gwtQuery + gwtExporter
+   * @ JsQuery = gwtQuery + gwtExporter
    *
-   * - A way to expose gQuery methods to javascript
-   * - Use any jQuery plugin in GWT without importing jQuery.
-   * - Vaadin imports jQuery using a TextResource. Using JsniBundle + JsQuery they would save some code.
+   * - A way to expose gQuery methods to javascript.
+   * - Use any jQuery plugin in GWT without including it.
+   * - Many GWT projects or libraries (like Vaadin charts) import jQuery and other libraries using TextResources, if they used JsniBundle or JsQuery they would save some size.
    *
     <pre>
  &lt;inherits name='com.google.gwt.query.JsQuery'/>
@@ -629,29 +625,27 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ Promises
-   * - Based on the CommonJS Promises/A and Promises/A+ specs.
-   * - gQuery promises: MVP compliant , it runs in JVM.
+   * - Based on the CommonJS Promises/A+ spec, and inspired in the jQuery API.
+   * - MVP compliant: they run in the JVM.
    * @@ What is a Promise
-   * - A Promise is an one-time event, It is in a pending state until resolved or rejected.
-   * - Once resolved attached callbacks are run and status remains
+   * - One time event: pending state until resolved or rejected.
+   * - Once resolved attached callbacks are run, and status remains
    * - Adding more callbacks to resolved promises are executed inmediatelly.
-   * - We can combine logically promises: parallel execution, pipelining.
-   * - Promises is an Interface which prevents changing its state.
+   * - Combine promises: parallel execution, pipelining.
+   * - A Promise is an chainable Interface preventing state changes.
    * @@ Deferred Object
-   * - Its the underlying object of a Promise
-   * - A chainable object that holds our callbacks into queues
-   * - We can easily resolve or reject that deferred
-   * - We can return, pass around, and store Promises
+   * - It's the underlying object of a Promise
+   * - A chainable Object that holds our callbacks into queues
+   * - We can easily resolve or reject that deferred, but just once
    */
   public void testPromises() {
   }
 
   /**
    * @ What does it look like?
+   * - Chaining
    * - Handling success and failures
    * - Receiving data
-   * - Chaining
    * - Maintain status and data.
    */
   public void testPromisesDeferred() throws Exception {
@@ -739,9 +733,9 @@ native void exportBar() /*-{
   void drawBalls() {
     if (!balls.isVisible() || balls.cur("left", true) > 350 ) {
       balls.show().each(new Function() {
-        int h = $(window).height() - 50;
+        int h = $(window).height() - 100;
         public void f(Element e) {
-          $(e).css("bottom", (h - Random.nextInt(300)) + "px").css("left", Random.nextInt(300) + "px");
+          $(e).css("bottom", (h - Random.nextInt(100)) + "px").css("left", Random.nextInt(140) + "px");
         }
       });
     }
@@ -751,12 +745,11 @@ native void exportBar() /*-{
    * @ pipelining: 'then()'
    * - declarative language
    * - less errors.
-   * - return a promise to pipe
-   * - an object to modify previous data
+   * - Async Functions return:<br/>· a promise to pipe<br/>· an object to modify previous data
    */
   public void testPromisesPipeline() {
     // @include: dropBall
-    //
+    // Start the process:
     when(dropBall(blue,1000), dropBall(red, 4000)).then(dropBall(yellow,2000)).then(dropBall(green, 3000))
     .then(new Function(){public Object f(Object...o){
       return balls.animate($$("left: 120%"), 1000).promise();
@@ -787,7 +780,7 @@ native void exportBar() /*-{
    */
   public void testPromisesPyramidOfDoom() {
     // @include: drop_ball
-    //
+    // The pyramid:
     Function dropMore = new Function() {
       int cont = 0;
       @Override
@@ -818,11 +811,9 @@ native void exportBar() /*-{
       }
     };
 
-    // console.log("All Asynchronous process have finished");
-
-
-    drop_ball(blue, 1000, dropMore);
+    // Start the process:
     drop_ball(red, 4000, dropMore);
+    drop_ball(blue, 1000, dropMore);
   }
 
   public void enterPromisesPyramidOfDoom() {
@@ -843,13 +834,14 @@ native void exportBar() /*-{
    * - Easy Ajax Syntax
    * - Data binding: JSON, XML
    * - Full GWT widget integration.
-   * - Plugins system.
-   * - -► New event mechanism.
-   * - -► CSS3 Animations out-of-the-box
+   * - Plugin system.
+   * - -► A New event mechanism.
+   * - -► Console & Browser classes.
    * - -► Declarative asynchronous language: Promises
-   * - -► Browser & Console,
-   * - -► Easier iteration with JS: avoid JSNI
+   * - -► CSS3 Animations out-of-the-box
+   * - -► Easier iteration with JS: avoiding JSNI
    * - -► JsniBundle
+   * - -► JsQuery
    */
   public void testFeatures() {
     
@@ -857,10 +849,10 @@ native void exportBar() /*-{
   
   /**
    * @ Announce
-   * - These Slides opensourced: a new way to write GWT presentations using java.
+   * - gQuery Slides open-sourced: a new way to write GWT presentations using java.
    * - gQuery 1.4.0 released today !
    * @ Roadmap
-   * - Some components run in JVM: Ajax, Data Binding
+   * - Make Ajax and Data Binding run in the JVM.
    * - More Generators and utilities to automatically wrap jQuery plugins.
    * - Revision of actual plugins.
    * - Write More plugins.
@@ -881,13 +873,18 @@ native void exportBar() /*-{
   /**
    * @ Questions and Answers
    */
-  public void testQuestions() {
-    when(haveDoubts()).then(ask()).always(respond());
+  public void testQuestionsAnswers() {
+    //
+    GQuery.when(talk()).then(questions()).always(answers());
     
   }
-  public Function haveDoubts(){return null;};
-  public Function ask(){return null;};
-  public Function respond(){return null;};
+  public void enterQuestionsAnswers() {
+    $("#play").hide();
+  }
+
+  public Function talk(){return null;};
+  public Function questions(){return null;};
+  public Function answers(){return null;};
   
   public static class MyPopupPanel extends DecoratedPopupPanel {
 
@@ -920,16 +917,6 @@ native void exportBar() /*-{
     p.center();
   }
   
-  /**
-   * @ Enhance existing widgets
-   * - Add missing behaviors.
-   * - Modify or style the inner HTML
-   * - Overcome the API limitation.
-   * - <a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html" target="_blank">Example</a>
-   */
-  public void testEnhanceWidgets() {
-  }
-
   /**
    *
    */

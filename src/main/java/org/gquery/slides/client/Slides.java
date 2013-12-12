@@ -23,7 +23,7 @@ import com.google.gwt.user.client.Timer;
 public class Slides {
   
   String onlySlyde = null; //"jsquery";//"features,roadmap,announce,questions";
-  int presentationTime = 40 * 60;
+  int presentationTime = 0;// 40 * 60;
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
   private static final String CODE_SNIPPET =
@@ -183,7 +183,7 @@ public class Slides {
       double start = Duration.currentTimeMillis() / 1000;
       public void run() {
         double now = Duration.currentTimeMillis() / 1000;
-        int diff = presentationTime - (int)((now - start));
+        int diff = Math.abs(presentationTime - (int)((now - start)));
         $("#clock").text(" " + diff/60 + ":" + diff%60);
       }
     }.scheduleRepeating(1000);

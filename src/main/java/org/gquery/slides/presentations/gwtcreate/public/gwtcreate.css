@@ -121,6 +121,9 @@
     justify-content: space-around;
 }
 
+#questionsanswers .jCode {
+	font-size: 2em;
+}
 
 /* Intellij highlighting */
 .back { background-color: #2b2b2b}
