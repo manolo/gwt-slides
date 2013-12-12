@@ -11,7 +11,6 @@ import java.util.TreeMap;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
-import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -133,16 +132,13 @@ public class GwtCreatePresentation extends SlidesSource {
   public void leaveUnBindEvent() {
     leaveBindEvent();
   }
-
-  public void beforeCustomEvent() {
-    viewPort.show();
-  }
-
+  
   /**
    *  @ Custom event
    */
   public void testCustomEvent() {
-    viewPort.append("<input type='text' id='text'></input><button>Send to console</button>");
+    System.out.println("P");
+    viewPort.append("<input type='text' id='text'><button>Send to console</button>");
     //
     // trigger the 'sendToConsole' event when we click on the button
     $("#viewport > button").click(new Function() {
@@ -849,15 +845,16 @@ native void exportBar() /*-{
    * @ gQuery Features
    * - jQuery API: syntax almost identical.
    * - Traversal DOM and XML manipulation.
-   * - Full GWT widget integration.
-   * - ► New event mechanism.
-   * - ► CSS3 Animations out-of-the-box
-   * - ► Declarative asynchronous language: Promises
-   * - ► Browser & Console,
-   * - ► Easier iteration with JS: avoid JSNI
-   * - ► JsniBundle
    * - Easy Ajax Syntax
    * - Data binding: JSON, XML
+   * - Full GWT widget integration.
+   * - Plugins system.
+   * - -► New event mechanism.
+   * - -► CSS3 Animations out-of-the-box
+   * - -► Declarative asynchronous language: Promises
+   * - -► Browser & Console,
+   * - -► Easier iteration with JS: avoid JSNI
+   * - -► JsniBundle
    */
   public void testFeatures() {
     
@@ -865,8 +862,9 @@ native void exportBar() /*-{
   
   /**
    * @ Roadmap
-   * - make more gQuery components testable in JVM
+   * - make some gQuery components run in JVM: Ajax, Data Binding
    * - Generators and utilities to wrap jQuery plugins
+   * - 
    * 
    */
   public void testRoadmap() {
@@ -897,25 +895,29 @@ native void exportBar() /*-{
 
     public MyPopupPanel(boolean autoHide, boolean modal) {
       super(autoHide, modal);
-      hide();
     }
 
-    Properties show = $$("{opacity: hide, scale: 1, rotate: 180, background: red, duration: 1500}");
-    Properties hide = $$("{opacity: show, scale: 0, rotate: 0, background: violet, duration: 1500}");
-
-    Animation a;
+    Properties show = $$("{opacity: 1, rotateX:0deg}");
+    Properties hide = $$("{opacity: 0, rotateX:180deg}");
 
     public void center() {
+      MyPopupPanel.super.center();
       $(this).animate(show);
     }
 
     public void hide(final boolean b) {
-      $(this).animate(hide);
+      $(this).animate(hide, new Function(){
+        public void f() {
+          MyPopupPanel.super.hide(b);
+        }
+      });
     }
   }
   
   public void testEnhanceWidget() {
-    PopupPanel p = new PopupPanel(true, true);
+    // @include: MyPopupPanel
+    //
+    PopupPanel p = new MyPopupPanel(true, true);
     p.add(new Image("img/logo-gquery.png"));
     p.center();
   }
