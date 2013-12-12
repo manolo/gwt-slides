@@ -22,6 +22,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsCache;
@@ -36,7 +37,10 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -142,16 +146,13 @@ public class GwtCreatePresentation extends SlidesSource {
   public void leaveUnBindEvent() {
     leaveBindEvent();
   }
-
-  public void beforeCustomEvent() {
-    viewPort.show();
-  }
-
+  
   /**
    *  @ Custom event
    */
   public void testCustomEvent() {
-    viewPort.append("<input type='text' id='text'></input><button>Send to console</button>");
+    System.out.println("P");
+    viewPort.append("<input type='text' id='text'><button>Send to console</button>");
     //
     // trigger the 'sendToConsole' event when we click on the button
     $("#viewport > button").on("click", new Function() {
@@ -839,15 +840,16 @@ native void exportBar() /*-{
    * @ gQuery Features
    * - jQuery API: syntax almost identical.
    * - Traversal DOM and XML manipulation.
-   * - Full GWT widget integration.
-   * - New event mechanism.
-   * - CSS3 Animations out-of-the-box
-   * - Declarative asynchronous language: Promises
-   * - Browser & Console,
-   * - Easier iteration with JS: avoid JSNI
-   * - JsniBundle
    * - Easy Ajax Syntax
    * - Data binding: JSON, XML
+   * - Full GWT widget integration.
+   * - Plugins system.
+   * - -► New event mechanism.
+   * - -► CSS3 Animations out-of-the-box
+   * - -► Declarative asynchronous language: Promises
+   * - -► Browser & Console,
+   * - -► Easier iteration with JS: avoid JSNI
+   * - -► JsniBundle
    */
   public void testFeatures() {
     
@@ -857,8 +859,9 @@ native void exportBar() /*-{
    * @ Roadmap
    * - Announcement : GwtQuery 1.4.0 released today !!
    *
-   * - make more gQuery components testable in JVM
+   * - make some gQuery components run in JVM: Ajax, Data Binding
    * - Generators and utilities to wrap jQuery plugins
+   * - 
    * 
    */
   public void testRoadmap() {
@@ -886,7 +889,36 @@ native void exportBar() /*-{
   public Function ask(){return null;};
   public Function respond(){return null;};
   
+  public static class MyPopupPanel extends DecoratedPopupPanel {
 
+    public MyPopupPanel(boolean autoHide, boolean modal) {
+      super(autoHide, modal);
+    }
+
+    Properties show = $$("{opacity: 1, rotateX:0deg}");
+    Properties hide = $$("{opacity: 0, rotateX:180deg}");
+
+    public void center() {
+      MyPopupPanel.super.center();
+      $(this).animate(show);
+    }
+
+    public void hide(final boolean b) {
+      $(this).animate(hide, new Function(){
+        public void f() {
+          MyPopupPanel.super.hide(b);
+        }
+      });
+    }
+  }
+  
+  public void testEnhanceWidget() {
+    // @include: MyPopupPanel
+    //
+    PopupPanel p = new MyPopupPanel(true, true);
+    p.add(new Image("img/logo-gquery.png"));
+    p.center();
+  }
   
   /**
    * @ Enhance existing widgets
@@ -910,6 +942,5 @@ native void exportBar() /*-{
    * @ Avoid to use widgets.
    */
   public void testAvoidWidget() {
-
   }
 }

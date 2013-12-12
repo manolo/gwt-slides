@@ -114,6 +114,7 @@
 #promisesdeferred .jCode, #promisespyramidofdoom .jCode, #promisespipeline .jCode {
     font-size: 0.8em;
 }
+
 /* Slide 5 : compareCode */
 #compareCode {
     flex-direction: row;
@@ -135,3 +136,4 @@
 
 
 
+>>>>>>> de256eeadc8a255035e0abf98f33dd774991f2f0
