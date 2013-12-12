@@ -8,6 +8,7 @@ import static org.gquery.slides.client.Utils.getRandom;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.watopi.chosen.client.Chosen;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
@@ -70,14 +71,14 @@ public class GwtCreatePresentation extends SlidesSource {
    */
   public void testBindEvent() {
     // handle the click event on the console
-    $("#console").bind("click", new Function() {
+    $("#console").on("click", new Function() {
       public void f() {
         console.log("It's awesome, you click on the console!!");
       }
     });
     //
     // you can handle any type of event supported by the browser
-    $("#console").bind("transitionend", new Function() {
+    $("#console").on("transitionend", new Function() {
       public void f() {
         console.log("Resizing of the console done !");
       }
@@ -87,11 +88,11 @@ public class GwtCreatePresentation extends SlidesSource {
     RootPanel.get("viewport").add(resizeWidget);
     //
     // works with widget
-    $(resizeWidget).mouseover(new Function() {
+    $(resizeWidget).on("mouseover",new Function() {
       public void f() {
         $("#console").css("width", "50%");
       }
-    }).mouseout(new Function() {
+    }).on("mouseout", new Function() {
       public void f() {
         $("#console").css("width", "96%");
       }
@@ -122,17 +123,17 @@ public class GwtCreatePresentation extends SlidesSource {
    */
   public void testUnBindEvent() {
     // remove all handlers by event types
-    $("#console").unbind("click");
-    $("#console").unbind("transitionend");
+    $("#console").off("click");
+    $("#console").off("transitionend");
     //
     // you can remove handlers of several types at once.
-    $(resizeWidget).unbind("mouseover mouseout");
+    $(resizeWidget).off("mouseover mouseout");
     //
     // remove a specific handler
-    $(resizeWidget).click(new Function() {
+    $(resizeWidget).on("click", new Function() {
       public void f() {
         console.log("Youhou \\o/ /o\\ ");
-        $(resizeWidget).unbind("click", this);
+        $(resizeWidget).off("click", this);
       }
     });
   }
@@ -142,24 +143,24 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   public void beforeCustomEvent() {
-    $("#viewport").show();
+    viewPort.show();
   }
 
   /**
    *  @ Custom event
    */
   public void testCustomEvent() {
-    $("#viewport").append("<input type='text' id='text'></input><button>Send to console</button>");
+    viewPort.append("<input type='text' id='text'></input><button>Send to console</button>");
     //
     // trigger the 'sendToConsole' event when we click on the button
-    $("#viewport > button").click(new Function() {
+    $("#viewport > button").on("click", new Function() {
       public void f() {
         $("#console").trigger("sendToConsole", $("#text").val());
       }
     });
     //
     // handle the 'sendToConsole' event
-    $("#console").bind("sendToConsole", new Function() {
+    $("#console").on("sendToConsole", new Function() {
       @Override
       public boolean f(Event e, Object... data) {
         console.log(data[0]);
@@ -168,9 +169,9 @@ public class GwtCreatePresentation extends SlidesSource {
     });
   }
 
-  public void afterCustomEvent() {
-    $("#viewport > button").unbind("click");
-    $("#console").unbind("sendToConsole");
+  public void leaveCustomEvent() {
+    $("#viewport > button").off("click");
+    $("#console").off("sendToConsole");
     viewPort.empty().hide();
   }
 	
@@ -179,14 +180,16 @@ public class GwtCreatePresentation extends SlidesSource {
    *  Mechanism of handling the events via a single common ancestor rather than each child descendant.  
    */
   public void testEventDelegation() {
-  	viewPort.show().height(300).append("<div id='container'>Container<div class='child'>Child1</div><div class='child'>Child2</div></div>");
-  	
-  	//
-  	$("#container").live(".class", "click", new Function() {
-  	  public void f(Element e) {
-  	    console.log($(e).text());
-  	  }
-	});  	  
+    viewPort.show().height(300).append(
+        "<div id='container'>Container<div class='child'>Child1</div><div " +
+            "class='child'>Child2</div></div>");
+
+    //
+    $("#container").live(".class", "click", new Function() {
+      public void f(Element e) {
+        console.log($(e).text());
+      }
+    });
   }
   /**
    * @ Avoiding JSNI
@@ -879,24 +882,23 @@ native void exportBar() /*-{
    * - Add missing behaviors.
    * - Modify or style the inner HTML
    * - Overcome the API limitation.
-   * - Example
+   * - <a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html">Example</a>
    */
-  public void testEnhanceWidget() {
-  	
+  public void testEnhanceWidgets() {
+
   }
-  
+
   /**
-   * @ Create new widgets.
-   * - TODO add gwt chosen
+   *
    */
-  public void testCreateWidget() {
-  	
+  public void enterCreateWidget() {
+    $("#countries").as(Chosen.Chosen).chosen();
   }
   
    /**
    * @ Avoid to use widgets.
    */
   public void testAvoidWidget() {
-  	
+
   }
 }
