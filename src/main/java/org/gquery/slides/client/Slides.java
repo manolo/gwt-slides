@@ -22,7 +22,10 @@ import com.google.gwt.user.client.Timer;
  */
 public class Slides {
   
-  String onlySlyde = null; //"jsquery";//"features,roadmap,announce,questions";
+  // For testing purposes, filter the slides to show.
+  private String onlySlyde = null; //features,roadmap,announce,questions";
+  // Set the presentation duration in seconds to count from it to 0
+  // leaving it to 0 means count from 0 to infinite
   int presentationTime = 0;// 40 * 60;
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
@@ -183,7 +186,10 @@ public class Slides {
       double start = Duration.currentTimeMillis() / 1000;
       public void run() {
         double now = Duration.currentTimeMillis() / 1000;
-        int diff = Math.abs(presentationTime - (int)((now - start)));
+        int diff = Math.max(0, Math.min(60, presentationTime - (int)((now - start))));
+        if (diff <= 0 || diff >60) {
+          cancel();
+        }
         $("#clock").text(" " + diff/60 + ":" + diff%60);
       }
     }.scheduleRepeating(1000);

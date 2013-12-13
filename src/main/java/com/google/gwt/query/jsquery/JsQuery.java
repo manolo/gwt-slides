@@ -79,15 +79,17 @@ public class JsQuery implements Exportable {
     fnc.fn = ns.gQuery.prototype;
     fnc.fn.extend = fnc.extend;
 
+    // define '$', 'gQuery' and 'jQuery' vars
     $ = $wnd.$ = $wnd.jQuery = $wnd.gQuery = fnc;
 
+    // Some extra objects jQuery has in it's namespace and we do not
     $.fx = {};
     $.fx.step = {};
     $.cssHooks = {};
     $.cssHooks.opacity = {};
     $.Tween = {};
     $.Tween.propHooks = {};
-
+    // Some extra methods we dont have.
     $.expr = function(){};
     $.Event = function(e){return {type: e}};
     $.each = function(arr, f) {return Array.prototype.forEach.call(arr, f)};

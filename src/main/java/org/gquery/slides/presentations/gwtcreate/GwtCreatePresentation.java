@@ -8,8 +8,6 @@ import static org.gquery.slides.client.Utils.getRandom;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import com.watopi.chosen.client.Chosen;
-import com.watopi.chosen.client.ChosenOptions;
 import org.gquery.slides.client.Prettify;
 import org.gquery.slides.client.SlidesSource;
 
@@ -43,20 +41,40 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.Deferred;
-import static com.google.gwt.query.client.GQuery.browser;
-import static com.google.gwt.query.client.GQuery.console;
-import static com.google.gwt.query.client.GQuery.document;
-import static com.google.gwt.query.client.GQuery.lazy;
-import static com.google.gwt.query.client.GQuery.when;
-import static com.google.gwt.query.client.GQuery.window;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
+import com.watopi.chosen.client.Chosen;
 
 /**
+ * All tests methods in this class will be merged in the main html
+ * page. Java doc of the methods will be written as tittle, bubtittle
+ * and sections in the slides. The body of the the function will be
+ * included in the code section of the slide.
+ * 
+ * There are some conventions in the body, like preceding a
+ * line with '@ ' which means a '<h1>', '@@ ' a <h4>, or '- ' which will
+ * be replaced with <ul> sections.
+ * 
+ * You can include any method or inner class in the slide just
+ * writing '@ methodName' or '@ className' anywhere (javadoc, code). 
+ * Also an extra html is allowed in javadocs.
+ * 
+ * The body code will be executed when clicking on the '#play' button,
+ * but aditionally, you can write extra functions which will be executed
+ * when entering the slide, leaving it, before running the code or after.
+ * 
+ * So the convention for method names are:
+ * 
+ * enterMethod, beforeMethod, testMethod, afterMetod, leaveMethod.
+ * 
+ * In your hosted html page you have to define each slide, and any
+ * extra content in the slide apart from the content automatically merged
+ * from this class. Each section should have an unique 'id' matching the
+ * name of the testSlideMethodName, but in lowercase. The order of
+ * these sections will be the order of the slides despite the order of
+ * test methods in this class.
+ * 
+ * <section id='slidemehodname'>Extra Content</section>
+ * 
+ * 
  * @author manolo
  *
  */
@@ -179,6 +197,7 @@ public class GwtCreatePresentation extends SlidesSource {
   public void beforeEventDelegation() {
     testCustomEvent();
   }
+  
   /**
    * @ Event Delegation
    *
