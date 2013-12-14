@@ -1,0 +1,15 @@
+<web-app>
+  <welcome-file-list>
+    <welcome-file>Slides/Slides.html</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+    <servlet-name>echo</servlet-name>
+    <servlet-class>org.gquery.slides.server.EchoServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>echo</servlet-name>
+    <url-pattern>*.echo</url-pattern>
+  </servlet-mapping>
+</web-app>
