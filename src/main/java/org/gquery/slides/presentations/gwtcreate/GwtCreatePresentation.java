@@ -1,16 +1,5 @@
 package org.gquery.slides.presentations.gwtcreate;
 
-import static com.google.gwt.query.client.GQuery.*;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.*;
-import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
-import static org.gquery.slides.client.Utils.getRandom;
-
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import org.gquery.slides.client.Prettify;
-import org.gquery.slides.client.SlidesSource;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -42,6 +31,26 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.watopi.chosen.client.Chosen;
+import org.gquery.slides.client.Prettify;
+import org.gquery.slides.client.SlidesSource;
+
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.Deferred;
+import static com.google.gwt.query.client.GQuery.browser;
+import static com.google.gwt.query.client.GQuery.console;
+import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.lazy;
+import static com.google.gwt.query.client.GQuery.when;
+import static com.google.gwt.query.client.GQuery.window;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOut;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
+import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
+import static org.gquery.slides.client.Utils.getRandom;
 
 /**
  * All tests methods in this class will be merged in the main html
@@ -164,7 +173,10 @@ public class GwtCreatePresentation extends SlidesSource {
   public void leaveUnBindEvent() {
     leaveBindEvent();
   }
-  
+
+  public void beforeCustomEvent() {
+    viewPort.show();
+  }
   /**
    *  @ Custom events
    */
@@ -195,6 +207,7 @@ public class GwtCreatePresentation extends SlidesSource {
   }
 
   public void beforeEventDelegation() {
+    viewPort.show();
     testCustomEvent();
   }
   
