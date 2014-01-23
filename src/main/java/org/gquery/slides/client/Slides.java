@@ -1,8 +1,5 @@
 package org.gquery.slides.client;
 
-import static com.google.gwt.query.client.GQuery.*;
-import static org.gquery.slides.client.Utils.hash;
-
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
@@ -17,6 +14,13 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCur
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.console;
+import static com.google.gwt.query.client.GQuery.lazy;
+import static com.google.gwt.query.client.GQuery.window;
+import static org.gquery.slides.client.Utils.hash;
+
 /**
  * Main class to execute a presentation
  */
@@ -24,9 +28,6 @@ public class Slides {
   
   // For testing purposes, filter the slides to show.
   private String onlySlyde = null; //features,roadmap,announce,questions";
-  // Set the presentation duration in seconds to count from it to 0
-  // leaving it to 0 means count from 0 to infinite
-  int presentationTime = 0;// 40 * 60;
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
   private static final String CODE_SNIPPET =
@@ -186,10 +187,7 @@ public class Slides {
       double start = Duration.currentTimeMillis() / 1000;
       public void run() {
         double now = Duration.currentTimeMillis() / 1000;
-        int diff = Math.max(0, Math.min(60, presentationTime - (int)((now - start))));
-        if (diff <= 0 || diff >60) {
-          cancel();
-        }
+        int diff = Math.max(0, (int)(now - start));
         $("#clock").text(" " + diff/60 + ":" + diff%60);
       }
     }.scheduleRepeating(1000);
