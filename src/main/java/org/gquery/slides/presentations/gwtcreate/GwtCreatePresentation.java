@@ -1,8 +1,20 @@
 package org.gquery.slides.presentations.gwtcreate;
 
+import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.*;
+import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
+import static org.gquery.slides.client.Utils.getRandom;
+
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import org.gquery.slides.client.Prettify;
+import org.gquery.slides.client.SlidesSource;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
@@ -14,6 +26,7 @@ import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.Fx;
@@ -25,32 +38,14 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.watopi.chosen.client.Chosen;
-import org.gquery.slides.client.Prettify;
-import org.gquery.slides.client.SlidesSource;
-
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.Deferred;
-import static com.google.gwt.query.client.GQuery.browser;
-import static com.google.gwt.query.client.GQuery.console;
-import static com.google.gwt.query.client.GQuery.document;
-import static com.google.gwt.query.client.GQuery.lazy;
-import static com.google.gwt.query.client.GQuery.when;
-import static com.google.gwt.query.client.GQuery.window;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOut;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
-import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
-import static org.gquery.slides.client.Utils.getRandom;
 
 /**
  * All tests methods in this class will be merged in the main html
@@ -960,5 +955,41 @@ native void exportBar() /*-{
    * @ Avoid to use widgets.
    */
   public void testAvoidWidget() {
+  }
+  
+  GQuery fileUpload = $("<input type='file'>");
+  public void beforeAjax() {
+    console.clear();
+    fileUpload.prependTo($("#ajax"));
+  }
+  public void leaveAjax() {
+    fileUpload.remove();
+  }
+  /**
+   * @ Ajax
+   */
+  public void testAjax() {
+    $(fileUpload).on("change", new Function() {
+      public boolean f(Event e) {
+        Properties form = JsUtils.runJavascriptFunction(window, "eval", "new FormData()");
+        JsArray<JavaScriptObject> files = $(fileUpload).prop("multiple", true).prop("files");
+        for (int i = 0, l = files.length(); i < l; i++) {
+          JsUtils.runJavascriptFunction(form, "append", "file-" + i, files.get(i));
+        }
+        Ajax.post("upload.echo", form)
+           .always(new Function() {
+              public void f() {
+                System.out.println("DONE");
+              }
+            })
+            .progress(new Function() {
+              public void f() {
+                console.log(arguments(2) + " percent" );
+              }
+            });
+        
+        return true;
+      }
+    });    
   }
 }
