@@ -1,6 +1,8 @@
 package org.gquery.slides.client;
 
-import com.google.gwt.core.client.Duration;
+import static com.google.gwt.query.client.GQuery.*;
+import static org.gquery.slides.client.Utils.hash;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.dom.client.Element;
@@ -9,25 +11,18 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.console;
-import static com.google.gwt.query.client.GQuery.lazy;
-import static com.google.gwt.query.client.GQuery.window;
-import static org.gquery.slides.client.Utils.hash;
 
 /**
  * Main class to execute a presentation
  */
 public class Slides {
   
-  // For testing purposes, filter the slides to show.
-  private String onlySlyde = null; //features,roadmap,announce,questions";
+  // For testing purposes, filter the slides to show: string list separated with comma.
+  private String onlySlyde = null;
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
   private static final String CODE_SNIPPET =
@@ -37,16 +32,15 @@ public class Slides {
     "   <pre>%code%</pre>" +
     "</div></div></div>";
 
-  private Easing easing = EasingCurve.easeInOutSine;// EasingCurve.custom.with(.31,-0.37,.47,1.5);
+  private Easing easing = EasingCurve.easeInOutSine;
 
   private int currentPage = 1;
   private SlidesSource slidesSrc;
   private GQuery slides;
   private GQuery currentSlide = $();
-
+  private boolean isMobile = JsUtils.hasProperty(window, "orientation");
 
   public Slides(SlidesSource presentation) {
-
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
       public void onUncaughtException(Throwable e) {
         console.log(e.getMessage());
@@ -62,7 +56,8 @@ public class Slides {
       public void f(Element e) {
         buildSlide($(this));
       }
-    }).css("right", "-150%")
+    })
+    .css("right", "-150%")
     // remove empty slides
     .filter(new Predicate() {
       public boolean f(Element e, int index) {
@@ -78,12 +73,17 @@ public class Slides {
     });
 
     bindEvents();
-
+    
     showCurrentSlide();
-
-    slides.fadeTo(1, 3000);
+    // slides have an initial opacity of 0
+    $(slides).fadeTo(1);
+    
+    if (isMobile) {
+      // make play button big enough to be clickable in mobile
+      $("#play").css("font-size", "5em");
+    }
   }
-
+  
   private void showCurrentSlide() {
     // compute current page based on hash
     String hash = hash();
@@ -142,6 +142,9 @@ public class Slides {
   }
 
   private void bindEvents() {
+    final String touchStart = isMobile ? "touchstart" : "mousedown";
+    final String touchEnd = isMobile ? "touchend" : "mouseup";
+
     $(window)
     // handle key events to move slides back/forward
     .on("keydown", new Function() {
@@ -161,19 +164,51 @@ public class Slides {
         return true;
       }
     })
+    // handle change slide with mouse move or slide gesture in mobile
+    .on(touchStart + " " + touchEnd, new Function() {
+      int x = 0;
+      int xThreshold = 30;
+      public boolean f(Event e) {
+        String eventName = e.getType();
+        String tagName = e.getEventTarget().<Element>cast().getTagName().toLowerCase(); 
+        if (!tagName.matches("a|input") && touchStart.equals(eventName)) {
+          x = isMobile ? e.getChangedTouches().get(0).getClientX() : e.getClientX();
+          console.log(tagName + " " + eventName + " false");
+          return false;
+        } else if (x != 0) {
+          int d = x - (isMobile ? e.getChangedTouches().get(0).getClientX() : e.getClientX());
+          x = 0;
+          if (d > xThreshold || d < -xThreshold) {
+            show(d > 30);
+            return false;
+          }
+        }
+        console.log(tagName + " " + eventName + " true");
+        return true;
+      }
+    })
     // handle hash change to select the appropriate slide
     .on("hashchange", new Function() {
       public void f() {
         showCurrentSlide();
       }
+    })
+    // on resize we change slide sizes and left properties
+    .on("resize", new Function() {
+      public void f() {
+        int w = (int)($(window).width() * 1.5);
+        slides.lt(currentPage).css("left", "-" + w);
+        slides.gt(currentPage).css("left", "+" + w);
+        slides.css("width", "" + w);
+      }
     });
 
-    $("#play").on("click", new Function() {
+    $("#play").on(touchStart, new Function() {
       public void f() {
         slidesSrc.exec(currentSlide.id());
       }
     });
-
+    
     // Clear the console if we push mouse right
     $("#console").on("contextmenu", new Function() {
       public boolean f(Event e) {
@@ -182,17 +217,8 @@ public class Slides {
         return false;
       }
     });
-    
-    new Timer() {
-      double start = Duration.currentTimeMillis() / 1000;
-      public void run() {
-        double now = Duration.currentTimeMillis() / 1000;
-        int diff = Math.max(0, (int)(now - start));
-        $("#clock").text(" " + diff/60 + ":" + diff%60);
-      }
-    }.scheduleRepeating(1000);
   }
-
+  
   private void buildSlide(GQuery slide) {
     String html = slide.html();
     String id = slide.id().toLowerCase();

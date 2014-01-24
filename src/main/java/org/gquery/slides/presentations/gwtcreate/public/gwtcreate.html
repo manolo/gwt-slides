@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width; initial-scale=0.5; user-scalable=no" />
+    
     <title>GWT.create conferences: GwtQuery</title>
     <link href="slides.css" rel="stylesheet">
     <link href="gwtcreate.css" rel="stylesheet">
@@ -29,7 +31,7 @@
                     <li>PMC of Apache James </li>
                     <li>Spain</li>
                     <li><i class="twitter"></i><a href="https://twitter.com/dodotis" target="_blank">@dodotis</a></li>
-                    <li><i class="gplus"></i> <a href="https://plus.google.com/u/0/+ManuelCarrascoM/posts" target="_blank">+ManuelCarrascoM</a></li>
+                    <li><i class="gplus"></i><a href="http://google.com/+ManuelCarrascoMonino/posts" target="_blank">+ManuelCarrascoMoñino</a></li>
                                                    
                 </ul>
             </div>
@@ -89,22 +91,21 @@
 <pre>
 
 
-
-
 <span class="s0">$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
     .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
     .click(</span><span class="s2">function </span><span class="s0">() {
+    
         $(</span><span class="s2">this</span><span class="s0">)
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
             .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span><span class="s3">,
               </span><span class="s2">null</span><span class="s3">, </span>
               <span class="s2">function </span><span class="s0">() {
+              
                   $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s4">250</span><span class="s0">)</span><span class="s3">;</span><span class="s0">
+                  
               })</span><span class="s3">;</span><span class="s0">
+              
     })</span><span class="s3">;</span>
-    
-    
-    
     </pre>
 
                     </div>
@@ -117,7 +118,7 @@
             <div class="jCode noPlay">
                 <div class="jCode-scroll jCode-div">
                     <div class="jCode-lines">
-<pre><span class="s2">import static </span><span class="s0">com.google.gwt.query.client.GQuery.$</span><span class="s2">;</span><span class="s0">
+<pre><span class="s2">import static </span><span class="s0">com.google.gwt.query.client.GQuery.*</span><span class="s2">;</span><span class="s0">
 
 $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
     .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
@@ -125,8 +126,8 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
       </span><span class="s2">public void </span><span class="s0">f() {
         $(</span><span class="s2">this</span><span class="s0">)
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
-            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span>
-              <span class="s2">, null,
+            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id(),</span>
+              <span class="s2">null,
               new </span><span class="s0">Function() {
                 </span><span class="s2">public void </span><span class="s0">f() {
                   $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0">
@@ -134,8 +135,7 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
               })</span><span class="s2">;</span><span class="s0">
       }
     })</span><span class="s2">;</span><span class="s0">
-  }
-}</span></pre>
+</span></pre>
                     </div>
                 </div>
             </div>
@@ -219,6 +219,7 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
     <section id="plugins"></section>
     <section id="roadmap"></section>
     <section id="questionsanswers"></section>
+    <section id="ajax"></section>
 </div>
 
 
@@ -226,7 +227,6 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
 <div id='marker'>1</div>
 <div id='viewport'></div>
 <div id='container'></div>
-<div id='clock'></div>
 
 <div class='ball yellow' style='background:yellow'></div>
 <div class='ball green' style='background:green'></div>

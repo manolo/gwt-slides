@@ -39,7 +39,7 @@ body {
     word-spacing: 0;
     line-height: 1;
     color: black;
-    font-size: 180%;
+    font-size: 140%;
     font-family: Cabin;
     overflow: hidden;
 }
@@ -99,6 +99,7 @@ li {
     padding-right: 1em;
     text-shadow: 0 0 0.02em #EEEEEE, 0.01em 0.01em 0.03em rgba(0, 0, 0, 0.4);
     line-height: 1.5em;
+    max-width: 700px;
 }
 
 .slides > section > pre {
@@ -221,7 +222,7 @@ li {
      display: none;
      z-index: 1;
      margin-left: -10px;
-     margin-top: -10px;
+     margin-top: -3px;
  }
  
  .jCode {
@@ -238,7 +239,7 @@ li {
      color: #A6E22E;
      
      border-radius: 7px;
-     max-width: 860px;
+     max-width: 700px;
      overflow: hidden;
      padding-left: 20px;
      padding-right: 20px;
