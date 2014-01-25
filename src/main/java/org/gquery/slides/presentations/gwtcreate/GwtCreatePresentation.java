@@ -86,6 +86,19 @@ public class GwtCreatePresentation extends SlidesSource {
   GQuery viewPort = $("#viewport");
   GQuery play = $("#play");
   Widget resizeWidget;
+  
+  public void enterCompareCode() {
+    $("#comparecode > div > div:first-child")
+        .stop().css($$("opacity: 1"))
+        .animate("delay: 3000, duration: 1000, opacity: 0")
+        .animate("delay: 6000, opacity: 1");
+
+    $("#comparecode > div > div:last-child")
+        .stop().css($$("margin-left: -100%, opacity: 0"))
+        .animate("delay: 1000, duration: 3000, opacity: 1")
+        .animate("delay: 6000, margin-left: 0")
+        ;
+  }
 
   public void beforeBindEvent() {
     leaveBindEvent();

@@ -115,9 +115,11 @@
     font-size: 0.8em;
 }
 
-/* Slide 5 : compareCode */
-#compareCode {
+.flex-direction-row {
+	display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
     justify-content: space-around;
 }
 
