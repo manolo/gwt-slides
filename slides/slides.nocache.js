@@ -396,8 +396,12 @@ function slides(){
     }
     var strongName;
     try {
-      unflattenKeylistIntoAnswers(['gecko1_8'], 'CEC29D581337301F8F42E2FA42402518');
-      unflattenKeylistIntoAnswers(['safari'], 'CEC29D581337301F8F42E2FA42402518' + ':1');
+      unflattenKeylistIntoAnswers(['safari'], '29A6DB532D4FBEBE526B9A1BA366FBBC');
+      unflattenKeylistIntoAnswers(['opera'], '7EB4D02ECCEFC10FC03F2A094AA9D9F7');
+      unflattenKeylistIntoAnswers(['ie9'], 'B081E962FD1F7E5AEC8060240D0F0A51');
+      unflattenKeylistIntoAnswers(['ie8'], 'B8673F0472493B22F06EFEA5D8DA0B5E');
+      unflattenKeylistIntoAnswers(['gecko1_8'], 'E6DED2F70400148DABE90A0FB9268CBC');
+      unflattenKeylistIntoAnswers(['ie6'], 'FE734717F3CF3763EDFBFCA236BCD05E');
       strongName = answers[computePropValue('user.agent')];
       var idx = strongName.indexOf(':');
       if (idx != -1) {
