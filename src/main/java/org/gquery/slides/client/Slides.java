@@ -173,7 +173,6 @@ public class Slides {
         String tagName = e.getEventTarget().<Element>cast().getTagName().toLowerCase(); 
         if (!tagName.matches("a|input") && touchStart.equals(eventName)) {
           x = isMobile ? e.getChangedTouches().get(0).getClientX() : e.getClientX();
-          console.log(tagName + " " + eventName + " false");
           return false;
         } else if (x != 0) {
           int d = x - (isMobile ? e.getChangedTouches().get(0).getClientX() : e.getClientX());
@@ -183,7 +182,6 @@ public class Slides {
             return false;
           }
         }
-        console.log(tagName + " " + eventName + " true");
         return true;
       }
     })

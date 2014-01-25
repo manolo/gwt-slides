@@ -27,6 +27,7 @@ import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.Fx;
@@ -38,10 +39,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -273,7 +272,7 @@ exportBar();
 native void exportBar() /*-{
   $wnd.bar =
     $entry(
-       @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
+       @org.gquery[...]GwtCreatePresentation::bar(Ljava/lang/Object;)
     );
 }-* /;
 
@@ -643,7 +642,6 @@ native void exportBar() /*-{
     </pre>
    */
   public void testJsQuery() {
-//    //
     GWT.create(JsQuery.class);
     HighCharts highCharts = GWT.create(HighCharts.class);
     //
@@ -808,7 +806,7 @@ native void exportBar() /*-{
   public void testPromisesPyramidOfDoom() {
     // @include: drop_ball
     // The pyramid:
-    Function dropMore = new Function() {
+    Function drop_next = new Function() {
       int cont = 0;
       @Override
       public void f() {
@@ -828,7 +826,7 @@ native void exportBar() /*-{
                         console.log("All balls were dropt");
                       }
                       done = true;
-                    };
+                    }
                   });
                 }
               });
@@ -838,9 +836,8 @@ native void exportBar() /*-{
       }
     };
 
-    // Start the process:
-    drop_ball(red, 4000, dropMore);
-    drop_ball(blue, 1000, dropMore);
+    drop_ball(red, 4000, drop_next);
+    drop_ball(blue, 1000, drop_next);
   }
 
   public void enterPromisesPyramidOfDoom() {
@@ -855,23 +852,23 @@ native void exportBar() /*-{
 
   
   /**
-   * @ gQuery Features
+   * @ gQuery-1.4.0 Features
    * - jQuery API: syntax almost identical.
    * - Traversal DOM and XML manipulation.
    * - Easy Ajax Syntax
    * - Data binding: JSON, XML
    * - Full GWT widget integration.
    * - Plugin system.
-   * - -> A New event mechanism.
-   * - -> Console & Browser classes.
-   * - -> Declarative asynchronous language: Promises
-   * - -> CSS3 Animations out-of-the-box
-   * - -> Easier iteration with JS: avoiding JSNI
-   * - -> JsniBundle
-   * - -> JsQuery
+   * - Improved event mechanism. <new/>
+   * - Console & Browser classes. <new/>
+   * - Asynchronous language: Promises. <new/>
+   * - CSS3 Animations out-of-the-box. <new/>
+   * - Easier iteration with JS: avoiding JSNI. &nbsp;<new/>&nbsp;
+   * - Import JS: JsniBundle. <new/>
+   * - Export JS Api: JsQuery. <new/>
+   * - Ajax: FormData. <new/>
    */
   public void testFeatures() {
-    
   }
   
   /**
@@ -885,7 +882,6 @@ native void exportBar() /*-{
    * - Write More plugins.
    */
   public void testRoadmap() {
-    
   }
 
   /**
@@ -952,12 +948,13 @@ native void exportBar() /*-{
   }
   
    /**
-   * @ Avoid to use widgets.
+   * @ Avoid using widgets.
    */
   public void testAvoidWidget() {
   }
   
   GQuery fileUpload = $("<input type='file'>");
+  String uploadUrl = "http://gwtupload.alcala.org/gupld/servlet.gupld";
   public void beforeAjax() {
     console.clear();
     fileUpload.prependTo($("#ajax"));
@@ -967,6 +964,8 @@ native void exportBar() /*-{
   }
   /**
    * @ Ajax
+   * - Simple syntax: jQuery API
+   * - Supports Multiform/Data, CORS and JSONP
    */
   public void testAjax() {
     $(fileUpload).on("change", new Function() {
@@ -976,15 +975,16 @@ native void exportBar() /*-{
         for (int i = 0, l = files.length(); i < l; i++) {
           JsUtils.runJavascriptFunction(form, "append", "file-" + i, files.get(i));
         }
-        Ajax.post("upload.echo", form)
-           .always(new Function() {
+        Settings settings = Ajax.createSettings().setUrl(uploadUrl).setData(form);
+        Ajax.ajax(settings)
+           .done(new Function() {
               public void f() {
-                System.out.println("DONE");
+                console.log("File uploaded.");
               }
             })
             .progress(new Function() {
               public void f() {
-                console.log(arguments(2) + " percent" );
+                console.log(arguments(2) + " percent");
               }
             });
         

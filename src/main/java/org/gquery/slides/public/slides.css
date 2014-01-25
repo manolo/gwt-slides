@@ -277,3 +277,16 @@ li {
 .jLiteral {
 	color: #E9E9E9;
 }
+
+new {
+	font-size: 0.8em;
+	transform:rotate(-45deg);
+    -webkit-transform:rotate(-45deg);
+    position: absolute;
+    padding-left: 0.4em;
+    colot: green;
+}
+
+new:before {
+  content: "new";
+}
