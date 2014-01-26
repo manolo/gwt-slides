@@ -1,8 +1,20 @@
 package org.gquery.slides.presentations.gwtcreate;
 
+import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.*;
+import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
+import static org.gquery.slides.client.Utils.getRandom;
+
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import org.gquery.slides.client.Prettify;
+import org.gquery.slides.client.SlidesSource;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
@@ -14,6 +26,8 @@ import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.Fx;
@@ -31,26 +45,6 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.watopi.chosen.client.Chosen;
-import org.gquery.slides.client.Prettify;
-import org.gquery.slides.client.SlidesSource;
-
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.Deferred;
-import static com.google.gwt.query.client.GQuery.browser;
-import static com.google.gwt.query.client.GQuery.console;
-import static com.google.gwt.query.client.GQuery.document;
-import static com.google.gwt.query.client.GQuery.lazy;
-import static com.google.gwt.query.client.GQuery.when;
-import static com.google.gwt.query.client.GQuery.window;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOut;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
-import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
-import static org.gquery.slides.client.Utils.getRandom;
 
 /**
  * All tests methods in this class will be merged in the main html
@@ -92,6 +86,19 @@ public class GwtCreatePresentation extends SlidesSource {
   GQuery viewPort = $("#viewport");
   GQuery play = $("#play");
   Widget resizeWidget;
+  
+  public void enterCompareCode() {
+    $("#comparecode > div > div:first-child")
+        .stop().css($$("opacity: 1"))
+        .animate("delay: 3000, duration: 1000, opacity: 0")
+        .animate("delay: 6000, opacity: 1");
+
+    $("#comparecode > div > div:last-child")
+        .stop().css($$("margin-left: -100%, opacity: 0"))
+        .animate("delay: 1000, duration: 3000, opacity: 1")
+        .animate("delay: 6000, margin-left: 0")
+        ;
+  }
 
   public void beforeBindEvent() {
     leaveBindEvent();
@@ -278,7 +285,7 @@ exportBar();
 native void exportBar() /*-{
   $wnd.bar =
     $entry(
-       @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
+       @org.gquery[...]GwtCreatePresentation::bar(Ljava/lang/Object;)
     );
 }-* /;
 
@@ -648,7 +655,6 @@ native void exportBar() /*-{
     </pre>
    */
   public void testJsQuery() {
-//    //
     GWT.create(JsQuery.class);
     HighCharts highCharts = GWT.create(HighCharts.class);
     //
@@ -813,7 +819,7 @@ native void exportBar() /*-{
   public void testPromisesPyramidOfDoom() {
     // @include: drop_ball
     // The pyramid:
-    Function dropMore = new Function() {
+    Function drop_next = new Function() {
       int cont = 0;
       @Override
       public void f() {
@@ -833,7 +839,7 @@ native void exportBar() /*-{
                         console.log("All balls were dropt");
                       }
                       done = true;
-                    };
+                    }
                   });
                 }
               });
@@ -843,9 +849,8 @@ native void exportBar() /*-{
       }
     };
 
-    // Start the process:
-    drop_ball(red, 4000, dropMore);
-    drop_ball(blue, 1000, dropMore);
+    drop_ball(red, 4000, drop_next);
+    drop_ball(blue, 1000, drop_next);
   }
 
   public void enterPromisesPyramidOfDoom() {
@@ -860,23 +865,23 @@ native void exportBar() /*-{
 
   
   /**
-   * @ gQuery Features
+   * @ gQuery-1.4.0 Features
    * - jQuery API: syntax almost identical.
    * - Traversal DOM and XML manipulation.
    * - Easy Ajax Syntax
    * - Data binding: JSON, XML
    * - Full GWT widget integration.
    * - Plugin system.
-   * - -> A New event mechanism.
-   * - -> Console & Browser classes.
-   * - -> Declarative asynchronous language: Promises
-   * - -> CSS3 Animations out-of-the-box
-   * - -> Easier iteration with JS: avoiding JSNI
-   * - -> JsniBundle
-   * - -> JsQuery
+   * - Improved event mechanism. <new/>
+   * - Console & Browser classes. <new/>
+   * - Asynchronous language: Promises. <new/>
+   * - CSS3 Animations out-of-the-box. <new/>
+   * - Easier iteration with JS: avoiding JSNI. &nbsp;<new/>&nbsp;
+   * - Import JS: JsniBundle. <new/>
+   * - Export JS Api: JsQuery. <new/>
+   * - Ajax: FormData. <new/>
    */
   public void testFeatures() {
-    
   }
   
   /**
@@ -890,7 +895,6 @@ native void exportBar() /*-{
    * - Write More plugins.
    */
   public void testRoadmap() {
-    
   }
 
   /**
@@ -957,8 +961,48 @@ native void exportBar() /*-{
   }
   
    /**
-   * @ Avoid to use widgets.
+   * @ Avoid using widgets.
    */
   public void testAvoidWidget() {
+  }
+  
+  GQuery fileUpload = $("<input type='file'>");
+  String uploadUrl = "http://gwtupload.alcala.org/gupld/servlet.gupld";
+  public void beforeAjax() {
+    console.clear();
+    fileUpload.prependTo($("#ajax"));
+  }
+  public void leaveAjax() {
+    fileUpload.remove();
+  }
+  /**
+   * @ Ajax
+   * - Simple syntax: jQuery API
+   * - Supports Multiform/Data, CORS and JSONP
+   */
+  public void testAjax() {
+    $(fileUpload).on("change", new Function() {
+      public boolean f(Event e) {
+        Properties form = JsUtils.runJavascriptFunction(window, "eval", "new FormData()");
+        JsArray<JavaScriptObject> files = $(fileUpload).prop("multiple", true).prop("files");
+        for (int i = 0, l = files.length(); i < l; i++) {
+          JsUtils.runJavascriptFunction(form, "append", "file-" + i, files.get(i));
+        }
+        Settings settings = Ajax.createSettings().setUrl(uploadUrl).setData(form);
+        Ajax.ajax(settings)
+           .done(new Function() {
+              public void f() {
+                console.log("File uploaded.");
+              }
+            })
+            .progress(new Function() {
+              public void f() {
+                console.log(arguments(2) + " percent");
+              }
+            });
+        
+        return true;
+      }
+    });    
   }
 }

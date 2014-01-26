@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width; initial-scale=0.5; user-scalable=no" />
+    
     <title>GWT.create conferences: GwtQuery</title>
     <link href="slides.css" rel="stylesheet">
     <link href="gwtcreate.css" rel="stylesheet">
@@ -29,7 +31,7 @@
                     <li>PMC of Apache James </li>
                     <li>Spain</li>
                     <li><i class="twitter"></i><a href="https://twitter.com/dodotis" target="_blank">@dodotis</a></li>
-                    <li><i class="gplus"></i> <a href="https://plus.google.com/u/0/+ManuelCarrascoM/posts" target="_blank">+ManuelCarrascoM</a></li>
+                    <li><i class="gplus"></i><a href="http://google.com/+ManuelCarrascoMonino/posts" target="_blank">+ManuelCarrascoMoñino</a></li>
                                                    
                 </ul>
             </div>
@@ -62,6 +64,7 @@
     </section>
 
     <section id="pronunciation">
+        <h1>Pronunciation</h1>
         <div>
             <div style="background-color:#0769AD" class="logo">
                 <img src="img/logo-jquery.png">
@@ -80,7 +83,9 @@
             </div>
         </div>
     </section>
-    <section id="compareCode">
+    <section id="comparecode">
+            <h1>Syntax differences</h1>
+    <div class='flex-direction-row'>
         <div>
             <h2>jQuery</h2>
             <div class="jCode noPlay">
@@ -90,22 +95,21 @@
 
 
 
-
 <span class="s0">$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
     .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
     .click(</span><span class="s2">function </span><span class="s0">() {
+    
         $(</span><span class="s2">this</span><span class="s0">)
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
-            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span><span class="s3">,
-              </span><span class="s2">null</span><span class="s3">, </span>
+            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id(),
+              <span class="s2">null</span><span class="s0">, </span>
               <span class="s2">function </span><span class="s0">() {
-                  $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s4">250</span><span class="s0">)</span><span class="s3">;</span><span class="s0">
-              })</span><span class="s3">;</span><span class="s0">
-    })</span><span class="s3">;</span>
-    
-    
-    
-    </pre>
+              
+                  $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span>;<span class="s0">
+                  
+              });
+              
+    });</span></pre>
 
                     </div>
                 </div>
@@ -117,29 +121,29 @@
             <div class="jCode noPlay">
                 <div class="jCode-scroll jCode-div">
                     <div class="jCode-lines">
-<pre><span class="s2">import static </span><span class="s0">com.google.gwt.query.client.GQuery.$</span><span class="s2">;</span><span class="s0">
+<pre><span class="s2">import static </span><span class="s0">com.google.gwt.query.client.GQuery.*</span>;
 
-$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
+$(<span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
     .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
     .click(</span><span class="s2">new </span><span class="s0">Function() {
       </span><span class="s2">public void </span><span class="s0">f() {
         $(</span><span class="s2">this</span><span class="s0">)
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
-            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id()</span>
-              <span class="s2">, null,
+            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id(),</span>
+              <span class="s2">null</span><span class="s0">,</span><span class="s2">
               new </span><span class="s0">Function() {
                 </span><span class="s2">public void </span><span class="s0">f() {
-                  $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0">
+                  $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span>;<span class="s0">
                 }
-              })</span><span class="s2">;</span><span class="s0">
+              });
       }
-    })</span><span class="s2">;</span><span class="s0">
-  }
-}</span></pre>
+    });
+</span></pre>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </section>
     <section id="whenandwhy">
         <h1>When to use gQuery ?</h1>
@@ -163,8 +167,9 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
    <li>Modify or style the inner HTML
    <li>Overcome .. the API limitation.
    </ul>
+   
         </section>
-   <a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html" target="_blank">Example</a>
+   <br/><a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html" target="_blank">Example</a>
     </section>
     <section id="createwidget">
         <h1>Create new widgets.</h1>
@@ -216,6 +221,7 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
         <h1>JsQuery</h1>
     </section>
     <section id="jsquery"></section>
+    <section id="ajax"></section>
     <section id="plugins"></section>
     <section id="roadmap"></section>
     <section id="questionsanswers"></section>
@@ -226,7 +232,6 @@ $(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class
 <div id='marker'>1</div>
 <div id='viewport'></div>
 <div id='container'></div>
-<div id='clock'></div>
 
 <div class='ball yellow' style='background:yellow'></div>
 <div class='ball green' style='background:green'></div>
