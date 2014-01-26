@@ -20,9 +20,9 @@ import com.google.gwt.user.client.Event;
  * Main class to execute a presentation
  */
 public class Slides {
-  
+
   // For testing purposes, filter the slides to show: string list separated with comma.
-  private String onlySlyde = null;
+  private String onlySlide = null;
 
   private static final String DISPLAY_PLAY_BUTTON = "displayPlayButton";
   private static final String CODE_SNIPPET =
@@ -61,8 +61,8 @@ public class Slides {
     // remove empty slides
     .filter(new Predicate() {
       public boolean f(Element e, int index) {
-        if (onlySlyde != null) {
-          if (onlySlyde.contains($(e).id())) {
+        if (onlySlide != null) {
+          if (onlySlide.contains($(e).id())) {
             return true;
           }
           $(e).remove();
@@ -73,17 +73,17 @@ public class Slides {
     });
 
     bindEvents();
-    
+
     showCurrentSlide();
     // slides have an initial opacity of 0
     $(slides).fadeTo(1);
-    
+
     if (isMobile) {
       // make play button big enough to be clickable in mobile
       $("#play").css("font-size", "5em");
     }
   }
-  
+
   private void showCurrentSlide() {
     // compute current page based on hash
     String hash = hash();
@@ -110,8 +110,8 @@ public class Slides {
 
     // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
     int w = (int)($(window).width() * 1.5);
-    Properties pLeft = $$("scale:0, left: -" + w);
-    Properties pRight = $$("scale:0, left: " + w);
+    Properties pLeft = $$("scale:0, left: -" + w + "px");
+    Properties pRight = $$("scale:0, left: +" + w + "px");
 
     // move slides to left out of the window view port
     if (currentPage - 2 >= 0) {
@@ -170,7 +170,7 @@ public class Slides {
       int xThreshold = 30;
       public boolean f(Event e) {
         String eventName = e.getType();
-        String tagName = e.getEventTarget().<Element>cast().getTagName().toLowerCase(); 
+        String tagName = e.getEventTarget().<Element>cast().getTagName().toLowerCase();
         if (!tagName.matches("a|input") && touchStart.equals(eventName)) {
           x = isMobile ? e.getChangedTouches().get(0).getClientX() : e.getClientX();
           return false;
@@ -195,9 +195,9 @@ public class Slides {
     .on("resize", new Function() {
       public void f() {
         int w = (int)($(window).width() * 1.5);
-        slides.lt(currentPage).css("left", "-" + w);
-        slides.gt(currentPage).css("left", "+" + w);
-        slides.css("width", "" + w);
+        slides.lt(currentPage).css("left", "-" + w + "px");
+        slides.gt(currentPage).css("left", "+" + w + "px");
+        slides.css("width", "" + w + "px");
       }
     });
 
@@ -206,7 +206,7 @@ public class Slides {
         slidesSrc.exec(currentSlide.id());
       }
     });
-    
+
     // Clear the console if we push mouse right
     $("#console").on("contextmenu", new Function() {
       public boolean f(Event e) {
@@ -216,7 +216,7 @@ public class Slides {
       }
     });
   }
-  
+
   private void buildSlide(GQuery slide) {
     String html = slide.html();
     String id = slide.id().toLowerCase();
