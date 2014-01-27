@@ -1,1 +1,1 @@
-alert('unsupported browser');
+alert('unsupported browser. Use Firefox, Chrome, Safari or IE11');
