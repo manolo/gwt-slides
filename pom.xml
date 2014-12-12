@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <modelVersion>4.0.0</modelVersion>
-
     <name>Slides gwtquery project</name>
     <groupId>org.gquery</groupId>
     <artifactId>slides</artifactId>
@@ -10,11 +9,11 @@
 
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <maven.compiler.source>1.6</maven.compiler.source>
-      <maven.compiler.target>1.6</maven.compiler.target>
-      <gQueryVersion>1.4.2-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.5.1</gwtversion>
-      <gwtmaven>2.5.1</gwtmaven>
+      <maven.compiler.source>1.7</maven.compiler.source>
+      <maven.compiler.target>1.7</maven.compiler.target>
+      <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
+      <gwtversion>2.7.0</gwtversion>
+      <gwtmaven>2.7.0</gwtmaven>
       <gwt.style>PRETTY</gwt.style>
       <github.global.server>github</github.global.server>
       <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
@@ -30,14 +29,16 @@
          <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
        </repository>
        <repository>
-         <id>sonatype</id>
-         <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+         <id>sonatype-google</id>
+         <url>https://oss.sonatype.org/content/groups/google</url>
          <snapshots><enabled>true</enabled></snapshots>
          <releases><enabled>false</enabled></releases>
        </repository>
        <repository>
-         <id>m.g.o</id>
-         <url>http://maven.glassfish.org/content/groups/public/</url>
+         <id>sonatype</id>
+         <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+         <snapshots><enabled>true</enabled></snapshots>
+         <releases><enabled>false</enabled></releases>
        </repository>
     </repositories>
 
@@ -49,17 +50,40 @@
 
     <profiles>
      <profile>
+        <id>old</id>
+        <properties>
+          <gwtversion>2.6.0</gwtversion>
+          <gwtmaven>2.6.0</gwtmaven>
+        </properties>
+     </profile>
+     <profile>
+        <id>clos</id>
+        <properties>
+           <gwt.compiler.compileReport>false</gwt.compiler.compileReport>
+           <gwt.enableClosureCompiler>true</gwt.enableClosureCompiler>
+        </properties>
+     </profile>
+     <profile>
+        <id>obf</id>
+        <properties>
+          <gwt.compiler.compileReport>true</gwt.compiler.compileReport>
+          <gwt.style>OBF</gwt.style>
+          <gwt.compiler.optimizationLevel>9</gwt.compiler.optimizationLevel>
+        </properties>
+     </profile>
+     <profile>
         <id>prod</id>
         <properties>
-          <gwt.compiler.compileReport>false</gwt.compiler.compileReport>
+          <gwt.compiler.compileReport>true</gwt.compiler.compileReport>
           <gwt.draftCompile>false</gwt.draftCompile>
-          <gwt.enableClosureCompiler>true</gwt.enableClosureCompiler>
           <gwt.compiler.optimizationLevel>9</gwt.compiler.optimizationLevel>
           <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
           <gwt.disableCastChecking>true</gwt.disableCastChecking>
-          <gwt.disableRunAsync>true</gwt.disableRunAsync>
           <gwt.enableAssertions>false</gwt.enableAssertions>
           <gwt.loglevel>INFO</gwt.loglevel>
+          <gwt.style>OBF</gwt.style>
+          <!-- setting this to true makes compilation report not create method dependencies -->
+          <gwt.disableRunAsync>false</gwt.disableRunAsync>
         </properties>
      </profile>
     </profiles>
@@ -118,24 +142,20 @@
               <configuration>
                   <style>${gwt.style}</style>
                   <logLevel>${gwt.loglevel}</logLevel>
-                  <runTarget>tw/index.html</runTarget>
                   <compileReport>${gwt.compiler.compileReport}</compileReport>
                   <compilerMetrics>${gwt.compiler.compileReport}</compilerMetrics>
                   <draftCompile>${gwt.draftCompile}</draftCompile>
                   <enableClosureCompiler>${gwt.enableClosureCompiler}</enableClosureCompiler>
+                  <disableClassMetadata>${gwt.disableClassMetadata}</disableClassMetadata>
+                  <disableCastChecking>${gwt.disableCastChecking}</disableCastChecking>
                   <disableRunAsync>${gwt.disableRunAsync}</disableRunAsync>
                   <localWorkers>3</localWorkers>
                   <fragmentCount>20</fragmentCount>
                   <bindAddress>0.0.0.0</bindAddress>
                   <codeServerWorkDir>${project.build.directory}</codeServerWorkDir>
-                  <disableClassMetadata>${gwt.disableClassMetadata}</disableClassMetadata>
-                  <disableCastChecking>${gwt.disableCastChecking}</disableCastChecking>
-                  <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=384m </extraJvmArgs>
+                  <extraJvmArgs>-Xmx2048m</extraJvmArgs>
                   <gen>${project.build.directory}/gen</gen>
                   <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-                  <modules>
-                    <module>org.gquery.slides.GwtCreate</module>
-                  </modules>
               </configuration>
               <executions>
                   <execution>

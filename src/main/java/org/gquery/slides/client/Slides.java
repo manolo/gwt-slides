@@ -57,8 +57,6 @@ public class Slides {
         buildSlide($(this));
       }
     })
-    .css("right", "-150%")
-    // remove empty slides
     .filter(new Predicate() {
       public boolean f(Element e, int index) {
         if (onlySlide != null) {
@@ -108,32 +106,23 @@ public class Slides {
     // notify last slide to execute it's clean up code
     currentSlide.trigger(SlidesSource.LEAVE_EVENT_NAME);
 
-    // FIXME: gQuery animations seems not working with percentages, it should be -150% and 150%
-    int w = (int)($(window).width() * 1.5);
-    Properties pLeft = $$("scale:0, left: -" + w + "px");
-    Properties pRight = $$("scale:0, left: +" + w + "px");
-
-    // move slides to left out of the window view port
-    if (currentPage - 2 >= 0) {
-      slides.lt(currentPage - 1).css(pLeft);
-    }
+    // Reset the appropriate classnames depending on slide position
+    slides.removeClass("left", "right", "next", "prev", "curr");
+    // slides at left
     if (currentPage - 1 >= 0) {
-      slides.eq(currentPage - 1).animate(pLeft, 1000, easing);
+      slides.lt(currentPage).addClass("left");
+      slides.eq(currentPage - 1).addClass("prev");
     }
-
-    // move slides to right out of the window view port
-    if ((currentPage + 2) <= totalPages) {
-      slides.gt(currentPage + 1).css(pRight);
-    }
+    // slides at right
     if ((currentPage + 1) <= totalPages) {
-      slides.eq(currentPage + 1).animate(pRight, 1000, easing);
+      slides.gt(currentPage).addClass("right");
+      slides.eq(currentPage + 1).addClass("next");
     }
+    // current slide
+    currentSlide = slides.eq(currentPage).addClass("curr");
 
-    // move current slide to the window view port
-    currentSlide = slides.eq(currentPage)
-      .animate($$("scale: 1, rotateX: 0deg, rotateY: 0deg, left: 0"), 1000, easing)
-      // notify new slide to execute it's start up code
-      .delay(0, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
+    // notify new slide to execute it's start up code
+    currentSlide.delay(0, lazy().trigger(SlidesSource.ENTER_EVENT_NAME).done());
 
     // display the button to execute the snippet
     if (currentSlide.data(DISPLAY_PLAY_BUTTON, Boolean.class)) {
@@ -164,6 +153,16 @@ public class Slides {
         return true;
       }
     })
+    .on("dblclick", new Function() {
+      public void f() {
+        show(true);
+      }
+    })
+    .on("mousewheel", new Function(){
+      public boolean f(Event e) {
+        return false;
+      }
+    })
     // handle change slide with mouse move or slide gesture in mobile
     .on(touchStart + " " + touchEnd, new Function() {
       int x = 0;
@@ -189,15 +188,6 @@ public class Slides {
     .on("hashchange", new Function() {
       public void f() {
         showCurrentSlide();
-      }
-    })
-    // on resize we change slide sizes and left properties
-    .on("resize", new Function() {
-      public void f() {
-        int w = (int)($(window).width() * 1.5);
-        slides.lt(currentPage).css("left", "-" + w + "px");
-        slides.gt(currentPage).css("left", "+" + w + "px");
-        slides.css("width", "" + w + "px");
       }
     });
 

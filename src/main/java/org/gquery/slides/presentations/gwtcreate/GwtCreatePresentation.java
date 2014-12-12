@@ -51,33 +51,33 @@ import com.watopi.chosen.client.Chosen;
  * page. Java doc of the methods will be written as tittle, bubtittle
  * and sections in the slides. The body of the the function will be
  * included in the code section of the slide.
- * 
+ *
  * There are some conventions in the body, like preceding a
  * line with '@ ' which means a '<h1>', '@@ ' a <h4>, or '- ' which will
  * be replaced with <ul> sections.
- * 
+ *
  * You can include any method or inner class in the slide just
- * writing '@ methodName' or '@ className' anywhere (javadoc, code). 
+ * writing '@ methodName' or '@ className' anywhere (javadoc, code).
  * Also an extra html is allowed in javadocs.
- * 
+ *
  * The body code will be executed when clicking on the '#play' button,
  * but aditionally, you can write extra functions which will be executed
  * when entering the slide, leaving it, before running the code or after.
- * 
+ *
  * So the convention for method names are:
- * 
+ *
  * enterMethod, beforeMethod, testMethod, afterMetod, leaveMethod.
- * 
+ *
  * In your hosted html page you have to define each slide, and any
  * extra content in the slide apart from the content automatically merged
  * from this class. Each section should have an unique 'id' matching the
  * name of the testSlideMethodName, but in lowercase. The order of
  * these sections will be the order of the slides despite the order of
  * test methods in this class.
- * 
+ *
  * <section id='slidemehodname'>Extra Content</section>
- * 
- * 
+ *
+ *
  * @author manolo
  *
  */
@@ -86,7 +86,7 @@ public class GwtCreatePresentation extends SlidesSource {
   GQuery viewPort = $("#viewport");
   GQuery play = $("#play");
   Widget resizeWidget;
-  
+
   public void enterCompareCode() {
     $("#comparecode > div > div:first-child")
         .stop().css($$("opacity: 1"))
@@ -217,7 +217,7 @@ public class GwtCreatePresentation extends SlidesSource {
     viewPort.show();
     testCustomEvent();
   }
-  
+
   /**
    * @ Event Delegation
    *
@@ -663,6 +663,7 @@ native void exportBar() /*-{
   }
 
   /**
+   * @ Promises
    * - Based on the CommonJS Promises/A+ spec, and inspired in the jQuery API.
    * - MVP compliant: they run in the JVM.
    * @@ What is a Promise
@@ -680,7 +681,7 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ What does it look like?
+   * @ What does Promises code look like?
    * - Chaining
    * - Handling success and failures
    * - Receiving data
@@ -780,7 +781,7 @@ native void exportBar() /*-{
   }
 
   /**
-   * @ pipelining: 'then()'
+   * @ Solution: pipelining with 'then()'
    * - declarative language
    * - less errors.
    * - Async Functions return:<br/> &gt; a promise to pipe<br/> &gt; an object to modify previous data
@@ -814,7 +815,7 @@ native void exportBar() /*-{
   int done = 0;
 
   /**
-   * @ The Pyramid Of Doom
+   * @ Problem: The Pyramid Of Doom
    */
   public void testPromisesPyramidOfDoom() {
     // @include: drop_ball
@@ -863,7 +864,7 @@ native void exportBar() /*-{
     leavePromisesPipeline();
   }
 
-  
+
   /**
    * @ gQuery-1.4.0 Features
    * - jQuery API: syntax almost identical.
@@ -883,7 +884,7 @@ native void exportBar() /*-{
    */
   public void testFeatures() {
   }
-  
+
   /**
    * @ Announce
    * - gQuery Slides open-sourced: a new way to write GWT presentations using java.
@@ -912,7 +913,7 @@ native void exportBar() /*-{
   public void testQuestionsAnswers() {
     //
     GQuery.when(talk()).then(questions()).always(answers());
-    
+
   }
   public void enterQuestionsAnswers() {
     $("#play").hide();
@@ -921,7 +922,7 @@ native void exportBar() /*-{
   public Function talk(){return null;};
   public Function questions(){return null;};
   public Function answers(){return null;};
-  
+
   public static class MyPopupPanel extends DecoratedPopupPanel {
 
     public MyPopupPanel(boolean autoHide, boolean modal) {
@@ -944,7 +945,7 @@ native void exportBar() /*-{
       });
     }
   }
-  
+
   public void testEnhanceWidget() {
     // @include: MyPopupPanel
     //
@@ -952,20 +953,20 @@ native void exportBar() /*-{
     p.add(new Image("img/logo-gquery.png"));
     p.center();
   }
-  
+
   /**
    *
    */
   public void enterCreateWidget() {
     $("#countries").as(Chosen.Chosen).chosen();
   }
-  
+
    /**
    * @ Avoid using widgets.
    */
   public void testAvoidWidget() {
   }
-  
+
   GQuery fileUpload = $("<input type='file'>");
   String uploadUrl = "http://gwtupload.alcala.org/gupld/servlet.gupld";
   public void beforeAjax() {
@@ -1000,9 +1001,9 @@ native void exportBar() /*-{
                 console.log(arguments(2) + " percent");
               }
             });
-        
+
         return true;
       }
-    });    
+    });
   }
 }
