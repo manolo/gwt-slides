@@ -27,9 +27,9 @@ body {
   background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #f7fbfc), color-stop(100%, #add9e4));
   background: -webkit-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
   background: -o-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);  
+  background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
   background-color: #f7fbfc;
-    
+
   font-style: normal;
   text-decoration: none;
   text-transform: none;
@@ -250,6 +250,13 @@ li {
    margin-top: -3px;
  }
 
+ @media (max-device-width : 1000px) {
+	  #play {
+	   margin-left: -46px;
+	   margin-top: -9px;
+	 }
+ }
+
  .jCode {
    transition: all 0.8s ease-in-out 0s;
     background: #353536;
@@ -305,7 +312,7 @@ li {
 
 section.right, div.right {
     position: absolute;
-    top: 10%; 
+    top: 10%;
     right: 40px;
     opacity: 0.8;
     min-width: 20%;

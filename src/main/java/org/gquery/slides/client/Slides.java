@@ -16,7 +16,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugin.Gesture;
+import com.google.gwt.query.client.plugins.gestures.Gesture;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -42,24 +42,24 @@ public class Slides {
   private GQuery slides;
   private GQuery currentSlide = $();
   private boolean isMobile = JsUtils.hasProperty(window, "orientation");
-  
-  Console console = new ConsoleBrowser(); 
-  
+
+  Console console = new ConsoleBrowser();
+
   public Slides(SlidesSource presentation) {
-    
+
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
       Console cons = new ConsoleBrowser();
       public void onUncaughtException(Throwable e) {
         cons.error(e.getMessage(), e);
       }
     });
-    
+
     // Use the root panel, so as GWT does not remove our handlers
     // in the case we use it later.
     RootPanel.get().add(new Label());
-    
+
     if (Gesture.hasGestures) {
-      $(window).as(Gesture.Gesture).fullScreenOnce();
+      $(window).as(Gesture.Gesture).fullScreen();
     }
 
     slidesSrc = presentation;
@@ -90,7 +90,7 @@ public class Slides {
         return (!$(e).html().trim().isEmpty());
       }
     });
-    
+
     presentation.bind();
     bindEvents();
 
@@ -182,12 +182,12 @@ public class Slides {
       }
     });
     $(".slides section").as(Gesture.Gesture)
-    .on("tapone swiperight", new Function(){
+    .on("tapone swipeleft", new Function(){
       public boolean f(Event e) {
         return excludedElements(e) ? true : show(true);
       }
     })
-    .on("taptwo swipeleft", new Function(){
+    .on("taptwo swiperight", new Function(){
       public boolean f(Event e) {
         return excludedElements(e) ? true : show(false);
       }

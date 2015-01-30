@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no" />
-    
+    <meta name="viewport" content="width=device-width, initial-scale=0.6, user-scalable=no" />
+
     <title>GWT.create 2015: GwtQuery</title>
     <link href="slides.css" rel="stylesheet">
     <link href="gwtcreate2015.css" rel="stylesheet">
@@ -27,17 +27,17 @@
 <span class="s0">$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
     .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
     .click(</span><span class="s2">function </span><span class="s0">() {
-    
+
         $(</span><span class="s2">this</span><span class="s0">)
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
             .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id(),
               <span class="s2">null</span><span class="s0">, </span>
               <span class="s2">function </span><span class="s0">() {
-              
+
                   $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span>;<span class="s0">
-                  
+
               });
-              
+
     });</span></pre>
 
                     </div>
