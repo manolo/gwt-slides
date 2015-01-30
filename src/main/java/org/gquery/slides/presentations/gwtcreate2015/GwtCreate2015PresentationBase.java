@@ -29,19 +29,19 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  */
 public abstract class GwtCreate2015PresentationBase extends SlidesSource {
-  
+
   final static Console console = new SlidesUtils.Console();
-  
+
   final String uploadUrl = "http://gwtupload.alcala.org/gupld/servlet.gupld?nodelay&" + Duration.currentTimeMillis();
 
   GQuery viewPort = $("#viewport");
   GQuery play = $("#play");
   Widget resizeWidget;
-  
+
   static GQuery dollar(Object o) {
     return GQuery.$(o);
   }
-  
+
   public void enterWhatIsIt() {
     $(".gquery-logo").animate($$("scale: 5, x: 50px, y: -18px, rotateY: 360deg"), 1500);
   }
@@ -58,7 +58,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
   public void enterCompareCode() {
     $("#comparecode > div").appendTo($("#comparecode"));
   }
-  
+
   public void leaveDom() {
     $(".current p").remove();
   }
@@ -108,24 +108,27 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     balls.hide();
   }
 
-  
+
   public void leaveEnhanceWidgets() {
     $($("*").widgets(Label.class)).remove();
   }
-  
+
   class MyBreadCrumb extends Label {
     public MyBreadCrumb addCrumb(String s) {
       setText(getText() + " > " + s);
       return this;
     };
   };
+
+  private MyBreadCrumb w = new MyBreadCrumb().addCrumb("Gwt").addCrumb("GQuery");
+
   public void enterFindWidgets() {
-    MyBreadCrumb w = new MyBreadCrumb().addCrumb("Gwt").addCrumb("GQuery");
     RootPanel.get().add(w);
     $(w).css($$("position: absolute, color: cornsilk"));
   }
+
   public void leaveFindWidgets() {
-    $($("*").widgets(Label.class)).remove();
+    w.removeFromParent();
   }
 
   public interface Person extends JsonBuilder {
@@ -137,7 +140,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     Person getPartner();
     Person setPartner(Person p);
   }
-  
+
   public interface User extends JsonBuilder {
     public interface Address extends JsonBuilder {
       String street();
@@ -148,7 +151,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     User setAdress(Address a);
     Address getAddress();
   }
-  
+
   public interface ElementWrapper extends JsonBuilder {
     String getTagName();
     Element parentElement();
@@ -157,7 +160,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
   public interface WindowWrapper extends JsonBuilder {
     Function eval();
   }
-  
+
   public static class Css3Animations extends GQuery {
     // We just need a constructor, and a reference to the new registered plugin
     protected Css3Animations(GQuery gq) {
@@ -185,12 +188,12 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     uploadImg.appendTo(document).attr("src", "");
   }
 
-  
+
   public void leaveUpload() {
     uploadImg.remove();
     fileUpload.remove();
   }
-  
+
   /************** MaterialDesign *********************/
   String boxStyle = Animations.insertStyle($$("scaleX: 1, scaleY: 1, width: 40px, height: 40px, margin: 5px, float: left, position: relative, background: #0F678E"));
   Transitions boxes;
@@ -205,7 +208,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     boxes.remove();
     boxes = null;
   }
-  
+
   GQuery rippleButtons;
   public void enterMaterialDesignRipple() {
     GQuery slides = $(".slides");
@@ -222,12 +225,12 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     $("#play").hide();
   }
   public abstract void slideMaterialDesignRipple();
-  
+
   public void leaveMaterialDesignRipple() {
     $(".button").detach();
     $("#play").show();
   }
-  
+
   public interface PaperSlider extends JsonBuilder {
     // get/set prefixes are optional
     int getValue();
@@ -239,15 +242,15 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     PaperSlider snaps(boolean value);
     PaperSlider pin(boolean value);
   }
-  
+
   public void leaveWebComponents() {
     $("paper-slider").remove();
   }
   public void leaveWebComponentsBinding() {
     $("paper-slider").remove();
   }
-  
-  
+
+
   /************** QuestionsAnswers *********************/
   public void enterQuestionsAnswers() {
     $("#play").hide();
