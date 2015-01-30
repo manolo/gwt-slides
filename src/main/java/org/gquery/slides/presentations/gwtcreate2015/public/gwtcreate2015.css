@@ -32,7 +32,6 @@
 	right: 15px;
 	color: white;
 	text-shadow: none;
-
 }
 h1, h2 {
 	color: white;
@@ -42,8 +41,8 @@ h3, h4, h5 {
 }
 
 h4, h5, h6 {
-	color: #CBBDF2;
-	font-size: 1.1em;
+	color: #FFDEAD;
+	font-size: 1.3em;
 }
 
 input[type='file'] {

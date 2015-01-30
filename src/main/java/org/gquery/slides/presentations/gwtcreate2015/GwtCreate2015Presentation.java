@@ -109,7 +109,7 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
 
   /**
    * @ What is gQuery?
-   * @@ “Write less. Do more!”
+   * @@ Write less. Do more!
    * - An entire GWT rewrite of the famous jQuery javascript library.
    * - Use the jQuery API in GWT applications without including the jQuery, while leveraging the optimizations and type safety provided by GWT.
    */
@@ -514,13 +514,11 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
 
   /**
    * @ What is the future of gQuery
+   *
    * - Type safe functions and promises
-   * -- Many people have asked to have interfaces apart from Function
    * - Full support for java 8 lambdas
-   * - Integration with jsInterop
-   * -- Make JSON data binders use JsInterop
    * - Mobile friendly
-   * -- Support for all gestures
+   * - Integration with JsInterop
    */
   public void slideLambdas(){
     GQuery g = $(".ball");
@@ -531,11 +529,11 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
     });
     g.on("tapone", new IsEventFunction(){
       public Boolean call(Event evt) {
-        return $(evt).animate($$("rotateX: 90deg")).animate($$("rotateX: 0deg")).False();
+        return $(evt).animate($$("rotateX: 90deg")).animate($$("rotateX: 0deg")).FALSE;
       }
     });
     // Predefined return types in the gQuery chain
-    g.on("taptwo",(e)-> $(e).animate($$("x: +=50")).True());
+    g.on("taptwo",(e)-> $(e).animate($$("x: +=50")).TRUE);
 
     //.(done|fail) //\n\s .$1//Get the result of multiple callbacks
     $.when(() -> "aaa", () -> "bbb", Ajax.get("/lambdas.html"))
@@ -546,7 +544,7 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
   /**
    * @ Show me more cool code ...
    */
-  public void slideExamples(){
+  public void slideExamples() {
   }
 
   /**
@@ -576,7 +574,7 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
         int x = e.getClientX() - 20 - target.offset().left;
         int y = e.getClientY() - 20 - target.offset().top;
         int f = Math.max(target.width(), target.height()) / 40 * 3;
-        ripple.css($$("opacity:1, scale:1")).css("left", x + "px").css("top", y + "px");
+        ripple.css($$("opacity:0.8, scale:0.5")).css("left", x + "px").css("top", y + "px");
         ripple.animate($$("opacity: 0, scale:" + f), new Function(){
           public void f() {
             ripple.detach();
@@ -590,32 +588,37 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
 
   /**
    * @ Example: Wrapping Web Components with gQuery
+   * - Use *bower* to install components in the public folder
+   * -- bower install Polymer/paper-slider
    * - Use Ajax utility methods to load polyfills and import templates
-   * - Web Components can be manipulated as any other element
+   * - Web Components can be created and manipulated as any other element.
    * - We can change its properties or bind events.
-   * <div id='current' class='right' style='width: 20%; height: 80px; margin: 10px; border: 1px solid; padding:20px; background: #E43333; border-radius: 4px;'></div>
+   * <div id='sliders-container' class='right bottom'></div>
    */
   public void slideWebComponents() {
     Ajax.loadScript("bower_components/webcomponentsjs/webcomponents.js");
     Ajax.importHtml("bower_components/paper-slider/paper-slider.html");
     //
-    GQuery slider = $("<paper-slider />").appendTo($("#current"));
+    GQuery slider = $("<paper-slider />").appendTo($("#sliders-container"));
     //
     slider.prop("value", 67);
+    //(console|return) //  $1
     slider.on("change", (e) -> {
       console.log($(e).prop("value"));
       return true;
     });
     //
-    $("#current").append("<paper-slider value=183 max=255 editable>");
+    $("#sliders-container").append("<paper-slider value=183 max=255 editable>");
   }
 
   /**
-   * @ Example: Element Data Binding
+   * @ Example: Binding Attributes of Web Components.
    * - JsonBuilder can wrap any JavaScript element
    * -- Light Weight wrapper
    * -- Type safe
-   * <div id='panel' class='right' style='width: 20%; height: 40px; margin: 10px; border: 1px solid; padding:20px; background: #E43333; border-radius: 4px;'></div>
+   * -- Chain setters
+   *
+   * <div id='slider-container' class='right bottom'></div>
    */
   public void slideWebComponentsBinding() {
     // @include: PaperSlider//(Ajax\.|\).done) //\n\s$1//Wait until the polyfill and the web component has been loaded
@@ -625,7 +628,7 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
     ).done(new Function(){
       public void f() {
         // Create and append the element as usual in gQuery
-        GQuery g = $("<paper-slider>").appendTo($("#panel"));
+        GQuery g = $("<paper-slider>").appendTo($("#slider-container"));
         // Wrap the native element in a POJO
         PaperSlider slider = GQ.create(PaperSlider.class).load(g);
         // Use it as a java object
@@ -635,11 +638,11 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
   }
 
   /**
-   * @ Example: Uploading files with progress bar
+   * @ Example: Uploading files with progress bar.
    */
   public void slideUpload() {
-    final GQuery progress = $("<div>").css($$("height: 6px, width: 0%, background: #75bff4, position: absolute, top:0px")).appendTo(document);
-    final GQuery fileUpload = $("<input type='file'>").appendTo(document).hide();
+    final GQuery progress = $("<div>").css($$("height: 12px, width: 0%, background: #75bff4, position: absolute, bottom:0px")).appendTo(document);
+    final GQuery fileUpload = $("<input type='file' accept='image/*'>").appendTo(document).hide();
     fileUpload.on("change", new Function() {
       public boolean f(Event e) {
         final JsArray<JavaScriptObject> files = $(e).prop("files");
@@ -661,7 +664,6 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
             })
            .done(new Function() {
               public void f() {
-                progress.remove();
                 uploadImg.attr("src", uploadUrl + "&show=file-0-0");
               }
             })

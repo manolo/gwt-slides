@@ -15,7 +15,6 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
-import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.gestures.Gesture;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Label;
@@ -41,7 +40,6 @@ public class Slides {
   private SlidesSource slidesSrc;
   private GQuery slides;
   private GQuery currentSlide = $();
-  private boolean isMobile = JsUtils.hasProperty(window, "orientation");
 
   Console console = new ConsoleBrowser();
 
@@ -98,7 +96,7 @@ public class Slides {
     // slides have an initial opacity of 0
     $(slides).css("opacity", "1");
 
-    if (isMobile) {
+    if (Gesture.hasGestures) {
       // make play button big enough to be clickable in mobile
       $("#play").css("font-size", "5em");
     }

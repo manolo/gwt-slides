@@ -43,13 +43,13 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
   }
 
   public void enterWhatIsIt() {
-    $(".gquery-logo").animate($$("scale: 5, x: 50px, y: -18px, rotateY: 360deg"), 1500);
+    $(".gquery-logo").animate($$("scale: 4, x: 50px, y: -18px, rotateY: 360deg"), 1500);
   }
   public void leaveWhatIsIt() {
     $(".gquery-logo").animate($$("scale: 1, x: 0px, y: 0px, rotateY: 0deg"), 1000);
   }
   public void enterMuchMore() {
-    $(".gwt-logo").animate($$("scale: 3, x: 300px, y: -100px, rotateX: 360deg"), 2000);
+    $(".gwt-logo").animate($$("scale: 3, x: 120px, y: -18px, rotateX: 360deg"), 2000);
   }
   public void leaveMuchMore() {
     $(".gwt-logo").animate($$("scale: 1, x: 0px, y: 0px, rotateX: 0deg"), 1000);
@@ -183,7 +183,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
   /************** Upload *********************/
   GQuery fileUpload;
 //  String uploadUrl = "http://server.cors-api.appspot.com/server?id=123&enable=true&status=200&credentials=true";
-  GQuery uploadImg = $("<img>").css($$("position: absolute, top: 0, width: 20%, margin: 20px"));
+  GQuery uploadImg = $("<img class='right bottom'>").css($$("width: 20%, margin: 20px"));
   public void beforeUpload() {
     uploadImg.appendTo(document).attr("src", "");
   }
@@ -195,10 +195,10 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
   }
 
   /************** MaterialDesign *********************/
-  String boxStyle = Animations.insertStyle($$("scaleX: 1, scaleY: 1, width: 40px, height: 40px, margin: 5px, float: left, position: relative, background: #0F678E"));
+  String boxStyle = Animations.insertStyle($$("scaleX: 1, scaleY: 1, width: 100px, height: 40px, margin: 5px, float: left, position: relative, background: #0F678E"));
   Transitions boxes;
   public void enterMaterialDesign() {
-    int l = $(".current").width() / 50 * 3;
+    int l = $(".current").width() / 110 * 3;
     for (int i = 0; i < l; i++) {
       $("<div/>").addClass(boxStyle).appendTo(document);
     }
@@ -214,7 +214,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     GQuery slides = $(".slides");
     if (rippleButtons == null) {
       for (String c : new String[]{"red", "blue", "pink", "green" , "grey"}) {
-        $("<div class='button'>").css($$("width: 150px, height: 40px; border: none, margin: 10px, overflow: hidden, position: relative, border: solid 1px #ffa, background-color:" + c)).appendTo(slides);
+        $("<div class='button'>").css($$("width: 20%, height: 40px; border: none, margin: 10px, overflow: hidden, position: relative, border: solid 1px #BEB084, background-color:" + c)).appendTo(slides);
       }
       rippleButtons = $(".button");
       $(".current .jCode, .current h1").css($$("position:relative, overflow: hidden"));
@@ -234,7 +234,7 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
   public interface PaperSlider extends JsonBuilder {
     // get/set prefixes are optional
     int getValue();
-    // We can chain setter methods
+    // Chaining setters is optional
     PaperSlider setValue(int value);
     PaperSlider min(int value);
     PaperSlider max(int value);
