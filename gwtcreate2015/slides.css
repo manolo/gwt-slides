@@ -1,0 +1,327 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: 'Lobster Two';
+  font-weight: 400;
+  src: local('Lobster Two Italic'), local('LobsterTwo-Italic'), url("./fonts/lobster.woff") format('woff');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Cabin Regular'), local('Cabin-Regular'), url("./fonts/cabin.woff") format('woff');
+}
+
+@font-face {
+  font-family: 'Crimson Text';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Crimson Text'), local('CrimsonText-Roman'), url("./fonts/crimson_text.woff") format('woff');
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  background: #f7fbfc;
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #f7fbfc), color-stop(100%, #add9e4));
+  background: -webkit-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background: -o-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);  
+  background-color: #f7fbfc;
+    
+  font-style: normal;
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0;
+  word-spacing: 0;
+  line-height: 1;
+  color: black;
+  font-size: 140%;
+  font-family: Cabin;
+  overflow: hidden;
+}
+
+h4, h5 {
+  font-size: 1.0em;
+}
+h2, h3 {
+  font-size: 1.5em;
+}
+h1 {
+  font-size: 2em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #f55937;
+  font-weight: bold;
+  margin-bottom: 0.1em;
+  margin-top: 0;
+  text-align: center;
+  text-shadow: 0 0 0.02em #EEEEEE, 0.01em 0.01em 0.03em rgba(0, 0, 0, 0.4);
+}
+
+ul {
+   max-width: 750px;
+}
+
+ul, ol {
+   margin: 1em 0;
+   padding: 0 0 0 40px;
+}
+
+li {
+   text-align: left;
+}
+
+.slides {
+  height:100%;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+.slides > section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: all 0.6s ease-out;
+}
+
+.slides > section.left {
+  left: -150%;
+  top: -50%;
+}
+.slides > section.right {
+  left: +150%;
+  top: +50%;
+}
+.slides > section.prev {
+  transform: perspective(1000px) rotateX(35deg) translateY(-150px) scale(0.1) rotate(180deg);
+}
+.slides > section.next {
+  transform: perspective(1000px) rotateX(35deg) translateY(+150px) scale(0.1) rotate(-180deg);
+}
+.slides > section.current {
+  left: 0%;
+  top: 0%;
+
+  transform: perspective(100px) rotateX(0) translateY(0) scale(1) rotate(0deg);
+}
+
+.slides > section > section, .slides > section > pre {
+  background-color: #FFEFD5;
+  box-shadow: 0 0.4em 0.5em rgba(0, 0, 0, 0.3);
+  margin-top: 1em;
+  padding-right: 1em;
+  text-shadow: 0 0 0.02em #EEEEEE, 0.01em 0.01em 0.03em rgba(0, 0, 0, 0.4);
+  line-height: 1.5em;
+  max-width: 700px;
+}
+
+.slides > section > pre {
+  font-family: monospace;
+  line-height: 1.3em;
+  padding-top: 0.8em;
+  padding-left: 1em;
+  font-size: 0.8em;
+}
+
+ #marker, #clock {
+   bottom: 10px;
+   color: #145FDC;
+   font-size: 1em;
+   padding: 0.2em;
+   position: absolute;
+   left: 15px;
+   text-shadow: 0 0 0.3em #145FDC;
+   z-index: 9001;
+ }
+
+ #clock {
+  left: 93%;
+ }
+
+ #console {
+   background: none repeat scroll 0 0 rgba(255, 255, 255, 0.4);
+   box-shadow: 0 0.4em 0.5em rgba(0, 0, 0, 0.3);
+   color: #000000;
+   font-family: 'Droid Sans Mono',monospace,monospace;
+   font-size: 0.6em;
+   left: 0;
+   position: absolute;
+   text-shadow: none;
+   top: 0;
+   width: 96%;
+   margin-left: 40%;
+   margint-top: 4px;
+   z-index: 9000;
+   transition: width 1.5s ease-in-out;
+ }
+
+ #console > div:before {
+   content: "► ";
+ }
+
+ #console > div {
+   padding: 0.2em 0.5em;
+ }
+
+ #viewport, #container {
+   background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
+   box-shadow: 0px -0.4em 0.5em rgba(0, 0, 0, 0.5);
+   right: 0;
+   position: absolute;
+   text-shadow: none;
+   width: 30%;
+   z-index: 9002;
+   display: none;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+ }
+
+ #container {
+   top: 0px;
+   height: 30%;
+ }
+ #viewport {
+   bottom: 0;
+   height: 250px;
+   padding: 20px;
+ }
+
+ #viewport ul {
+   margin: 0 0;
+   cursor: pointer;
+ }
+ #viewport input[type=text] {
+   font-family: monospace;
+   font-size: 0.8em;
+   width: 95%;
+ }
+  #viewport textarea {
+  font-family: monospace;
+  font-size: 0.7em;
+  height: 5em;
+  opacity: 0.6;
+  width: 95%;
+ }
+ #viewport div {
+   font-family: monospace;
+   font-size: 0.8em;
+   font-weight: bold;
+ }
+ #viewport pre {
+   font-family: monospace;
+   font-size: 0.7em;
+ }
+
+#viewport button {
+   border: none;
+   border-radius: 3px;
+   height: 30px;
+   outline: none;
+   box-shadow: none;
+   background: #4285f4;
+   background: linear-gradient(top,#4387fd,#4683ea);
+   font-size: 0.7em;
+   margin: 0.4em;
+   color: white;
+}
+
+ #play {
+   font-size: 2.1em;
+   color: green;
+   cursor: pointer;
+   text-shadow: 0 0 0.3em #145FDC;
+   position: fixed;
+   display: none;
+   z-index: 1;
+   margin-left: -10px;
+   margin-top: -3px;
+ }
+
+ .jCode {
+   transition: all 0.8s ease-in-out 0s;
+    background: #353536;
+   box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.6) inset;
+   -moz-box-pack: center;
+
+   display: -moz-box;
+   display: -webkit-box;
+
+   font-family: monospace;
+   line-height: 1em;
+   color: #A6E22E;
+
+   border-radius: 7px;
+   max-width: 700px;
+   overflow: hidden;
+   padding-left: 20px;
+   padding-right: 20px;
+   margin-top: 10px;
+ }
+ .jCode-div {
+  color: rgb(169,183,198);
+  font-size: 0.8em;
+  letter-spacing: -0.06em;
+}
+.jCode-scroll {
+  height: auto;
+  position: relative;
+}
+.jCode-lines {
+  padding: 0.4em;
+}
+
+.jKey {
+  color: rgb(204, 120, 50);
+}
+.jLiteral {
+  color: rgb(169, 183, 198);
+}
+.jMethod {
+  color: rgb(255, 198, 109);
+}
+.jControl {
+  color:rgb(169, 183, 198);
+}
+.jComment, .jComment .jKey, .jComment .jLiteral, .jComment .jMethod {
+  color: rgb(128, 128, 128);
+}
+
+.jLiteral {
+  color: #E9E9E9;
+}
+
+section.right, div.right {
+    position: absolute;
+    top: 10%; 
+    right: 40px;
+    opacity: 0.8;
+    min-width: 20%;
+ }
+ ul.none {
+   list-style: none;
+ }
+ li.none {
+   list-style: none;
+ }
+ li.level1 {
+   list-style: none;
+   font-size: 88%;
+   margin-left: 1em;
+   line-height: 1.1em;
+   color: #6E5E5E;
+ }
+ button {
+ }

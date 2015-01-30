@@ -1,0 +1,124 @@
+@charset "UTF-8";
+.slides {
+  background: -webkit-radial-gradient(right, circle cover, #fff -20%, #f83535 20%);
+  background: radial-gradient(right, circle cover, #fff -20%, #f83535 20%);
+  background-color: #f83535;
+  color: black;
+}
+.gwt-logo, .gquery-logo {
+  background-image: url('img/gwt-logo.png');
+  left: 8px;
+  position: fixed;
+  bottom: 10px;
+  width: 82px;
+  height: 50px;
+  background-size: cover;
+}
+.gquery-logo {
+  background-image: url('img/gquery-logo.png');
+  left: 100px;
+  width: 48px;
+  height: 42px;
+}
+#marker {
+	left: initial;
+	right: 15px;
+	color: white;
+	text-shadow: none;
+	
+}
+h1, h2 {
+	color: white;
+} 
+h3, h4, h5 {
+	color: #990000;
+}
+
+h4, h5, h6 {
+	color: #CBBDF2;
+	font-size: 1.1em;
+}
+
+input[type='file'] {
+	position: absolute;
+}
+
+button {
+  border: 1px solid black;
+  border-radius: 3px;
+  font-size: 1em;
+  padding: 0.3em;
+  margin: 0.2em;
+  background-color: #fff;
+}
+
+.ball {
+     display: none;
+     position: fixed;
+     border-radius: 3em;
+     width: 3em;
+     height: 3em;
+     box-shadow: inset 0 -5px 15px rgba(255,255,255,0.4), inset -2px -1px 40px rgba(0,0,0,0.4), 0 0 1px #000;
+ }
+ 
+.gwtcreate-logo {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 339px;
+    height: 92px;
+    overflow: hidden;
+    text-indent: -9999px;
+    background: url(img/gwt-create-logo.svg) no-repeat;
+}
+
+.twitter {
+    display: inline-block;
+    width: 24px;
+    height: 28px;
+    vertical-align: middle;
+    background: url(img/twitter.png) no-repeat 0 0;
+    margin-right: 11px;
+    margin-left: -17px;
+}
+
+.gplus {
+    display: inline-block;
+    width: 25px;
+    height: 28px;
+    vertical-align: middle;
+    background: url(img/gplus.png) no-repeat 0 0;
+    margin-right: 11px;
+    margin-left: -17px;
+}
+
+.flex-direction-row {
+	display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#questionsanswers .jCode {
+	font-size: 2em;
+}
+
+paper-slider /deep/ input {
+ font-size: 0.8em !important; 
+  padding: 0 !important;
+  margin: 0.1em !important;
+  color: white !important;
+}
+
+/* Intellij highlighting */
+.back { background-color: #2b2b2b}
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(106,135,89); }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(104,151,187); }
+.s4 { color: rgb(128,128,128); }
+
+.js .s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(128,128,128); }

@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no" />
+    
+    <title>GWT.create 2015: GwtQuery</title>
+    <link href="slides.css" rel="stylesheet">
+    <link href="gwtcreate2015.css" rel="stylesheet">
+    <script src="gwtcreate2015.nocache.js"></script>
+</head>
+<body>
+<div id="console"></div>
+<div class="slides">
+
+    <section id="comparecode">
+    <div class='flex-direction-row'>
+        <div>
+            <h4>jQuery</h4>
+            <div class="jCode noPlay">
+                <div class="jCode-scroll jCode-div">
+                    <div class="jCode-lines js">
+<pre>
+
+
+
+<span class="s0">$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
+    .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
+    .click(</span><span class="s2">function </span><span class="s0">() {
+    
+        $(</span><span class="s2">this</span><span class="s0">)
+            .siblings(</span><span class="s1">".content"</span><span class="s0">)
+            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id(),
+              <span class="s2">null</span><span class="s0">, </span>
+              <span class="s2">function </span><span class="s0">() {
+              
+                  $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span>;<span class="s0">
+                  
+              });
+              
+    });</span></pre>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h4>gQuery</h4>
+            <div class="jCode noPlay">
+                <div class="jCode-scroll jCode-div">
+                    <div class="jCode-lines">
+<pre><span class="s2">import static </span><span class="s0">com.google.gwt.query.client.GQuery.*</span>;
+
+$(<span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
+    .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
+    .click(</span><span class="s2">new </span><span class="s0">Function() {
+      </span><span class="s2">public void </span><span class="s0">f() {
+        $(</span><span class="s2">this</span><span class="s0">)
+            .siblings(</span><span class="s1">".content"</span><span class="s0">)
+            .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id(),</span>
+              <span class="s2">null</span><span class="s0">,</span><span class="s2">
+              new </span><span class="s0">Function() {
+                </span><span class="s2">public void </span><span class="s0">f() {
+                  $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span>;<span class="s0">
+                }
+              });
+      }
+    });
+</span></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+
+
+<div id='play' title='Run snippet'>►</div>
+<div id='marker'>1</div>
+<div id='viewport'></div>
+<div id='container'></div>
+
+<div class='gwt-logo'></div>
+<div class='gquery-logo'></div>
+
+<div class='ball yellow' style='background:yellow'></div>
+<div class='ball green' style='background:green'></div>
+<div class='ball blue' style='background:blue'></div>
+<div class='ball red' style='background:red'></div>
+
+<div id='hello' style='display:none'><div>Hello World</div></div>
+</body>
+</html>
