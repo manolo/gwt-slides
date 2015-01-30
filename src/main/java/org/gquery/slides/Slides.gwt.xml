@@ -1,14 +1,8 @@
 <module>
-
     <inherits name='com.google.gwt.query.Query'/>
 
     <generate-with class="org.gquery.slides.bind.SlidesGenerator">
         <when-type-assignable class="org.gquery.slides.client.SlidesSourceMarker"/>
     </generate-with>
-
-    <replace-with class="org.gquery.slides.client.Utils.Console">
-        <when-type-assignable class="com.google.gwt.query.client.Console"/>
-    </replace-with>
-    
 </module>
 

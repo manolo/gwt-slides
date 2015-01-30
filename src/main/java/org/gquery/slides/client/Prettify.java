@@ -1,5 +1,7 @@
 package org.gquery.slides.client;
 
+import com.google.gwt.query.client.Console;
+import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -23,19 +25,28 @@ public class Prettify {
   public static final String GQUERY_KEYWORDS = JAVA_KEYWORDS + "|"
       + "GWT|GQuery|Function|Promise|PromiseFunction|FunctionDeferred";
 
-  public static final String GQUERY_CHAIN_METHODS = "(when|then|done|fail|always|and|or|animate|promise)";
+  public static final String GQUERY_CHAIN_METHODS = "(when|then|done|fail|as|always|and|or|css|promise)";
 
   public static final String CONTROL_CHARS = "([\\{\\}\\(\\)\\[\\]\\;\\,\\+\\-\\*\\|\\&]+)";
 
   public static final String JAVA_ANNOTATIONS = "(@)([A-Z]\\w+)";
 
   static RegExp chainRex = RegExp.compile("(\n[^\\s].*?\\))\\." + GQUERY_CHAIN_METHODS + "\\(");
+  
+  public static native String customReplace(String s) /*-{
+    return s.replace(/(?:\n|^)\s*\/\/([^\n]+) \/\/([^\n\/]*)(\/\/)?([^\n]*)?\n( *)([\s\S]+(\n\s*\/\/)?)/g, function(all, reg, repl, extra1, extra2, spaces, text) {
+      return (extra1 ? '\n': '') + (extra2 ? extra1 + extra2 : '')  + '\n' + spaces + text.replace(new RegExp(reg, "g"), repl.replace('\\n', '\n').replace('\\t', '  ').replace('\\s', spaces));
+    });
+  }-*/;
+  
+  static Console c = new ConsoleBrowser();
 
   public static String prettify(String s) {
-    MatchResult r = chainRex.exec(s);
-    while ((r = chainRex.exec(s)) != null) {
-      s = s.replace(r.getGroup(0), r.getGroup(1) + "\n." + r.getGroup(2) + "(");
-    }
+//    MatchResult r = chainRex.exec(s);
+//    while ((r = chainRex.exec(s)) != null) {
+//      s = s.replace(r.getGroup(0), r.getGroup(1) + "\n ." + r.getGroup(2) + "(");
+//    }
+    s = customReplace(s);
     s = s
           .replaceAll("<", "&lt;")
           .replaceAll(">", "&gt;")
@@ -45,7 +56,8 @@ public class Prettify {
           .replaceAll(JAVA_ANNOTATIONS, "$1<span class='jAnn'>$2</span>")
           .replaceAll("([^\\w])(\".*?[^\\\\]\")([^\\w])", "$1<span class='jLiteral'>$2</span>$3")
           .replaceAll("()([\\w\\$]+)(\\(.*?)", "$1<span class='jMethod'>$2</span>$3")
-          .replaceAll("(//.+?)\n", "<span class='jComment'>$1\n</span>");
+          .replaceAll("(//.+?)\n", "<span class='jComment'>$1\n</span>")
+          ;
 
     return s;
   }

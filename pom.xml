@@ -9,11 +9,11 @@
 
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <maven.compiler.source>1.7</maven.compiler.source>
-      <maven.compiler.target>1.7</maven.compiler.target>
-      <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.7.0</gwtversion>
-      <gwtmaven>2.7.0</gwtmaven>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <gQueryVersion>2.0.0-SNAPSHOT</gQueryVersion>
+      <gwtversion>2.8.0-MCM</gwtversion>
+      <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
       <gwt.style>PRETTY</gwt.style>
       <github.global.server>github</github.global.server>
       <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
@@ -113,17 +113,21 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.googlecode.gwtquery.plugins</groupId>
+            <artifactId>gestures-plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.timepedia.exporter</groupId>
             <artifactId>gwtexporter</artifactId>
             <version>2.5.1</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>com.google.code.javaparser</groupId>
-            <artifactId>javaparser</artifactId>
-            <version>1.0.9</version>
-            <scope>provided</scope>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.jdramaix</groupId>
@@ -140,6 +144,10 @@
               <artifactId>gwt-maven-plugin</artifactId>
               <version>${gwtmaven}</version>
               <configuration>
+                  <modules>
+                    <module>org.gquery.slides.GwtCreate2015</module>
+                    <module>org.gquery.slides.GwtCreate2013</module>
+                  </modules>
                   <style>${gwt.style}</style>
                   <logLevel>${gwt.loglevel}</logLevel>
                   <compileReport>${gwt.compiler.compileReport}</compileReport>
@@ -166,16 +174,17 @@
                   </execution>
               </executions>
             </plugin>
-
+<!--
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-compiler-plugin</artifactId>
               <version>2.1</version>
               <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
+                <source>1.8</source>
+                <target>1.8</target>
               </configuration>
             </plugin>
+-->
             <plugin>
                <artifactId>maven-surefire-plugin</artifactId>
                <version>2.8.1</version>

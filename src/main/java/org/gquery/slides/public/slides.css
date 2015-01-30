@@ -20,18 +20,16 @@
   src: local('Crimson Text'), local('CrimsonText-Roman'), url("./fonts/crimson_text.woff") format('woff');
 }
 
-
 body {
   width: 100%;
   height: 100%;
   background: #f7fbfc;
-  background: -moz-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
   background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #f7fbfc), color-stop(100%, #add9e4));
   background: -webkit-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
   background: -o-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background: radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
+  background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);  
   background-color: #f7fbfc;
+    
   font-style: normal;
   text-decoration: none;
   text-transform: none;
@@ -79,6 +77,11 @@ li {
 .slides {
   height:100%;
   width: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
 
 .slides > section {
@@ -90,7 +93,7 @@ li {
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: all 1s ease-in-out;
+  transition: all 0.6s ease-out;
 }
 
 .slides > section.left {
@@ -107,7 +110,7 @@ li {
 .slides > section.next {
   transform: perspective(1000px) rotateX(35deg) translateY(+150px) scale(0.1) rotate(-180deg);
 }
-.slides > section.curr {
+.slides > section.current {
   left: 0%;
   top: 0%;
 
@@ -148,7 +151,7 @@ li {
  }
 
  #console {
-   background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
+   background: none repeat scroll 0 0 rgba(255, 255, 255, 0.4);
    box-shadow: 0 0.4em 0.5em rgba(0, 0, 0, 0.3);
    color: #000000;
    font-family: 'Droid Sans Mono',monospace,monospace;
@@ -158,7 +161,7 @@ li {
    text-shadow: none;
    top: 0;
    width: 96%;
-   margin-left: 2%;
+   margin-left: 40%;
    margint-top: 4px;
    z-index: 9000;
    transition: width 1.5s ease-in-out;
@@ -240,7 +243,7 @@ li {
    color: green;
    cursor: pointer;
    text-shadow: 0 0 0.3em #145FDC;
-   position: absolute;
+   position: fixed;
    display: none;
    z-index: 1;
    margin-left: -10px;
@@ -300,15 +303,25 @@ li {
   color: #E9E9E9;
 }
 
-new {
-  font-size: 0.8em;
-  transform:rotate(-45deg);
-  -webkit-transform:rotate(-45deg);
-  position: absolute;
-  padding-left: 0.4em;
-  colot: green;
-}
-
-new:before {
-  content: "new";
-}
+section.right, div.right {
+    position: absolute;
+    top: 10%; 
+    right: 40px;
+    opacity: 0.8;
+    min-width: 20%;
+ }
+ ul.none {
+   list-style: none;
+ }
+ li.none {
+   list-style: none;
+ }
+ li.level1 {
+   list-style: none;
+   font-size: 88%;
+   margin-left: 1em;
+   line-height: 1.1em;
+   color: #6E5E5E;
+ }
+ button {
+ }

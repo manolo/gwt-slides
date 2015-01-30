@@ -1,5 +1,9 @@
 package org.gquery.slides.client;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.window;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Promise;
@@ -10,11 +14,7 @@ import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.window;
-
-public abstract class Utils {
+public abstract class SlidesUtils {
 
   /**
    * Overrides default gQuery console implementation to

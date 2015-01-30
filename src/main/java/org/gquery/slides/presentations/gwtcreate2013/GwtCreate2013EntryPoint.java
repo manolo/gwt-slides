@@ -1,4 +1,4 @@
-package org.gquery.slides.presentations.gwtcreate;
+package org.gquery.slides.presentations.gwtcreate2013;
 
 import org.gquery.slides.client.Slides;
 
@@ -8,10 +8,10 @@ import com.google.gwt.core.client.GWT;
 /**
  * Entry point for the GwtCreate presentation
  */
-public class GwtCreateEntryPoint implements EntryPoint {
+public class GwtCreate2013EntryPoint implements EntryPoint {
 
   public void onModuleLoad() {
-     GwtCreatePresentation source = GWT.create(GwtCreatePresentation.class);
+     GwtCreate2013Presentation source = GWT.create(GwtCreate2013Presentation.class);
      new Slides(source);
   }
 

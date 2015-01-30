@@ -24,6 +24,8 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.GQuery.Offset;
+import com.google.gwt.query.client.GqFunctions.IsReturnFunction1;
+import com.google.gwt.query.client.GqFunctions.IsVoidFunction1;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Promise.Deferred;
@@ -182,13 +184,13 @@ public class JsQuery implements Exportable {
 
   @Export("gPromise")
   public interface PromiseOverlay extends ExportOverlay<Promise>  {
-    Promise always(Function... o);
-    Promise done(Function... o);
-    Promise fail(Function... o);
-    Promise pipe(Function... f);
-    Promise progress(Function... o);
+    Promise always(IsVoidFunction1 o);
+    Promise done(IsVoidFunction1 o);
+    Promise fail(IsVoidFunction1 o);
+    Promise pipe(IsReturnFunction1 f);
+    Promise progress(IsVoidFunction1 o);
     String state();
-    Promise then(Function... f);
+    Promise then(IsReturnFunction1 f);
     boolean isResolved();
     boolean isRejected();
   }

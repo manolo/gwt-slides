@@ -7,12 +7,8 @@
      height: 3em;
      box-shadow: inset 0 -5px 15px rgba(255,255,255,0.4), inset -2px -1px 40px rgba(0,0,0,0.4), 0 0 1px #000;
  }
-/*********
- * Slides*
- *********/
 
 /* Slide 1 : #title */
-
 .gwtcreate-logo {
     position: absolute;
     top: 15px;
@@ -139,6 +135,15 @@
 .js .s4 { color: rgb(204,120,50); }
 .s5 { color: rgb(128,128,128); }
 
+new {
+  font-size: 0.8em;
+  transform:rotate(-45deg);
+  -webkit-transform:rotate(-45deg);
+  position: absolute;
+  padding-left: 0.4em;
+  colot: green;
+}
 
-
->>>>>>> de256eeadc8a255035e0abf98f33dd774991f2f0
+new:before {
+  content: "new";
+}

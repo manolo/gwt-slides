@@ -1,6 +1,10 @@
 package org.gquery.slides.client;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.gwt.query.client.Console;
 
 /**
  * 
@@ -10,13 +14,18 @@ import java.util.HashMap;
 public abstract class SlidesSource implements SlidesSourceMarker {
   public static final String ENTER_EVENT_NAME = "slideEnter";
   public static final String LEAVE_EVENT_NAME = "slideLeave";
+  public static final  Console console = new SlidesUtils.Console();
 
   public SlidesSource() {
     bind();
   }
+  
+  public Set<String> ids() {
+    return snippets.keySet();
+  }
 
-  public HashMap<String, String> snippets = new HashMap<String, String>();
-  public HashMap<String, String> docs = new HashMap<String, String>();
+  public Map<String, String> snippets = new LinkedHashMap<String, String>();
+  public Map<String, String> docs = new LinkedHashMap<String, String>();
   public void exec(String id){};
   public void bind(){};
 }

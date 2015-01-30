@@ -1,9 +1,18 @@
-package org.gquery.slides.presentations.gwtcreate;
+package org.gquery.slides.presentations.gwtcreate2013;
 
-import static com.google.gwt.query.client.GQuery.*;
-import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.*;
+import static com.google.gwt.query.client.$.Deferred;
+import static com.google.gwt.query.client.$.when;
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.browser;
+import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.lazy;
+import static com.google.gwt.query.client.GQuery.window;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeInOutBack;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOut;
+import static com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve.easeOutBack;
 import static com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
-import static org.gquery.slides.client.Utils.getRandom;
+import static org.gquery.slides.client.SlidesUtils.getRandom;
 
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -30,7 +39,7 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
-import com.google.gwt.query.client.plugins.effects.Fx;
+import com.google.gwt.query.client.plugins.effects.Animations;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.jsquery.JsQuery;
@@ -81,24 +90,11 @@ import com.watopi.chosen.client.Chosen;
  * @author manolo
  *
  */
-public class GwtCreatePresentation extends SlidesSource {
-
+public class GwtCreate2013Presentation extends SlidesSource {
+  
   GQuery viewPort = $("#viewport");
   GQuery play = $("#play");
   Widget resizeWidget;
-
-  public void enterCompareCode() {
-    $("#comparecode > div > div:first-child")
-        .stop().css($$("opacity: 1"))
-        .animate("delay: 3000, duration: 1000, opacity: 0")
-        .animate("delay: 6000, opacity: 1");
-
-    $("#comparecode > div > div:last-child")
-        .stop().css($$("margin-left: -100%, opacity: 0"))
-        .animate("delay: 1000, duration: 3000, opacity: 1")
-        .animate("delay: 6000, margin-left: 0")
-        ;
-  }
 
   public void beforeBindEvent() {
     leaveBindEvent();
@@ -315,7 +311,7 @@ native void exportBar() /*-{
   native void exportBar(String fnc)  /*-{
     $wnd[fnc] =
       $entry(
-         @org.gquery.slides.presentations.gwtcreate.GwtCreatePresentation::bar(Ljava/lang/Object;)
+         @org.gquery.slides.presentations.gwtcreate2013.GwtCreate2013Presentation::bar(Ljava/lang/Object;)
       );
   }-*/;
 
@@ -436,8 +432,8 @@ native void exportBar() /*-{
       final String name = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$1");
       final String prop = e.getKey().replaceFirst("^\\d+ (.*) *\\| *(.*)$", "$2");
 
-      $("<li>" + name).appendTo(ul).click(new Function() {
-        public void f() {
+      $("<li>" + name).appendTo(ul).on("tap", new Function() {
+        public boolean f(Event ev) {
           input.val(prop);
           Function f = e.getValue();
           if (f != null) {
@@ -449,34 +445,25 @@ native void exportBar() /*-{
           code += name.contains("(") ? ("as(Effects)." + name) :  ("animate($$(\"" + prop + "\")" )+ ";" ;
           $("#play").hide();
           $("#animationscss3 .jCode-lines pre").html(Prettify.prettify(code));
+          return false;
         }});
     }
-
-    $("<button> disable CSS3 </button>").appendTo(viewPort).click(
-        new Function() {
-          public void f() {
-            if (Fx.css3 = !Fx.css3) {
-              $(this).text("disable CSS3");
-            } else {
-              $(this).text("enable CSS3");
-            }
-            console.clear();
-            console.log("CSS3 animations are " + (Fx.css3 ? "enabled" : "disabled"));
-          }
-        });
   }
 
   /**
    * @ Advanced animations
-   * - Although gQuery has a mechanism to chain and queue animations.
-   * - using css3 delays is easier.
+   * - gQuery has a mechanism to chain and queue animations.
+   * - Combine queues and css3 delays instead of call-backs.
    */
   public void testAnimationsAdvanced() {
     blue.animate("bottom: 0, delay: 0, duration: 1000, easing: easeOut");
     red.animate("bottom: 0, delay: 0, duration: 4000, easing: easeOut");
     yellow.animate("bottom: 0, delay: 4000, duration: 2000, easing: easeOut");
     green.animate("bottom: 0, delay: 6000, duration: 3000, easing: easeOut");
-    balls.animate("left: 120%, delay: 9000, duration: 1000,easing: easeOut");
+    blue.animate("left: 120%, delay: 8000, duration: 1000, easing: easeOut");
+    red.animate("left: 120%, delay: 5000, duration: 1000, easing: easeOut");
+    yellow.animate("left: 120%, delay: 3000, duration: 1000, easing: easeOut");
+    green.animate("left: 120%, delay: 0, duration: 1000, easing: easeOut");
   }
 
   public void enterAnimationsAdvanced() {
@@ -720,7 +707,6 @@ native void exportBar() /*-{
         console.log("Always. " + arguments(0));
       }
     });
-
   }
 
   /**
@@ -728,7 +714,19 @@ native void exportBar() /*-{
    */
   public void testPromisesDump_Hidden_Slide() throws Exception {
     // Join different calls
-    when( getRandom(), "JQ", new Boolean[]{true, false})
+    when(new Function(){
+      public Object f(Object... args) {
+        return getRandom();
+      }
+    }, new Function(){
+      public Object f(Object... args) {
+        return  "JQ";
+      }
+    }, new Function(){
+      public Object f(Object... args) {
+        return  new Boolean[]{true, false};
+      }
+    })
     .done( new Function(){public void f(){
       // helper method to inspect the content of the arguments array
       console.log(dumpArguments());
@@ -771,7 +769,7 @@ native void exportBar() /*-{
 
   void drawBalls() {
     if (!balls.isVisible() || balls.cur("left", true) > 350 ) {
-      balls.show().each(new Function() {
+      balls.stop().show().each(new Function() {
         int h = $(window).height() - 100;
         public void f(Element e) {
           $(e).css("bottom", (h - Random.nextInt(100)) + "px").css("left", Random.nextInt(140) + "px");
@@ -1005,5 +1003,29 @@ native void exportBar() /*-{
         return true;
       }
     });
+  }
+  
+  /**
+   * @ Material Design Hierarchical Timing Animations Demo
+   */
+  public void testMd1() {
+    int duration = 300;
+    String boxStyle = Animations.insertStyle($$("width: 100px, height: 100px, margin: 10px, float: left, position: relative, background: #29B6F6"));
+    for (int i = 0; i < 20; i++) {
+      GQuery g = $("<div/>").addClass(boxStyle).appendTo(document);
+      int delay = (int)(g.offset().left * 0.8 + g.offset().top) * 1000 / (3 * duration);
+      g.as(Animations.Animations).animate($$("scale:0 0").set("duration", duration).set("delay", delay));
+    }
+    final GQuery boxes = $("<div/>").addClass(boxStyle).appendTo(document);
+    boxes.each(new Function() {
+      public void f(com.google.gwt.dom.client.Element e) {
+//        $(e).as(Animations.Animations).animate($$("scale:0 0, duration: 300, delay:" + delay));
+      }
+    });
+    
+    
+//    String an = Animations.keyframes($$("scale: 'initial'"), $$("scale: '0 0'"), $$("duration: 3000"));
+//    String an = Animations.keyframes($$("scale: '0 0'"));
+//    $("." + boxStyle).addClass(an);
   }
 }

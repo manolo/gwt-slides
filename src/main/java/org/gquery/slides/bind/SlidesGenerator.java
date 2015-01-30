@@ -1,19 +1,19 @@
 package org.gquery.slides.bind;
 
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.CompilationUnit;
-import japa.parser.ast.body.BodyDeclaration;
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
-
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.gquery.slides.client.SlidesSource;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -28,32 +28,38 @@ public class SlidesGenerator extends Generator {
   private static final String ID_SELECT = GQuery.class.getName() + ".$(\"#%id%\")";
   private static final String FUNCTION = "new " + Function.class.getName() + "(){public void f(){%call%();}}";
 
-  HashMap<String, String> methodBodies = new HashMap<String, String>();
-  HashMap<String, String> methodDoc = new HashMap<String, String>();
-  HashMap<String, String> enterMethods = new HashMap<String, String>();
-  HashMap<String, String> beforeMethods = new HashMap<String, String>();
-  HashMap<String, String> execMethods = new HashMap<String, String>();
-  HashMap<String, String> afterMethods = new HashMap<String, String>();
-  HashMap<String, String> leaveMethods = new HashMap<String, String>();
-  HashMap<String, String> innerClasses = new HashMap<String, String>();
+  Map<String, String> methodBodies = new LinkedHashMap<String, String>();
+  Map<String, String> methodDoc = new LinkedHashMap<String, String>();
+  Map<String, String> enterMethods = new LinkedHashMap<String, String>();
+  Map<String, String> beforeMethods = new LinkedHashMap<String, String>();
+  Map<String, String> execMethods = new LinkedHashMap<String, String>();
+  Map<String, String> afterMethods = new LinkedHashMap<String, String>();
+  Map<String, String> leaveMethods = new LinkedHashMap<String, String>();
+  Map<String, String> innerClasses = new LinkedHashMap<String, String>();
 
   @Override
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass) throws UnableToCompleteException {
 
     JClassType clazz =  generatorContext.getTypeOracle().findType(requestedClass);
+    
+    if (clazz.isAbstract() || clazz.isInterface() != null) {
+      return null;
+    }
 
     JClassType c = clazz.isClassOrInterface();
     String generatedPkgName = c.getPackage().getName();
     String generatedClzName = c.getName().replace('.', '_') + "_Slide";
     String generatedClzFullName = generatedPkgName + "." + generatedClzName;
-
-    String file = generatedPkgName.replace(".", "/") + "/" + clazz.getName() + ".java";
-
-    try {
-      parseJavaFile(file);
-    } catch (ParseException e) {
-      e.printStackTrace();
+    
+    while (clazz != null && clazz.isInterface() == null) {
+      String file = clazz.getPackage().getName().replace(".", "/") + "/" + clazz.getName() + ".java";
+      try {
+        parseJavaFile(file);
+      } catch (ParseException e) {
+        e.printStackTrace();
+      }
+      clazz = clazz.getSuperclass();
     }
 
     SourceWriter sw = getSourceWriter(treeLogger, generatorContext, generatedPkgName, generatedClzName, requestedClass);
@@ -114,6 +120,9 @@ public class SlidesGenerator extends Generator {
 
   public void parseJavaFile(String file) throws ParseException {
     InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
+    if (in == null) {
+      return;
+    }
 
     // use japa.parser.ast to parse the source. We could use the classes in the
     // gwt compiler, but it seems this info is not available when running generators.
@@ -126,15 +135,15 @@ public class SlidesGenerator extends Generator {
       }
 
       public void visit(MethodDeclaration n, Object arg) {
-        if (n.getName().startsWith("enter")){
+        if (n.getName().startsWith("enter")) {
           handleSpecialMethod(n, "enter", enterMethods);
-        } else if (n.getName().startsWith("before")){
+        } else if (n.getName().startsWith("before")) {
           handleSpecialMethod(n, "before", beforeMethods);
-        } else if (n.getName().startsWith("after")){
+        } else if (n.getName().startsWith("after")) {
           handleSpecialMethod(n, "after", afterMethods);
-        } else if (n.getName().startsWith("leave")){
+        } else if (n.getName().startsWith("leave")) {
           handleSpecialMethod(n, "leave", leaveMethods);
-        } else {
+        } else if (n.getName().matches("^(test|slide|case).*")) {
           handleSimpleMethod(n, arg);
         }
       }
@@ -152,7 +161,7 @@ public class SlidesGenerator extends Generator {
   }
 
   private void handleSimpleMethod(MethodDeclaration n, Object arg) {
-    String id = n.getName().replaceFirst("^test","").toLowerCase();
+    String id = n.getName().replaceFirst("^(test|slide|case)","").toLowerCase();
     boolean noParameters = n.getParameters() == null;
     if (n.getBody() != null) {
       String s;
@@ -164,7 +173,11 @@ public class SlidesGenerator extends Generator {
           // remove last close method line
           .replaceFirst("\\s*\\}\\s*$", "")
           // remove 4 spaces indentation
-          .replaceAll("(?m)^    ", "");
+          .replaceAll("(?m)^    ", "")
+          // java 8 lambda arguments  ( o) -> (o)
+          .replaceAll("\\( (\\w)", "($1")
+          .replaceAll("\\)->", ") -> ")
+          .replaceAll("\\n//", "\n//");
       } else {
         s = n.toString();
       }
@@ -181,11 +194,15 @@ public class SlidesGenerator extends Generator {
   private String formatComment(String comment) {
     return comment
       .replaceAll("(?m)^\\s*(/\\*\\*|\\*/|\\*)", "")
-      .replaceAll("(?m)^\\s*-\\s(.*)$", "<li>$1</li>")
-      .replaceAll("(?m)^\\s*@\\s(.+)\\s*$", "<h1>$1</h1>")
-      .replaceAll("(?m)^\\s*@@\\s(.+)\\s*$", "<h4>$1</h4>")
-      .replaceFirst("<li>", "<section><ul><li>")
+      .replaceAll("(?m)^\\s*(\\w+=[\\w ']+)?-\\s(.*)$", "<li $1>$2</li>")
+      .replaceAll("(?m)^\\s*--\\s(.*)$", "<li class='level1'>$1</li>")
+      .replaceAll("(?m)^\\s*--\\s(.*)$", "<li class='level2'>$1</li>")
+      .replaceAll("(?m)^\\s*(\\w+=[\\w ']+)?@\\s(.+)\\s*$", "<h1 $1>$2</h1>")
+      .replaceAll("(?m)^\\s*(\\w+=[\\w ']+)?@@\\s(.+)\\s*$", "<h4 $1>$2</h4>")
+      .replaceFirst("<li(.*?)>", "<section$1><ul$1><li$1>")
       .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
+      .replaceAll("\\*([\\w ]+?)\\*", "<b>$1</b>")
+//      .replaceAll("(?m)<li[^>]*>\\s+</li>$", "")
       .replace("* /", "*/") // If we write jsni in javadoc
       .trim();
   }
@@ -193,13 +210,10 @@ public class SlidesGenerator extends Generator {
   // Replace all occurrences of '@include: method_name or inner_class_name' by
   // the content of method or class present in the source class
   private String resolveIncludes(String body) {
-
-    String regex = "(?s)(?:|.*\n)([\\s/]*@include:\\s*)(\\w+)(\\s*?)(?:\n.*|).*";
-
+    String regex = "(?s)(?:|.*\n)([\\s/]*@include:\\s*)(\\w+).*";
     while (body.matches(regex)) {
       String id = body.replaceFirst(regex, "$2");
-      String replace = body.replaceFirst(regex, "$1$2$3");
-
+      String replace = body.replaceFirst(regex, "$1$2");
       String s = innerClasses.get(id);
       if (s == null) {
         s = methodBodies.get(id);
@@ -208,12 +222,16 @@ public class SlidesGenerator extends Generator {
         s = methodBodies.get(id.toLowerCase().replaceFirst("^test", ""));
       }
       if (s == null) {
-        s = "\n// " + id + " class/method not found\n";
+        s = "\n// " + id + " class/method not found";
       }
-
-      body = body.replace(replace, s );
+      if (!s.endsWith("\n")) {
+        s += "\n";
+      }
+      if (!s.startsWith("\n")) {
+        s = "\n" + s;
+      }
+      body = body.replace(replace, s);
     }
-
     return body;
   }
 
@@ -223,13 +241,13 @@ public class SlidesGenerator extends Generator {
       .replace("\n\n", "\n")
       // remove empty comments, forces a new line
       .replaceAll("(?m)^\\s*//\\s*$", "")
-      // replace 4 spaces identation with 2 spaces
+      // replace 4 spaces indentation with 2 spaces
       .replace("    ", "  ")
       // put in new lines split lines
       .replace("\" + \"", "\"\n       + \"");
   }
 
-  private void handleSpecialMethod(MethodDeclaration n, String prefix, HashMap<String, String> map) {
+  private void handleSpecialMethod(MethodDeclaration n, String prefix, Map<String, String> map) {
     if (n.getParameters() == null) {
       String id = n.getName().replaceFirst(prefix,"").toLowerCase();
       map.put(id, n.getName());

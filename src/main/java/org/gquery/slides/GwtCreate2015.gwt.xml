@@ -1,0 +1,17 @@
+<module rename-to='gwtcreate2015'>
+    <inherits name='org.gquery.slides.Slides'/>
+
+    <entry-point class='org.gquery.slides.presentations.gwtcreate2015.GwtCreate2015EntryPoint'/>
+
+    <source path="presentations/gwtcreate2015" />
+    <public path="presentations/gwtcreate2015/public" />
+    
+    <set-property name="user.agent" value="safari, gecko1_8" />    
+    
+    <set-property name="compiler.stackMode" value="strip" />
+    
+    <add-linker name="xsiframe"/>
+<!--     <define-linker name="htmllinker" class="org.gquery.slides.bind.HtmlLinker" /> -->
+<!--     <add-linker name="htmllinker" /> -->
+    <collapse-all-properties value="true" />    
+</module>
