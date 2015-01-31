@@ -3,6 +3,11 @@
 
 This is a GWT project for creating amazing presentations with GWT.
 
+## Examples:
+[GQuery presentations at GWT.create Conferences](http://manolo.github.io/gwt-slides/)
+
+## The Basics
+
 It uses gwt + gquery + generators to generate a HTML5 presentation based on the example code and javadoc in a java file.
 
 All 'slide' prefixed methods in your presentation java class will be merged in the main html
@@ -25,7 +30,7 @@ when entering the slide, leaving it, before running the code or after.
 
 So the convention for method names is:
 
-`enterMethod, beforeMethod, slideMethod, afterMetod, leaveMethod.`
+`enterMethod, beforeMethod, slideMethod, afterMethod, leaveMethod.`
 
 If you define your slide in your hosted html, its content will be automatically
 merged to the code coming from the method in the java class. 
