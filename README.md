@@ -4,7 +4,7 @@
 This is a GWT project for creating amazing presentations with GWT.
 
 ## Examples:
-[GQuery presentations at GWT.create Conferences](http://manolo.github.io/gwt-slides/)
+GQuery [presentations](http://manolo.github.io/gwt-slides/) at GWT.create Conferences
 
 ## The Basics
 
