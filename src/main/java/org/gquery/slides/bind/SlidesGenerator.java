@@ -237,9 +237,6 @@ public class SlidesGenerator extends Generator {
       }
       if (s == null) {
         s = "\n// " + id + " class/method not found";
-        for (Entry e : methodBodies.entrySet()) {
-          System.out.println(e.getKey());
-        }
       }
       if (!s.endsWith("\n")) {
         s += "\n";
