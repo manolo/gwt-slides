@@ -2,11 +2,10 @@ package org.gquery.slides.bind;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.gquery.slides.client.SlidesSource;
 
@@ -31,7 +30,7 @@ public class SlidesGenerator extends Generator {
   private static final String ID_SELECT = GQuery.class.getName() + ".$(\"#%id%\")";
   private static final String FUNCTION = "new " + Function.class.getName() + "(){public void f(){%call%();}}";
 
-  Set<String> slideIds = new HashSet<String>();
+  Set<String> slideIds = new LinkedHashSet<String>();
   Map<String, String> methodBodies = new LinkedHashMap<String, String>();
   Map<String, String> methodDoc = new LinkedHashMap<String, String>();
   Map<String, String> enterMethods = new LinkedHashMap<String, String>();
