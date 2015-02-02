@@ -57,7 +57,7 @@ import com.watopi.chosen.client.Chosen;
 
 /**
  * All tests methods in this class will be merged in the main html
- * page. Java doc of the methods will be written as tittle, bubtittle
+ * page. Java doc of the methods will be written as title, bubtitle
  * and sections in the slides. The body of the the function will be
  * included in the code section of the slide.
  *
@@ -70,7 +70,7 @@ import com.watopi.chosen.client.Chosen;
  * Also an extra html is allowed in javadocs.
  *
  * The body code will be executed when clicking on the '#play' button,
- * but aditionally, you can write extra functions which will be executed
+ * but additionally, you can write extra functions which will be executed
  * when entering the slide, leaving it, before running the code or after.
  *
  * So the convention for method names are:
@@ -84,7 +84,7 @@ import com.watopi.chosen.client.Chosen;
  * these sections will be the order of the slides despite the order of
  * test methods in this class.
  *
- * <section id='slidemehodname'>Extra Content</section>
+ * <section id='mehodname'>Extra Content</section>
  *
  *
  * @author manolo
@@ -583,10 +583,7 @@ native void exportBar() /*-{
    *
    */
   public void testHighCharts() {
-    // @include: JQueryBundle
-    //
-    // @include: HighCharts
-    //
+    // @include: JQueryBundle// @include: HighCharts
     JQueryBundle jQuery = GWT.create(JQueryBundle.class);
     HighCharts highCharts = GWT.create(HighCharts.class);
     //
@@ -711,6 +708,7 @@ native void exportBar() /*-{
 
   /**
    * @ The helper method `dumpArguments`
+   * @disabled
    */
   public void testPromisesDump_Hidden_Slide() throws Exception {
     // Join different calls
@@ -735,6 +733,7 @@ native void exportBar() /*-{
 
   /**
    * @ gQuery Helper Functions
+   * @disabled
    */
   public void testPromisesHelper_Hidden_Slide() throws Exception {
     // The normal way create a function returning a promise
@@ -758,7 +757,7 @@ native void exportBar() /*-{
     }});
   }
 
-  Function dropBall(final GQuery ball, final int timeout) {
+  public static Function dropBall(final GQuery ball, final int timeout) {
     return new Function(){public Object f(Object...o){
       return ball.animate($$("bottom: 0"), timeout, easeOut).promise();
     }};
@@ -785,8 +784,7 @@ native void exportBar() /*-{
    * - Async Functions return:<br/> &gt; a promise to pipe<br/> &gt; an object to modify previous data
    */
   public void testPromisesPipeline() {
-    // @include: dropBall
-    // Start the process:
+    // @include: dropBall//\.then //\n.then//
     when(dropBall(blue,1000), dropBall(red, 4000)).then(dropBall(yellow,2000)).then(dropBall(green, 3000))
     .then(new Function(){public Object f(Object...o){
       return balls.animate($$("left: 120%"), 1000).promise();
@@ -907,14 +905,12 @@ native void exportBar() /*-{
 
   /**
    * @ Questions and Answers
+   * @noplay
    */
   public void testQuestionsAnswers() {
-    //
+    //(\.\w+\() //\n $1
     GQuery.when(talk()).then(questions()).always(answers());
 
-  }
-  public void enterQuestionsAnswers() {
-    $("#play").hide();
   }
 
   public Function talk(){return null;};
@@ -927,16 +923,13 @@ native void exportBar() /*-{
       super(autoHide, modal);
     }
 
-    Properties show = $$("{opacity: 1, rotateX:0deg}");
-    Properties hide = $$("{opacity: 0, rotateX:180deg}");
-
     public void center() {
       MyPopupPanel.super.center();
-      $(this).animate(show);
+      $(this).as(Transitions).css($$("rotateX:180")).animate($$("{opacity: 1, rotateX:0}"));
     }
 
     public void hide(final boolean b) {
-      $(this).animate(hide, new Function(){
+      $(this).animate($$("{opacity: 0, rotateX:180}"), new Function(){
         public void f() {
           MyPopupPanel.super.hide(b);
         }
@@ -944,88 +937,18 @@ native void exportBar() /*-{
     }
   }
 
+  /**
+   * @disabled
+   */
   public void testEnhanceWidget() {
     // @include: MyPopupPanel
-    //
     PopupPanel p = new MyPopupPanel(true, true);
     p.add(new Image("img/logo-gquery.png"));
     p.center();
   }
 
-  /**
-   *
-   */
   public void enterCreateWidget() {
     $("#countries").as(Chosen.Chosen).chosen();
   }
 
-   /**
-   * @ Avoid using widgets.
-   */
-  public void testAvoidWidget() {
-  }
-
-  GQuery fileUpload = $("<input type='file'>");
-  String uploadUrl = "http://gwtupload.alcala.org/gupld/servlet.gupld";
-  public void beforeAjax() {
-    console.clear();
-    fileUpload.prependTo($("#ajax"));
-  }
-  public void leaveAjax() {
-    fileUpload.remove();
-  }
-  /**
-   * @ Ajax
-   * - Simple syntax: jQuery API
-   * - Supports Multiform/Data, CORS and JSONP
-   */
-  public void testAjax() {
-    $(fileUpload).on("change", new Function() {
-      public boolean f(Event e) {
-        Properties form = JsUtils.runJavascriptFunction(window, "eval", "new FormData()");
-        JsArray<JavaScriptObject> files = $(fileUpload).prop("multiple", true).prop("files");
-        for (int i = 0, l = files.length(); i < l; i++) {
-          JsUtils.runJavascriptFunction(form, "append", "file-" + i, files.get(i));
-        }
-        Settings settings = Ajax.createSettings().setUrl(uploadUrl).setData(form);
-        Ajax.ajax(settings)
-           .done(new Function() {
-              public void f() {
-                console.log("File uploaded.");
-              }
-            })
-            .progress(new Function() {
-              public void f() {
-                console.log(arguments(2) + " percent");
-              }
-            });
-
-        return true;
-      }
-    });
-  }
-  
-  /**
-   * @ Material Design Hierarchical Timing Animations Demo
-   */
-  public void testMd1() {
-    int duration = 300;
-    String boxStyle = Animations.insertStyle($$("width: 100px, height: 100px, margin: 10px, float: left, position: relative, background: #29B6F6"));
-    for (int i = 0; i < 20; i++) {
-      GQuery g = $("<div/>").addClass(boxStyle).appendTo(document);
-      int delay = (int)(g.offset().left * 0.8 + g.offset().top) * 1000 / (3 * duration);
-      g.as(Animations.Animations).animate($$("scale:0 0").set("duration", duration).set("delay", delay));
-    }
-    final GQuery boxes = $("<div/>").addClass(boxStyle).appendTo(document);
-    boxes.each(new Function() {
-      public void f(com.google.gwt.dom.client.Element e) {
-//        $(e).as(Animations.Animations).animate($$("scale:0 0, duration: 300, delay:" + delay));
-      }
-    });
-    
-    
-//    String an = Animations.keyframes($$("scale: 'initial'"), $$("scale: '0 0'"), $$("duration: 3000"));
-//    String an = Animations.keyframes($$("scale: '0 0'"));
-//    $("." + boxStyle).addClass(an);
-  }
 }

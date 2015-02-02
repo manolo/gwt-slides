@@ -83,10 +83,15 @@
     align-items: center;
 }
 
-#pronunciation .logo {
+div.logo {
     width: 600px;
     padding: 50px 20px;
     height: 135px;
+}
+
+div.shadow {
+    border-radius: 15px;
+    box-shadow: 0 0.4em 0.5em rgba(0, 0, 0, 0.3);
 }
 
 #pronunciation .text {

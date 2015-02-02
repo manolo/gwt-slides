@@ -2,8 +2,11 @@ package org.gquery.slides.bind;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.gquery.slides.client.SlidesSource;
 
@@ -28,6 +31,7 @@ public class SlidesGenerator extends Generator {
   private static final String ID_SELECT = GQuery.class.getName() + ".$(\"#%id%\")";
   private static final String FUNCTION = "new " + Function.class.getName() + "(){public void f(){%call%();}}";
 
+  Set<String> slideIds = new HashSet<String>();
   Map<String, String> methodBodies = new LinkedHashMap<String, String>();
   Map<String, String> methodDoc = new LinkedHashMap<String, String>();
   Map<String, String> enterMethods = new LinkedHashMap<String, String>();
@@ -76,6 +80,9 @@ public class SlidesGenerator extends Generator {
           s = resolveIncludes(s);
           sw.println("  docs.put(\"" + id + "\", \"" + escape(s) + "\");");
         }
+      }
+      for (String id : slideIds) {
+        sw.println("  slideIds.add(\"" + id + "\");");
       }
 
       sw.println("}");
@@ -143,7 +150,7 @@ public class SlidesGenerator extends Generator {
           handleSpecialMethod(n, "after", afterMethods);
         } else if (n.getName().startsWith("leave")) {
           handleSpecialMethod(n, "leave", leaveMethods);
-        } else if (n.getName().matches("^(test|slide|case).*")) {
+        } else {
           handleSimpleMethod(n, arg);
         }
       }
@@ -162,6 +169,13 @@ public class SlidesGenerator extends Generator {
 
   private void handleSimpleMethod(MethodDeclaration n, Object arg) {
     String id = n.getName().replaceFirst("^(test|slide|case)","").toLowerCase();
+    String doc = n.getComment() == null ? null : n.getComment().toString();
+    if (doc != null) {
+      if (doc.contains("@disabled")) {
+        return;
+      }
+      methodDoc.put(id, formatComment(n.getComment().toString()));
+    }
     boolean noParameters = n.getParameters() == null;
     if (n.getBody() != null) {
       String s;
@@ -186,8 +200,8 @@ public class SlidesGenerator extends Generator {
     if (noParameters) {
       execMethods.put(id, n.getName());
     }
-    if (n.getComment() != null) {
-      methodDoc.put(id, formatComment(n.getComment().toString()));
+    if (n.getName().matches("^(test|slide|case).*")) {
+      slideIds.add(id);
     }
   }
 
@@ -223,6 +237,9 @@ public class SlidesGenerator extends Generator {
       }
       if (s == null) {
         s = "\n// " + id + " class/method not found";
+        for (Entry e : methodBodies.entrySet()) {
+          System.out.println(e.getKey());
+        }
       }
       if (!s.endsWith("\n")) {
         s += "\n";

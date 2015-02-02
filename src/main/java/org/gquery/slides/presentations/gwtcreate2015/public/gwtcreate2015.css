@@ -28,10 +28,11 @@
  }
 
 #marker {
-	left: initial;
+	left: auto;
 	right: 15px;
 	color: white;
 	text-shadow: none;
+	width: 60px;
 }
 h1, h2 {
 	color: white;

@@ -1,5 +1,6 @@
 package org.gquery.slides.client;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,9 +22,10 @@ public abstract class SlidesSource implements SlidesSourceMarker {
   }
   
   public Set<String> ids() {
-    return snippets.keySet();
+    return slideIds;
   }
 
+  public Set<String> slideIds = new HashSet<String>();
   public Map<String, String> snippets = new LinkedHashMap<String, String>();
   public Map<String, String> docs = new LinkedHashMap<String, String>();
   public void exec(String id){};

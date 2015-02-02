@@ -1,6 +1,7 @@
 package org.gquery.slides.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.lazy;
 import static com.google.gwt.query.client.GQuery.window;
@@ -10,11 +11,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.query.client.Console;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
-import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.plugins.gestures.Gesture;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Label;
@@ -41,14 +40,11 @@ public class Slides {
   private GQuery slides;
   private GQuery currentSlide = $();
 
-  Console console = new ConsoleBrowser();
-
   public Slides(SlidesSource presentation) {
 
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-      Console cons = new ConsoleBrowser();
       public void onUncaughtException(Throwable e) {
-        cons.error(e.getMessage(), e);
+        console.error(e.getMessage(), e);
       }
     });
 
@@ -62,11 +58,11 @@ public class Slides {
 
     slidesSrc = presentation;
     for (String id : presentation.ids()) {
-      GQuery s = $("#" + id).remove();
+      GQuery s = $("#" + id);
       if (s.isEmpty()) {
         s = $("<section></section>").id(id);
+        s.appendTo($(".slides"));
       }
-      s.appendTo($(".slides"));
     }
 
     slides = $(".slides > section")
@@ -85,7 +81,11 @@ public class Slides {
           $(e).remove();
           return false;
         }
-        return (!$(e).html().trim().isEmpty());
+        boolean empty = $(e).html().trim().isEmpty();
+        if (empty) {
+          $(e).remove();
+        }
+        return (!empty);
       }
     });
 
@@ -231,13 +231,15 @@ public class Slides {
       html += javadoc;
     }
 
-    boolean displayPlayButton = true;
+    boolean displayPlayButton = false;
     if (code != null && code.trim().length() > 0) {
       html += CODE_SNIPPET.replace("%code%", Prettify.prettify(code));
-    } else {
-      displayPlayButton = false;
+      if (html.contains("@noplay")) {
+        html = html.replace("@noplay", "");
+      } else {
+        displayPlayButton = true;
+      }
     }
-
     slide.data(DISPLAY_PLAY_BUTTON, displayPlayButton);
     slide.html(html);
   }
