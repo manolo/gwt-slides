@@ -179,13 +179,13 @@ public class Slides {
         return true;
       }
     });
-    $(".slides section").as(Gesture.Gesture)
-    .on("tapone swipeleft", new Function(){
+    $(".slides").as(Gesture.Gesture)
+    .on("swipeleft", new Function(){
       public boolean f(Event e) {
         return excludedElements(e) ? true : show(true);
       }
     })
-    .on("taptwo swiperight", new Function(){
+    .on("swiperight", new Function(){
       public boolean f(Event e) {
         return excludedElements(e) ? true : show(false);
       }
@@ -210,7 +210,7 @@ public class Slides {
       }
     });
     // Clear the console if we push mouse right
-    $("#console").on("taptwo", new Function() {
+    $("#console").on("tapone", new Function() {
       public boolean f(Event e) {
         console.clear();
         console.log("");

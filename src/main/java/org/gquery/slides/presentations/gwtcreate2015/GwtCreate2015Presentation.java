@@ -207,15 +207,15 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
    * -- Tip: Replacement to EventBus
    */
   public void slideEvents() {
+    console.log("Click on code text to see the font color.");
     $("#console").on("foo", new Function(){
       public boolean f(Event e, Object... args) {
-        console
-        .log(args[0]);
+        console.log(args[0]);
         return true;
       }
     });
     //
-    $("section.current").on("click", "span", new Function(){
+    $(".current .jCode").on("tap", "span", new Function(){
       public boolean f(Event e) {
         $("#console").trigger("foo", $(e).css("color"));
         return false;
