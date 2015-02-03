@@ -18,19 +18,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.query.client.$;
-import com.google.gwt.query.client.Console;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.GqFunctions.IsElementFunction;
 import com.google.gwt.query.client.GqFunctions.IsEventFunction;
-import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.Promise;
-import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
-import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.client.plugins.gestures.Gesture;
 import com.google.gwt.user.client.Event;
@@ -80,7 +76,6 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
    * @ Speed up your GWT coding with gQuery
    * @@ Manuel Carrasco Moñino
    * GWT.create 2015
-   *
    *
    * class='right bottom semi none'- To move slides use either:
    * -- left/right/space/back keys
@@ -565,6 +560,7 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
 
   /**
    * @ *Example*: Material Design Ripple Effect.
+   * @noplay
    */
   public void slideMaterialDesignRipple() {
     //(\$\$\("posi) //\n\s $1//Create the ripple element to be animated
@@ -704,8 +700,9 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
 
   /**
    * @ Real Examples
-   * - <a href="http://arcbees.com">www.Arcbees.com<a>
    * - <a href="http://gwtproject.org">www.GwtProject.org</a>
+   * - <a href="http://arcbees.com">www.Arcbees.com<a>
+   * - <a href="http://gwtquery.github.io/gwt.create-slides/slides/gwtcreate.html">GwtQuery Slides</a>
    * - <a href="http://social.talkwheel.com">www.Talkwheel.com</a>
    */
   public void slideExample() {
@@ -721,15 +718,13 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
 
   /**
    * @ Questions and Answers
-   *
+   * @noplay
    * <br/>
    * @@ Rate this talk: <a href='http://gwtcreate.com/agenda' target='_blank'>http://gwtcreate.com/agenda</a>
    * <br/>
    */
   public void slideQuestionsAnswers() {
     //\)\. //)\n\s .
-    when(() -> "talk").then((o) -> "Questions").and((o) -> "Answers").done((o) -> console.log("thanks"));
+    when(() -> "Talk").then((o) -> "Questions").and((o) -> "Answers").done((o) -> console.log("Thanks"));
   }
-
-
 }

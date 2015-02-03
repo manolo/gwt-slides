@@ -222,13 +222,11 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
     } else {
       rippleButtons.appendTo(slides);
     }
-    $("#play").hide();
   }
   public abstract void slideMaterialDesignRipple();
 
   public void leaveMaterialDesignRipple() {
     $(".button").detach();
-    $("#play").show();
   }
 
   public interface PaperSlider extends JsonBuilder {
@@ -248,11 +246,5 @@ public abstract class GwtCreate2015PresentationBase extends SlidesSource {
   }
   public void leaveWebComponentsBinding() {
     $("paper-slider").remove();
-  }
-
-
-  /************** QuestionsAnswers *********************/
-  public void enterQuestionsAnswers() {
-    $("#play").hide();
   }
 }

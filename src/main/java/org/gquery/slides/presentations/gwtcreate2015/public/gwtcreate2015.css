@@ -8,7 +8,7 @@
 .gwt-logo, .gquery-logo {
   background-image: url('img/gwt-logo.png');
   left: 8px;
-  position: fixed;
+  position: absolute;
   bottom: 10px;
   width: 82px;
   height: 50px;
@@ -21,11 +21,11 @@
   height: 42px;
 }
 
- @media (max-device-width : 1000px) {
+@media (max-device-width : 1000px) {
   .gwt-logo, .gquery-logo {
     opacity: 0.6;
   }
- }
+}
 
 #marker {
 	left: auto;
