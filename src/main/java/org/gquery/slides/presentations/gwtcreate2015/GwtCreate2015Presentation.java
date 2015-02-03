@@ -82,12 +82,11 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
    * GWT.create 2015
    *
    *
-   * class='right bottom semi none'- To change slides use
-   * -- left/right keyboard arrows
-   * -- left/right mouse clicks
+   * class='right bottom semi none'- To move slides use either:
+   * -- left/right/space/back keys
    * -- tap-one/two touches
    * -- swipe-right/left gestures
-   * - To run examples
+   * - To run examples:
    * -- click/tap on the play button
    */
   public void slideTitle() {

@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no" />
-    
+
     <title>GWT.create conferences: GwtQuery</title>
     <link href="slides.css" rel="stylesheet">
     <link href="gwtcreate2013.css" rel="stylesheet">
@@ -18,6 +18,12 @@
         <h1>GQuery, the perfect companion for your GWT project</h1>
 
         <div class="names">Manuel Carrasco Moñino / Julien Dramaix</div>
+		<section class="right bottom semi none"><ul class="right bottom semi none"><li class="right bottom semi none">To move slides use either:</li>
+		<li class="level1">left/right/space/back keys</li>
+		<li class="level1">tap-one/two touches</li>
+		<li class="level1">swipe-right/left gestures</li>
+		<li>To run examples:</li>
+		<li class="level1">click/tap on the play button</li></ul></section>
     </section>
 
     <section id="who">
@@ -32,7 +38,7 @@
                     <li>Spain</li>
                     <li><i class="twitter"></i><a href="https://twitter.com/dodotis" target="_blank">@dodotis</a></li>
                     <li><i class="gplus"></i><a href="http://google.com/+ManuelCarrascoMonino/posts" target="_blank">+ManuelCarrascoMoñino</a></li>
-                                                   
+
                 </ul>
             </div>
 
@@ -98,17 +104,17 @@
 <span class="s0">$(</span><span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
     .width($(</span><span class="s1">"#mainHeader"</span><span class="s0">).innerWidth())
     .click(</span><span class="s2">function </span><span class="s0">() {
-    
+
         $(</span><span class="s2">this</span><span class="s0">)
             .siblings(</span><span class="s1">".content"</span><span class="s0">)
             .load(</span><span class="s1">"/article/" </span><span class="s0">+ $(</span><span class="s2">this</span><span class="s0">).parent().id(),
               <span class="s2">null</span><span class="s0">, </span>
               <span class="s2">function </span><span class="s0">() {
-              
+
                   $(</span><span class="s2">this</span><span class="s0">).fadeIn(</span><span class="s3">250</span><span class="s0">)</span>;<span class="s0">
-                  
+
               });
-              
+
     });</span></pre>
 
                     </div>
@@ -167,7 +173,7 @@ $(<span class="s1">".article:not(.hidden) &gt; .header"</span><span class="s0">)
    <li>Modify or style the inner HTML
    <li>Overcome .. the API limitation.
    </ul>
-   
+
         </section>
    <br/><a href="http://jdramaix.github.io/gss.gwt-sample-ScrollList/GssSample.html" target="_blank">► Example</a>
     </section>
