@@ -24,11 +24,13 @@ import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.GqFunctions.IsElementFunction;
 import com.google.gwt.query.client.GqFunctions.IsEventFunction;
+import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.impl.ConsoleBrowser;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.client.plugins.gestures.Gesture;
 import com.google.gwt.user.client.Event;
@@ -154,11 +156,11 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
   /**
    * @ Easy DOM manipulation
    * - GQuery eases traversal and manipulation of the DOM.
-   * -- Use $() to wrap, find, create elements and widgets
+   * -- Use $() to wrap, find and create elements or widgets
    * - Chaining methods: select & modify several elements in just one line of code.
    * - friendly css style properties syntax.
-   * -- Use $$() to set properties or for animations
-   * -- Support for type safe CSS
+   * -- Use $$() to set style properties or for animations
+   * -- It also supports type safe CSS
    */
   public void slideDom() {
     //\.animate //\n .animate
@@ -170,9 +172,9 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
    * @ Full GWT Widget integration
    * - Whatever you do with elements, you can do with widgets
    * -- Query, Enhance, Manipulate, Modify
-   * - Promote elements to widgets and insert them in the widgets hierarchy
+   * - Promote elements to widgets inserting them in gwt hierarchy
    * - Improve widgets events
-   * -- Adding events not considered by the widget
+   * -- Adding events not implemented by the widget
    */
   public void slideWidgets() {
     //
@@ -201,7 +203,7 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
    * - Create your own events.
    * - Support for event name spaces.
    * - Delegate events.
-   * - Pass data to listeners via event mechanism
+   * - Pass data to listeners using events
    * -- Tip: Replacement to EventBus
    */
   public void slideEvents() {
@@ -224,14 +226,38 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
   /**
    * @ Promises
    * - GQuery implements the promises API existing in jQuery.
+   * -- when, then, and, or, progress, done, fail, always
    * - Use it as an alternative to nested callback based code.
    * -- Declarative syntax.
-   * -- Can be used in the JVM
+   * - Can be used in the JVM
    */
   public void slidePromisesPipeline() {
-    //(\(|, )(\$\() //$1\n\t$2
-    GQuery.when($(".ball.yellow").animate($$("bottom:0"), 1000),
-        $(".ball.red").animate($$("bottom:0"), 2000))
+    //(\(|, |\))(\$\(|\)\.done) //$1\n$2//Launch things at the same time with when
+    GQuery.when(
+        $(".ball.yellow").animate($$("bottom:0"), 1000),
+        $(".ball.red").animate($$("bottom:0"), 2000)
+        )
+        .done(new Function(){
+          public void f() {
+            $(".ball").fadeOut();
+          }
+        });
+  }
+
+  /**
+   * @disabled
+   */
+  public void slidePromisesPipelineAdvanced() {
+    //((?:\))|(?:,|\())( \$\(|\)\.then) //$1\n$2//Anything can be simultaneously executed with when
+    GQuery.when(null,
+        $(".ball.yellow").animate($$("bottom:0"), 1000),
+        $(".ball.red").animate($$("bottom:0"), 2000)
+        )
+        .then(new Function() {
+          public Object f(Object... args) {
+            return $(".ball.blue").animate($$("bottom: 0"), 2000);
+          }
+        })
         .done(new Function(){
           public void f() {
             $(".ball").fadeOut();
@@ -430,32 +456,6 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
     console.log(response);
   }
 
-
-  Console cc = new ConsoleBrowser();
-
-  /**
-   * @ But could I easily wrap any 3rd party object
-   * - gQuery Data Binders supports wrapping any JS objects
-   * - It takes care of functions
-   */
-  public void TODOslideDataBinding1() {
-    // @include: ElementWrapper
-    ElementWrapper e = GQ.create(ElementWrapper.class);
-    e.load(document.getBody());
-    console.log(e.getTagName());
-    try {
-      cc.log("A");
-      cc.log(e.querySelector());
-      cc.log(e);
-      cc.log(e.parentElement());
-    } catch (Exception e2) {
-      console.log(e);
-    }
-//    console.log(div.getTagName());
-  }
-
-
-
   /**
    * @ Simplifying deferred binding
    * - gQuery Browser flags are set in compilation time.
@@ -466,8 +466,11 @@ public class GwtCreate2015Presentation extends GwtCreate2015PresentationBase {
     if (browser.webkit) {
       console.log("WebKit");
     } else if (browser.ie6) {
-      // This code will never go with
+      // This code will never be in chrome permutation
       Window.alert("IE6 does not have console");
+    } else {
+      // This code will never be in chrome permutation
+      console.log("Not webkit nor IE. Maybe mozilla? " + browser.mozilla);
     }
   }
 

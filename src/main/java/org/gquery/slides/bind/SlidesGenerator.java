@@ -45,7 +45,7 @@ public class SlidesGenerator extends Generator {
       GeneratorContext generatorContext, String requestedClass) throws UnableToCompleteException {
 
     JClassType clazz =  generatorContext.getTypeOracle().findType(requestedClass);
-    
+
     if (clazz.isAbstract() || clazz.isInterface() != null) {
       return null;
     }
@@ -54,7 +54,7 @@ public class SlidesGenerator extends Generator {
     String generatedPkgName = c.getPackage().getName();
     String generatedClzName = c.getName().replace('.', '_') + "_Slide";
     String generatedClzFullName = generatedPkgName + "." + generatedClzName;
-    
+
     while (clazz != null && clazz.isInterface() == null) {
       String file = clazz.getPackage().getName().replace(".", "/") + "/" + clazz.getName() + ".java";
       try {
@@ -214,7 +214,7 @@ public class SlidesGenerator extends Generator {
       .replaceAll("(?m)^\\s*(\\w+=[\\w ']+)?@@\\s(.+)\\s*$", "<h4 $1>$2</h4>")
       .replaceFirst("<li(.*?)>", "<section$1><ul$1><li$1>")
       .replaceFirst("(?s)(.*)</li>", "$1</li></ul></section>\n")
-      .replaceAll("\\*([\\w ]+?)\\*", "<b>$1</b>")
+      .replaceAll("\\*([\\w \\(\\)]+?)\\*", "<b>$1</b>")
 //      .replaceAll("(?m)<li[^>]*>\\s+</li>$", "")
       .replace("* /", "*/") // If we write jsni in javadoc
       .trim();
