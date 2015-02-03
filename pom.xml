@@ -13,7 +13,7 @@
       <maven.compiler.target>1.8</maven.compiler.target>
       <gQueryVersion>2.0.0-SNAPSHOT</gQueryVersion>
       <gwtversion>2.8.0-MCM</gwtversion>
-      <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
+      <gwtmaven>2.7.0</gwtmaven>
       <gwt.style>PRETTY</gwt.style>
       <github.global.server>github</github.global.server>
       <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
@@ -23,10 +23,6 @@
        <repository>
          <id>central</id>
          <url>http://repo1.maven.org/maven2</url>
-       </repository>
-       <repository>
-         <id>gwtquery-plugins</id>
-         <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
        </repository>
        <repository>
          <id>sonatype-google</id>
@@ -39,6 +35,16 @@
          <url>http://oss.sonatype.org/content/repositories/snapshots</url>
          <snapshots><enabled>true</enabled></snapshots>
          <releases><enabled>false</enabled></releases>
+       </repository>
+       <repository>
+         <id>gwtquery-plugins</id>
+         <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
+       </repository>
+       <repository>
+         <id>manolo-repo</id>
+         <url>https://github.com/manolo/gwt-snapshot/raw/master/</url>
+         <snapshots><enabled>true</enabled></snapshots>
+         <releases><enabled>true</enabled></releases>
        </repository>
     </repositories>
 
