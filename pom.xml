@@ -170,6 +170,7 @@
                   <extraJvmArgs>-Xmx2048m</extraJvmArgs>
                   <gen>${project.build.directory}/gen</gen>
                   <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+                  <runTarget>index.html</runTarget>
               </configuration>
               <executions>
                   <execution>

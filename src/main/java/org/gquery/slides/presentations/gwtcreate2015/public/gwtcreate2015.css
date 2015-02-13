@@ -100,10 +100,15 @@ button {
 }
 
 .flex-direction-row {
-	display: flex;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
     flex-direction: row;
+    -webkit-justify-content: center;
     justify-content: center;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: space-around;
     justify-content: space-around;
 }
 
